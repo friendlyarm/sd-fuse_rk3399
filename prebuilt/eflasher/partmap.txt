@@ -1,0 +1,11 @@
+flash=mmc,1:loader:idb:0x8000,0x280000:idbloader.img;
+flash=mmc,1:env:env:0x3F8000,0x8000;
+flash=mmc,1:parm:parm:0x400000,0x0400000:param4sd.txt;
+flash=mmc,1:uboot:raw:0x800000,0x0400000:uboot.img;
+flash=mmc,1:trust:raw:0xC00000,0x0400000:trust.img;
+flash=mmc,1:misc:raw:0x1000000,0x0400000;
+flash=mmc,1:resc:raw:0x1400000,0x0C00000:resource.img;
+flash=mmc,1:kern:raw:0x2000000,0x2000000:kernel.img;
+flash=mmc,1:boot:raw:0x4000000,0x2000000:boot.img;
+flash=mmc,1:data:fat:0x66000000,0x0;
+flash=mmc,1:rootfs:ext4:0x6000000,0x60000000:rootfs.img;
