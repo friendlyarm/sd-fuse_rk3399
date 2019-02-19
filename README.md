@@ -65,9 +65,11 @@ Generate the eflasher raw image, and put friendlycore image files into eflasher:
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399.git
 cd sd-fuse_rk3399
+wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/emmc-flasher-images.tgz
+tar xzf emmc-flasher-images.tgz
 sudo ./mkimage.sh eflasher
 DEV=`losetup -f`
-losetup ${DEV} rk3399-eflasher-YYYYMMDD.img
+losetup ${DEV} rk3399-eflasher-$(date +%Y%m%d).img
 partprobe ${DEV}
 sudo mkfs.exfat ${DEV}p1 -n FriendlyARM
 mkdir -p /mnt/exfat
