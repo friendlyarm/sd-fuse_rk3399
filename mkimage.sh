@@ -31,7 +31,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-friendlycore* | friendlydesktop* | lubuntu* | eflasher*)
+buildroot* | friendlycore* | friendlydesktop* | lubuntu* | eflasher*)
 	;;
 *)
 	echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -56,6 +56,9 @@ lubuntu)
 eflasher)
 	RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
 	RAW_SIZE_MB=7800 ;;
+buildroot)
+        RAW_FILE=${SOC}-sd-buildroot-linux-4.4-arm64-$(date +%Y%m%d).img
+        RAW_SIZE_MB=4000 ;;
 *)
 	RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
 	RAW_SIZE_MB=3800 ;;
@@ -103,7 +106,7 @@ fi
 # ----------------------------------------------------------
 # Fusing all
 
-true ${SD_FUSING:=./fusing.sh}
+true ${SD_FUSING:=$(dirname $0)/fusing.sh}
 
 ${SD_FUSING} ${LOOP_DEVICE} ${TARGET_OS}
 RET=$?

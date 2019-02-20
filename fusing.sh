@@ -28,7 +28,7 @@ fi
 # Checking device for fusing
 
 if [ -z $1 ]; then
-	echo "Usage: $0 DEVICE [friendlycore-arm64|friendlydesktop-arm64|lubuntu]"
+	echo "Usage: $0 DEVICE [friendlycore-arm64|friendlydesktop-arm64|lubuntu|buildroot]"
 	exit 0
 fi
 
@@ -78,10 +78,10 @@ fi
 
 true ${TARGET_OS:=${2,,}}
 
-RKPARAM=./${TARGET_OS}/parameter.txt
+RKPARAM=$(dirname $0)/${TARGET_OS}/parameter.txt
 
 case ${2,,} in
-friendlycore* | friendlydesktop* | lubuntu*)
+buildroot* | friendlycore* | friendlydesktop* | lubuntu*)
 	;;
 eflasher*)
 	[ -f ./${TARGET_OS}/idbloader.img ] && touch ${RKPARAM} ;;
@@ -120,7 +120,7 @@ fi
 # ----------------------------------------------------------
 # Fusing idbloader, bootloader, trust to card
 
-true ${BOOT_DIR:=./prebuilt}
+true ${BOOT_DIR:=$(dirname $0)/prebuilt}
 
 function fusing_bin() {
 	[ -z $2 -o ! -f $1 ] && return 1
@@ -151,7 +151,7 @@ fi
 # ----------------------------------------------------------
 # partition card & fusing filesystem
 
-true ${SD_UPDATE:=./tools/sd_update}
+true ${SD_UPDATE:=$(dirname $0)/tools/sd_update}
 
 [[ -z $2 && ! -f ${RKPARAM} ]] && exit 0
 
@@ -160,7 +160,7 @@ echo "${TARGET_OS^} filesystem fusing"
 echo "Image root: `dirname ${RKPARAM}`"
 echo
 
-PARTMAP=./${TARGET_OS}/partmap.txt
+PARTMAP=$(dirname $0)/${TARGET_OS}/partmap.txt
 
 if [ ! -f ${PARTMAP} ]; then
 	if [ -d ${BOOT_DIR}/${TARGET_OS} ]; then
@@ -185,7 +185,7 @@ if [ $? -ne 0 ]; then
 
 else
 	case ${TARGET_OS} in
-	friendlycore* | friendlydesktop* | lubuntu*)
+	buildroot* | friendlycore* | friendlydesktop* | lubuntu*)
 		sleep 1
 		resize2fs -f /dev/${DEV_PART};;
 	esac

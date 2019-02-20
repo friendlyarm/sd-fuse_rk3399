@@ -22,6 +22,7 @@
 /friendlycore*
 /friendlydesktop*
 /eflasher
+/buildroot
 /lubuntu*
 /*-images.tgz*
 /*.raw*
