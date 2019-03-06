@@ -1,0 +1,94 @@
+#!/bin/bash
+
+# set -eu
+
+# ----------------------------------------------------------
+# base setup
+
+TOPPATH=$PWD
+
+EFLASHER_RAW_IMG=$1
+SOC=$2
+TARGET_OS=$3
+
+OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
+
+
+[ -z ${EFLASHER_RAW_IMG} -o -z ${SOC} -o -z ${TARGET_OS} ] && {
+        echo "Usage: $0 <image name> <plat>"
+        exit 1
+}
+
+[ -f ${EFLASHER_RAW_IMG} ] || {
+	echo "Error: ${EFLASHER_RAW_IMG} not found"
+	exit 1
+}
+
+[ -f ${TOPPATH}/mk-emmc-image.sh ] || {
+	echo "Error: please run on root path"
+	exit 1
+}
+
+[ -d ${OS_IMAGES_DIR} ] || {
+        echo "Error: not found ${OS_IMAGES_DIR}"
+        exit 1
+}
+
+case ${TARGET_OS} in
+friendlycore-arm64)
+        RAW_FILE=${SOC}-eflasher-friendlycore-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img ;;
+friendlydesktop-arm64)
+        RAW_FILE=${SOC}-eflasher-friendlydesktop-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img ;;
+lubuntu)
+        RAW_FILE=${SOC}-eflasher-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img ;;
+eflasher)
+        RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img ;;
+buildroot)
+        RAW_FILE=${SOC}-eflasher-buildroot-linux-4.4-arm64-$(date +%Y%m%d).img ;;
+*)
+        RAW_FILE=${SOC}-eflasher-${TARGET_OS}-sd4g-$(date +%Y%m%d).img ;;
+esac
+
+gen_eflasher_conf()
+{
+cat << 'EOL' > ${1}/eflasher.conf
+[General]
+screenSizePercent=auto
+autoExit=false
+autoStart=
+autoRestore=
+additionalImagePath=
+additionalBackupPath=
+EOL
+}
+
+FULLIMG=out/${RAW_FILE}
+
+# ----------------------------------------------------------
+cp ${EFLASHER_RAW_IMG} ${FULLIMG}
+DEV=`losetup -f`
+MNT=/tmp/media_exfat
+rm -rf ${MNT}
+# ----------------------------------------------------------
+losetup ${DEV} ${FULLIMG}
+partprobe ${DEV}
+mkdir -p ${MNT}
+mount -t exfat ${DEV}p1 ${MNT}
+gen_eflasher_conf ${MNT}
+
+# RK3399: 
+#     emmc boot: need parameter.txt, do not need partmap.txt
+#     sdraw: all need parameter.txt and partmap.txt
+cp -f -r --preserve=timestamps ${OS_IMAGES_DIR} ${MNT}/
+(cd ${MNT}/${TARGET_OS} && {
+	if [ -f emmc-boot/parameter.txt ]; then 
+		rm -f partmap.txt
+		rm -f parameter.txt
+		cp -f emmc-boot/parameter.txt .
+	fi
+})
+
+umount ${MNT}
+losetup -d ${DEV}
+ls -l ${FULLIMG}
+exit 0

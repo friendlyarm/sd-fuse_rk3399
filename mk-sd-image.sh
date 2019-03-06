@@ -64,11 +64,15 @@ buildroot)
 	RAW_SIZE_MB=3800 ;;
 esac
 
+OUT=out
+RAW_FILE=${OUT}/${RAW_FILE}
+
 BLOCK_SIZE=1024
 let RAW_SIZE=(${RAW_SIZE_MB}*1000*1000)/${BLOCK_SIZE}
 
 echo "Creating RAW image: ${RAW_FILE} (${RAW_SIZE_MB} MB)"
 echo "---------------------------------"
+
 
 if [ -f ${RAW_FILE} ]; then
 	rm -f ${RAW_FILE}
@@ -101,6 +105,20 @@ else
 	echo "Error: attach ${LOOP_DEVICE} failed, stop now."
 	rm ${RAW_FILE}
 	exit 1
+fi
+
+# ----------------------------------------------------------
+# Prepare image for sd raw img
+#     emmc boot: need parameter.txt, do not need partmap.txt
+#     sdraw: all need parameter.txt and partmap.txt
+
+if [ -d ${TARGET_OS}/sd-boot ]; then
+	(cd ${TARGET_OS}/sd-boot && { \
+		rm -f ../parameter.txt; \
+		rm -f ../partmap.txt; \
+		cp parameter.txt ../; \
+		cp partmap.txt ../; \
+	})
 fi
 
 # ----------------------------------------------------------

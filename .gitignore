@@ -11,6 +11,7 @@
 *.patch
 *~
 *.diff
+/out
 
 #
 # Top-level generic files
