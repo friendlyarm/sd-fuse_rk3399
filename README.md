@@ -45,15 +45,15 @@ sudo ./fusing.sh /dev/sdX friendlycore-arm64
 ```
 or build an sd card image:
 ```
-sudo ./mkimage.sh friendlycore-arm64
+sudo ./mk-sd-image.sh friendlycore-arm64
 ```
 The following file will be generated:  
 ```
-rk3399-sd-friendlycore-bionic-4.4-arm64-yyyymmdd.img
+out/rk3399-sd-friendlycore-bionic-4.4-arm64-yyyymmdd.img
 ```
 You can use dd to burn this file into an sd card:
 ```
-dd if=rk3399-sd-friendlycore-bionic-4.4-arm64-20181112.img of=/dev/sdX bs=1M
+dd if=out/rk3399-sd-friendlycore-bionic-4.4-arm64-20181112.img of=/dev/sdX bs=1M
 ```
 
 ## Build a package similar to rk3399-eflasher-friendlycore-bionic-4.4-arm64-YYYYMMDD.img
@@ -67,17 +67,17 @@ git clone https://github.com/friendlyarm/sd-fuse_rk3399.git
 cd sd-fuse_rk3399
 wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
-sudo ./mkimage.sh eflasher
-DEV=`losetup -f`
-losetup ${DEV} rk3399-eflasher-$(date +%Y%m%d).img
-partprobe ${DEV}
-sudo mkfs.exfat ${DEV}p1 -n FriendlyARM
-mkdir -p /mnt/exfat
-mount -t exfat ${DEV}p1 /mnt/exfat
 wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlycore-arm64-images.tgz
-tar xzf friendlycore-arm64-images.tgz -C /mnt/exfat
-umount /mnt/exfat
-losetup -d ${DEV}
+tar xzf friendlycore-arm64-images.tgz
+sudo ./mk-emmc-image.sh friendlycore-arm64
+```
+The following file will be generated:  
+```
+out/rk3399-eflasher-friendlycore-bionic-4.4-arm64-yyyymmdd.img
+```
+You can use dd to burn this file into an sd card:
+```
+dd if=out/rk3399-eflasher-friendlycore-bionic-4.4-arm64-20181112.img of=/dev/sdX bs=1M
 ```
 
 ## Replace the file you compiled
@@ -140,7 +140,7 @@ Use FriendlyCore as an example:
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399.git
 cd sd-fuse_rk3399
-sudo ./mkimage.sh friendlycore-arm64
+sudo ./mk-sd-image.sh friendlycore-arm64
 DEV=`losetup -f`
 losetup ${DEV} rk3399-sd-friendlycore-bionic-4.4-arm64-YYYYMMDD.img
 partprobe ${DEV}
@@ -158,7 +158,7 @@ losetup -d ${DEV}
 ```
 burn to sd card:
 ```
-dd if=rk3399-sd-friendlycore-bionic-4.4-arm64-YYYYMMDD.img of=/dev/sdX bs=1M
+dd if=out/rk3399-sd-friendlycore-bionic-4.4-arm64-YYYYMMDD.img of=/dev/sdX bs=1M
 ```
 #### Custom rootfs for eMMC
 Use FriendlyCore as an example, extract rootfs from rootfs.img:
