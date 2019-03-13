@@ -24,6 +24,15 @@ if [ $(id -u) -ne 0 ]; then
 	exit
 fi
 
+function usage() {
+       echo "Usage: $0 <buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
+       exit 0
+}
+
+if [ -z $1 ]; then
+    usage
+fi
+
 # ----------------------------------------------------------
 # Get platform, target OS
 

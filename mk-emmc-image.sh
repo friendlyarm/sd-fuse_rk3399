@@ -24,6 +24,15 @@ if [ $(id -u) -ne 0 ]; then
 	exit
 fi
 
+function usage() {
+       echo "Usage: $0 <buildroot|android7|android8|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
+       exit 0
+}
+
+if [ -z $1 ]; then
+    usage
+fi
+
 # ----------------------------------------------------------
 # Get platform, target OS
 
@@ -31,15 +40,39 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-buildroot* | friendlycore* | friendlydesktop* | lubuntu* )
+buildroot* | android7 | android8 | friendlycore* | friendlydesktop* | lubuntu* )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
         exit 0
 esac
 
-./mk-sd-image.sh $@ && \
-	./mk-sd-image.sh eflasher && \
+download_img() {
+    local RKPARAM=$(dirname $0)/${1}/parameter.txt
+    if [ ! -f ${RKPARAM} ]; then
+        echo -n "Warn: Image not found for ${1}, download now (Y/N)? "
+        while read -r -n 1 -t 3600 -s USER_REPLY; do
+            if [[ ${USER_REPLY} = [Nn] ]]; then
+                echo ${USER_REPLY}
+                exit 1
+            elif [[ ${USER_REPLY} = [Yy] ]]; then
+                echo ${USER_REPLY}
+                break;
+            fi
+        done
+
+        if [ -z ${USER_REPLY} ]; then
+            echo "Cancelled."
+            exit 1
+        fi
+        ./tools/get_rom.sh ${1} || exit 1
+    fi
+}
+
+download_img ${TARGET_OS}
+download_img eflasher
+
+./mk-sd-image.sh eflasher && \
 	./tools/fill_img_to_eflasher out/${SOC}-eflasher-$(date +%Y%m%d).img ${SOC} $@ && { 
 		rm -f out/${SOC}-eflasher-$(date +%Y%m%d).img
 		mkdir -p out/images-for-eflasher

@@ -21,12 +21,14 @@
 # base setup
 
 BASE_URL=http://112.124.9.243/dvdfiles
-OPT_URL=http://wiki.friendlyarm.com/nanopct3/download/
+OPT_URL=http://wiki.friendlyarm.com/download/
 BOARD=RK3399/images-for-eflasher
 
 TARGET=${1,,}
 
 case ${TARGET} in
+buildroot)
+	ROMFILE=buildroot-images.tgz;;
 android7)
 	ROMFILE=android-nougat-images.tgz;;
 android8)
@@ -40,7 +42,7 @@ lubuntu)
 eflasher)
 	ROMFILE=emmc-flasher-images.tgz;;
 *)
-	echo "Usage: $0 <android7|android8|friendlycore-arm64|...>"
+	echo "Usage: $0 <buildroot|android7|android8|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
 	exit 1
 esac
 

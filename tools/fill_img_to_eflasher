@@ -35,6 +35,12 @@ OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
 }
 
 case ${TARGET_OS} in
+buildroot)
+        RAW_FILE=${SOC}-eflasher-buildroot-linux-4.4-arm64-$(date +%Y%m%d).img ;;
+android7)
+        RAW_FILE=${SOC}-eflasher-android7-$(date +%Y%m%d).img ;;
+android8)
+        RAW_FILE=${SOC}-eflasher-android8-$(date +%Y%m%d).img ;;
 friendlycore-arm64)
         RAW_FILE=${SOC}-eflasher-friendlycore-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img ;;
 friendlydesktop-arm64)
@@ -43,10 +49,8 @@ lubuntu)
         RAW_FILE=${SOC}-eflasher-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img ;;
 eflasher)
         RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img ;;
-buildroot)
-        RAW_FILE=${SOC}-eflasher-buildroot-linux-4.4-arm64-$(date +%Y%m%d).img ;;
 *)
-        RAW_FILE=${SOC}-eflasher-${TARGET_OS}-sd4g-$(date +%Y%m%d).img ;;
+        RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
 esac
 
 gen_eflasher_conf()

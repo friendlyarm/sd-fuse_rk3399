@@ -27,9 +27,13 @@ fi
 # ----------------------------------------------------------
 # Checking device for fusing
 
+function usage() {
+       echo "Usage: $0 DEVICE <buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
+       exit 0
+}
+
 if [ -z $1 ]; then
-	echo "Usage: $0 DEVICE [friendlycore-arm64|friendlydesktop-arm64|lubuntu|buildroot]"
-	exit 0
+    usage
 fi
 
 case $1 in
@@ -93,7 +97,7 @@ esac
 if [ ! -f ${RKPARAM} ]; then
 	echo -n "Warn: Image not found for ${TARGET_OS^}, download now (Y/N)? "
 
-	while read -r -n 1 -t 10 -s USER_REPLY; do
+	while read -r -n 1 -t 3600 -s USER_REPLY; do
 		if [[ ${USER_REPLY} = [Nn] ]]; then
 			echo ${USER_REPLY}
 			exit 1
