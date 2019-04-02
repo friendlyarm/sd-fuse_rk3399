@@ -74,6 +74,10 @@ buildroot)
 esac
 
 OUT=out
+if [ ! -d $OUT ]; then
+	echo "path not found: $PWD/$OUT"
+	exit 1
+fi
 RAW_FILE=${OUT}/${RAW_FILE}
 
 BLOCK_SIZE=1024
