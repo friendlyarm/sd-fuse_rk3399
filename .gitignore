@@ -19,6 +19,7 @@
 
 /mnt
 /vendor
+/debian*
 /android*
 /friendlycore*
 /friendlydesktop*

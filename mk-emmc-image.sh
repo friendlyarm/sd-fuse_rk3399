@@ -25,7 +25,7 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 function usage() {
-       echo "Usage: $0 <buildroot|android7|android8|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
+       echo "Usage: $0 <debian|buildroot|android7|android8|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
        exit 0
 }
 
@@ -40,7 +40,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-buildroot* | android7 | android8 | friendlycore* | friendlydesktop* | lubuntu* )
+debian* | buildroot* | android7 | android8 | friendlycore* | friendlydesktop* | lubuntu* )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

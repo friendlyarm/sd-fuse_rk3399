@@ -37,6 +37,8 @@ OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
 case ${TARGET_OS} in
 buildroot)
         RAW_FILE=${SOC}-eflasher-buildroot-linux-4.4-arm64-$(date +%Y%m%d).img ;;
+debian)
+	RAW_FILE=${SOC}-eflasher-debian9-4.4-armhf-$(date +%Y%m%d).img ;;
 android7)
         RAW_FILE=${SOC}-eflasher-android7-$(date +%Y%m%d).img ;;
 android8)

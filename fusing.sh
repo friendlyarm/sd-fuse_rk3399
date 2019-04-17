@@ -28,7 +28,7 @@ fi
 # Checking device for fusing
 
 function usage() {
-       echo "Usage: $0 DEVICE <buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
+       echo "Usage: $0 DEVICE <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
        exit 0
 }
 
@@ -85,7 +85,7 @@ true ${TARGET_OS:=${2,,}}
 RKPARAM=$(dirname $0)/${TARGET_OS}/parameter.txt
 
 case ${2,,} in
-buildroot* | friendlycore* | friendlydesktop* | lubuntu*)
+debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu*)
 	;;
 eflasher*)
 	[ -f ./${TARGET_OS}/idbloader.img ] && touch ${RKPARAM} ;;
@@ -189,7 +189,7 @@ if [ $? -ne 0 ]; then
 
 else
 	case ${TARGET_OS} in
-	buildroot* | friendlycore* | friendlydesktop* | lubuntu*)
+	debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu*)
 		sleep 1
 		resize2fs -f /dev/${DEV_PART};;
 	esac

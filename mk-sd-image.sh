@@ -25,7 +25,7 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 function usage() {
-       echo "Usage: $0 <buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
+       echo "Usage: $0 <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
        exit 0
 }
 
@@ -40,7 +40,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-buildroot* | friendlycore* | friendlydesktop* | lubuntu* | eflasher*)
+debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu* | eflasher*)
 	;;
 *)
 	echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -58,6 +58,9 @@ friendlycore-arm64)
 	RAW_SIZE_MB=7800 ;;
 friendlydesktop-arm64)
 	RAW_FILE=${SOC}-sd-friendlydesktop-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
+	RAW_SIZE_MB=7800 ;;
+debian)
+	RAW_FILE=${SOC}-sd-debian9-4.4-armhf-$(date +%Y%m%d).img
 	RAW_SIZE_MB=7800 ;;
 lubuntu)
 	RAW_FILE=${SOC}-sd-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img

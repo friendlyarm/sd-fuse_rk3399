@@ -29,6 +29,8 @@ TARGET=${1,,}
 case ${TARGET} in
 buildroot)
 	ROMFILE=buildroot-images.tgz;;
+debian)
+	ROMFILE=debian-images.tgz;;
 android7)
 	ROMFILE=android-nougat-images.tgz;;
 android8)
@@ -42,7 +44,7 @@ lubuntu)
 eflasher)
 	ROMFILE=emmc-flasher-images.tgz;;
 *)
-	echo "Usage: $0 <buildroot|android7|android8|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
+	echo "Usage: $0 <debian|buildroot|android7|android8|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
 	exit 1
 esac
 
