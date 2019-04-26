@@ -49,7 +49,10 @@ esac
 
 download_img() {
     local RKPARAM=$(dirname $0)/${1}/parameter.txt
-    if [ ! -f ${RKPARAM} ]; then
+    local RKPARAM2=$(dirname $0)/${1}/param4sd.txt
+    if [ -f "${RKPARAM}" -o -f "${RKPARAM2}" ]; then
+        echo ""
+    else
         echo -n "Warn: Image not found for ${1}, download now (Y/N)? "
         while read -r -n 1 -t 3600 -s USER_REPLY; do
             if [[ ${USER_REPLY} = [Nn] ]]; then

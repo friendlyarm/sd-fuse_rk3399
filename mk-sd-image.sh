@@ -90,7 +90,7 @@ echo "Creating RAW image: ${RAW_FILE} (${RAW_SIZE_MB} MB)"
 echo "---------------------------------"
 
 
-if [ -f ${RAW_FILE} ]; then
+if [ -f "${RAW_FILE}" ]; then
 	rm -f ${RAW_FILE}
 fi
 

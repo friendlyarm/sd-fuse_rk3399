@@ -12,6 +12,8 @@
 *~
 *.diff
 /out
+/kernel-rockchip
+/rootfs
 
 #
 # Top-level generic files

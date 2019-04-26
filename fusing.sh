@@ -83,7 +83,7 @@ fi
 true ${TARGET_OS:=${2,,}}
 
 RKPARAM=$(dirname $0)/${TARGET_OS}/parameter.txt
-
+RKPARAM2=$(dirname $0)/${TARGET_OS}/param4sd.txt
 case ${2,,} in
 debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu*)
 	;;
@@ -94,7 +94,9 @@ eflasher*)
 	exit -1;;
 esac
 
-if [ ! -f ${RKPARAM} ]; then
+if [ -f "${RKPARAM}" -o -f "${RKPARAM2}" ]; then
+        echo ""
+else
 	echo -n "Warn: Image not found for ${TARGET_OS^}, download now (Y/N)? "
 
 	while read -r -n 1 -t 3600 -s USER_REPLY; do
@@ -127,7 +129,7 @@ fi
 true ${BOOT_DIR:=$(dirname $0)/prebuilt}
 
 function fusing_bin() {
-	[ -z $2 -o ! -f $1 ] && return 1
+	[ -z $2 -o ! -f "$1" ] && return 1
 
 	echo "---------------------------------"
 	echo "$1 fusing"
@@ -157,7 +159,7 @@ fi
 
 true ${SD_UPDATE:=$(dirname $0)/tools/sd_update}
 
-[[ -z $2 && ! -f ${RKPARAM} ]] && exit 0
+[[ -z $2 && ! -f "${RKPARAM}" ]] && exit 0
 
 echo "---------------------------------"
 echo "${TARGET_OS^} filesystem fusing"
@@ -166,7 +168,7 @@ echo
 
 PARTMAP=$(dirname $0)/${TARGET_OS}/partmap.txt
 
-if [ ! -f ${PARTMAP} ]; then
+if [ ! -f "${PARTMAP}" ]; then
 	if [ -d ${BOOT_DIR}/${TARGET_OS} ]; then
 		cp ${BOOT_DIR}/${TARGET_OS}/* ./${TARGET_OS}/ -af
 	else
