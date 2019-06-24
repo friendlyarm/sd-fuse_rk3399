@@ -71,9 +71,9 @@ if [ ${DEV_SIZE} -gt 64000000 ]; then
 	exit 1
 fi
 
-if [ ${DEV_SIZE} -le 3800000 ]; then
+if [ ${DEV_SIZE} -le 7000000 ]; then
 	echo "Error: $1 size (${DEV_SIZE} KB) is too small"
-	echo "       At least 4GB SDHC card is required, please try another card."
+	echo "       At least 8GB SDHC card is required, please try another card."
 	exit 1
 fi
 
@@ -97,7 +97,16 @@ esac
 if [ -f "${RKPARAM}" -o -f "${RKPARAM2}" ]; then
         echo ""
 else
-	echo -n "Warn: Image not found for ${TARGET_OS^}, download now (Y/N)? "
+	cat << EOF
+Warn: Image not found for ${TARGET_OS^}
+----------------
+you may download them from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
+the image files are stored in a directory called images-for-eflasher, for example:
+    tar xvzf ../NETDISK/images-for-eflasher/friendlycore-arm64-images.tgz
+    sudo ./fusing.sh /dev/sdX friendlycore-arm64
+----------------
+Or, download from http (Y/N)?
+EOF
 
 	while read -r -n 1 -t 3600 -s USER_REPLY; do
 		if [[ ${USER_REPLY} = [Nn] ]]; then
@@ -167,18 +176,44 @@ echo "Image root: `dirname ${RKPARAM}`"
 echo
 
 PARTMAP=$(dirname $0)/${TARGET_OS}/partmap.txt
+PARAM4SD=$(dirname $0)/${TARGET_OS}/param4sd.txt
+
+# ----------------------------------------------------------
+# Prepare image for sd raw img
+#     emmc boot: need parameter.txt, do not need partmap.txt
+#     sdraw: all need parameter.txt and partmap.txt
 
 if [ ! -f "${PARTMAP}" ]; then
-	if [ -d ${BOOT_DIR}/${TARGET_OS} ]; then
-		cp ${BOOT_DIR}/${TARGET_OS}/* ./${TARGET_OS}/ -af
-	else
-		cp ${BOOT_DIR}/generic/* ./${TARGET_OS}/ -af
-	fi
+	if [ -d ${TARGET_OS}/sd-boot ]; then
+      		(cd ${TARGET_OS}/sd-boot && { \
+               		cp partmap.txt ../; \
+       		})
+       fi	
+fi
+
+if [ ! -f "${PARAM4SD}" ]; then
+	if [ -d ${TARGET_OS}/sd-boot ]; then
+	       (cd ${TARGET_OS}/sd-boot && { \
+        	       cp param4sd.txt ../; \
+	       })
+       fi
+fi
+
+if [ ! -f "${PARTMAP}" ]; then
+		echo "File not found: ${PARTMAP}, please download the latest version of the image files from http://dl.friendlyarm.com/nanopct4"
+		exit 1
+fi
+
+if [ ! -f "${PARAM4SD}" ]; then
+		echo "File not found: ${PARAM4SD}, please download the latest version of the image files from http://dl.friendlyarm.com/nanopct4"
+		exit 1
 fi
 
 # write ext4 image
 ${SD_UPDATE} -d /dev/${DEV_NAME} -p ${PARTMAP}
-if [ $? -ne 0 ]; then
+SDUPDATE_RET=$?
+
+if [ $SDUPDATE_RET -ne 0 ]; then
 	echo "Error: filesystem fusing failed, Stop."
 	exit 1
 fi

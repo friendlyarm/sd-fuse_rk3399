@@ -124,20 +124,6 @@ else
 fi
 
 # ----------------------------------------------------------
-# Prepare image for sd raw img
-#     emmc boot: need parameter.txt, do not need partmap.txt
-#     sdraw: all need parameter.txt and partmap.txt
-
-if [ -d ${TARGET_OS}/sd-boot ]; then
-	(cd ${TARGET_OS}/sd-boot && { \
-		rm -f ../parameter.txt; \
-		rm -f ../partmap.txt; \
-		cp parameter.txt ../; \
-		cp partmap.txt ../; \
-	})
-fi
-
-# ----------------------------------------------------------
 # Fusing all
 
 true ${SD_FUSING:=$(dirname $0)/fusing.sh}

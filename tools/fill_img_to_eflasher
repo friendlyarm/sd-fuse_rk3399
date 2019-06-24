@@ -11,6 +11,7 @@ EFLASHER_RAW_IMG=$1
 SOC=$2
 TARGET_OS=$3
 
+CODENAME=bionic
 OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
 
 
@@ -75,17 +76,26 @@ cp ${EFLASHER_RAW_IMG} ${FULLIMG}
 DEV=`losetup -f`
 MNT=/tmp/media_exfat
 rm -rf ${MNT}
+if [ $? -eq 0 ]; then
+        echo ""
+else
+        umount ${MNT}
+        rm -rf ${MNT}
+fi
 # ----------------------------------------------------------
 losetup ${DEV} ${FULLIMG}
 partprobe ${DEV}
 mkdir -p ${MNT}
 mount -t exfat ${DEV}p1 ${MNT}
 gen_eflasher_conf ${MNT}
+mkdir -p ${MNT}/${TARGET_OS}
+rm -rf ${MNT}/${TARGET_OS}/*
+echo "copying ${OS_IMAGES_DIR}/* to ${MNT}/${TARGET_OS} ..."
+(cd ${OS_IMAGES_DIR} && find . -maxdepth 1 -type f -exec cp {} ${MNT}/${TARGET_OS} \;)
 
 # RK3399: 
 #     emmc boot: need parameter.txt, do not need partmap.txt
 #     sdraw: all need parameter.txt and partmap.txt
-cp -f -r --preserve=timestamps ${OS_IMAGES_DIR} ${MNT}/
 (cd ${MNT}/${TARGET_OS} && {
 	if [ -f emmc-boot/parameter.txt ]; then 
 		rm -f partmap.txt

@@ -53,7 +53,16 @@ download_img() {
     if [ -f "${RKPARAM}" -o -f "${RKPARAM2}" ]; then
         echo ""
     else
-        echo -n "Warn: Image not found for ${1}, download now (Y/N)? "
+        cat << EOF
+Warn: Image not found for ${1}
+----------------
+you may download them from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
+the image files are stored in a directory called images-for-eflasher, for example:
+    tar xvzf ../NETDISK/images-for-eflasher/friendlycore-arm64-images.tgz
+    sudo ./fusing.sh /dev/sdX friendlycore-arm64
+----------------
+Or, download from http (Y/N)?
+EOF
         while read -r -n 1 -t 3600 -s USER_REPLY; do
             if [[ ${USER_REPLY} = [Nn] ]]; then
                 echo ${USER_REPLY}
