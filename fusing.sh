@@ -71,9 +71,9 @@ if [ ${DEV_SIZE} -gt 64000000 ]; then
 	exit 1
 fi
 
-if [ ${DEV_SIZE} -le 7000000 ]; then
+if [ ${DEV_SIZE} -le 3800000 ]; then
 	echo "Error: $1 size (${DEV_SIZE} KB) is too small"
-	echo "       At least 8GB SDHC card is required, please try another card."
+	echo "       At least 4GB SDHC card is required, please try another card."
 	exit 1
 fi
 
