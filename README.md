@@ -121,7 +121,7 @@ git clone https://github.com/friendlyarm/kernel-rockchip --depth 1 -b nanopi4-li
 Build uboot:
 ```
 cd sd-fuse_rk3399
-git clone https://github.com/friendlyarm/uboot-rockchip --depth 1 -b nanopi4-v2014.10_dev
+git clone https://github.com/friendlyarm/uboot-rockchip --depth 1 -b nanopi4-v2014.10_oreo
 cd uboot-rockchip
 make CROSS_COMPILE=aarch64-linux- rk3399_defconfig
 export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
@@ -129,9 +129,9 @@ make CROSS_COMPILE=aarch64-linux-
 cp uboot.img trust.img ../lubuntu
 cp uboot.img trust.img ../friendlycore-arm64
 cp uboot.img trust.img ../friendlydesktop-arm64
-cp rk3399_loader_v1.12.109.bin ../lubuntu/MiniLoaderAll.bin
-cp rk3399_loader_v1.12.109.bin ../friendlycore-arm64/MiniLoaderAll.bin
-cp rk3399_loader_v1.12.109.bin ../friendlydesktop-arm64/MiniLoaderAll.bin
+cp rk3399_loader_v1.22.119.bin ../lubuntu/MiniLoaderAll.bin
+cp rk3399_loader_v1.22.119.bin ../friendlycore-arm64/MiniLoaderAll.bin
+cp rk3399_loader_v1.22.119.bin ../friendlydesktop-arm64/MiniLoaderAll.bin
 ```
 
 ### Custom rootfs for Lubuntu, FriendlyCore and FriendlyDesktop
