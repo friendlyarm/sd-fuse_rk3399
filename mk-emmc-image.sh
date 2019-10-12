@@ -17,19 +17,12 @@
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-	echo "Re-running script under sudo..."
-	sudo "$0" "$@"
-	exit
-fi
-
 function usage() {
-       echo "Usage: $0 <debian|buildroot|android7|android8|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
+       echo "Usage: $0 <debian|buildroot|android7|android8|friendlywrt|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
        exit 0
 }
 
-if [ -z $1 ]; then
+if [ $# -eq 0 ]; then
     usage
 fi
 
@@ -40,7 +33,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-debian* | buildroot* | android7 | android8 | friendlycore* | friendlydesktop* | lubuntu* )
+debian* | buildroot* | android7 | android8 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

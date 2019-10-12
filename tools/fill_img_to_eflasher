@@ -11,9 +11,8 @@ EFLASHER_RAW_IMG=$1
 SOC=$2
 TARGET_OS=$3
 
-CODENAME=bionic
 OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
-
+CODENAME=bionic
 
 [ -z ${EFLASHER_RAW_IMG} -o -z ${SOC} -o -z ${TARGET_OS} ] && {
         echo "Usage: $0 <image name> <plat>"
@@ -26,7 +25,7 @@ OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
 }
 
 [ -f ${TOPPATH}/mk-emmc-image.sh ] || {
-	echo "Error: please run on root path"
+	echo "Error: please run at the script's home dir"
 	exit 1
 }
 
@@ -35,37 +34,53 @@ OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
         exit 1
 }
 
-case ${TARGET_OS} in
-buildroot)
-        RAW_FILE=${SOC}-eflasher-buildroot-linux-4.4-arm64-$(date +%Y%m%d).img ;;
-debian)
-	RAW_FILE=${SOC}-eflasher-debian9-4.4-armhf-$(date +%Y%m%d).img ;;
-android7)
-        RAW_FILE=${SOC}-eflasher-android7-$(date +%Y%m%d).img ;;
-android8)
-        RAW_FILE=${SOC}-eflasher-android8-$(date +%Y%m%d).img ;;
-friendlycore-arm64)
-        RAW_FILE=${SOC}-eflasher-friendlycore-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img ;;
-friendlydesktop-arm64)
-        RAW_FILE=${SOC}-eflasher-friendlydesktop-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img ;;
-lubuntu)
-        RAW_FILE=${SOC}-eflasher-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img ;;
-eflasher)
-        RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img ;;
-*)
-        RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
-esac
+if [ $# -eq 4 ]; then
+	RAW_FILE=$4
+else
+	case ${TARGET_OS} in
+	buildroot)
+	        RAW_FILE=${SOC}-eflasher-buildroot-linux-4.4-arm64-$(date +%Y%m%d).img ;;
+	debian)
+		RAW_FILE=${SOC}-eflasher-debian9-4.4-armhf-$(date +%Y%m%d).img ;;
+	android7)
+	        RAW_FILE=${SOC}-eflasher-android7-$(date +%Y%m%d).img ;;
+	android8)
+	        RAW_FILE=${SOC}-eflasher-android8-$(date +%Y%m%d).img ;;
+	friendlycore-arm64)
+	        RAW_FILE=${SOC}-eflasher-friendlycore-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img ;;
+	friendlywrt)
+	        RAW_FILE=${SOC}-eflasher-friendlywrt-4.4-$(date +%Y%m%d).img ;;
+	friendlydesktop-arm64)
+	        RAW_FILE=${SOC}-eflasher-friendlydesktop-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img ;;
+	lubuntu)
+	        RAW_FILE=${SOC}-eflasher-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img ;;
+	eflasher)
+	        RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img ;;
+	*)
+	        RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
+	esac
+fi
 
 gen_eflasher_conf()
 {
-cat << 'EOL' > ${1}/eflasher.conf
+	OSNamesMergeWithComma="friendlywr,friendlycore,android,lubuntu"
+	cat > ${1}/eflasher.conf <<EOL
+; This is the eFlasher configuration file.
+; See http://wiki.friendlyarm.com/wiki/index.php/EFlasher for detailed information.
+
 [General]
-screenSizePercent=auto
-autoExit=false
+; Automate OS installation at system startup,
+; The "autoStart" field specifies the path of your firmware,
+; Available values: ${OSNamesMergeWithComma}
 autoStart=
+
+; Automatically restore the specified backup at system startup,
+; The "autoRestore" field specifies the path of your backup file.
 autoRestore=
-additionalImagePath=
-additionalBackupPath=
+
+; If the "autoExit" set to true, the eflasher-gui will automatically exit after burning or restoring is completed,
+; You can do something else after burning or restoring by modifying /opt/run-eflasher.sh.
+autoExit=false
 EOL
 }
 

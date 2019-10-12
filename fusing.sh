@@ -16,24 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
-
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-	echo "Re-running script under sudo..."
-	sudo "$0" "$@"
-	exit
-fi
-
 # ----------------------------------------------------------
 # Checking device for fusing
 
-function usage() {
-       echo "Usage: $0 DEVICE <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
-       exit 0
-}
-
-if [ -z $1 ]; then
-    usage
+if [ $# -eq 0 ]; then
+	echo "Usage: $0 DEVICE <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher|friendlywrt>"
+	exit 0
 fi
 
 case $1 in
@@ -56,7 +44,7 @@ case $1 in
 esac
 
 if [ ${REMOVABLE} -le 0 ]; then
-	echo "Error: $1 is non-removable device. Stop."
+	echo "Error: $1 is a non-removable device. Stop."
 	exit 1
 fi
 
@@ -71,9 +59,9 @@ if [ ${DEV_SIZE} -gt 64000000 ]; then
 	exit 1
 fi
 
-if [ ${DEV_SIZE} -le 3800000 ]; then
+if [ ${DEV_SIZE} -le 7000000 ]; then
 	echo "Error: $1 size (${DEV_SIZE} KB) is too small"
-	echo "       At least 4GB SDHC card is required, please try another card."
+	echo "       At least 8GB SDHC card is required, please try another card."
 	exit 1
 fi
 
@@ -85,7 +73,7 @@ true ${TARGET_OS:=${2,,}}
 RKPARAM=$(dirname $0)/${TARGET_OS}/parameter.txt
 RKPARAM2=$(dirname $0)/${TARGET_OS}/param4sd.txt
 case ${2,,} in
-debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu*)
+debian* | friendlywrt | buildroot* | friendlycore* | friendlydesktop* | lubuntu*)
 	;;
 eflasher*)
 	[ -f ./${TARGET_OS}/idbloader.img ] && touch ${RKPARAM} ;;
@@ -126,19 +114,28 @@ EOF
 	./tools/get_rom.sh ${TARGET_OS} || exit 1
 fi
 
+# Automatically re-run script under sudo if not root
+if [ $(id -u) -ne 0 ]; then
+	echo "Re-running script under sudo..."
+	sudo "$0" "$@"
+	exit
+fi
+
 # ----------------------------------------------------------
 # Get host machine
+ARCH=
 if uname -mpi | grep aarch64 >/dev/null; then
+#	EMMC=.emmc
 	ARCH=aarch64/
 fi
 
 # ----------------------------------------------------------
 # Fusing idbloader, bootloader, trust to card
 
-true ${BOOT_DIR:=$(dirname $0)/prebuilt}
+true ${BOOT_DIR:=./prebuilt}
 
 function fusing_bin() {
-	[ -z $2 -o ! -f "$1" ] && return 1
+	[ -z $2 -o ! -f $1 ] && return 1
 
 	echo "---------------------------------"
 	echo "$1 fusing"
@@ -148,8 +145,9 @@ function fusing_bin() {
 }
 
 # umount all at first
+set +e
 umount /dev/${DEV_NAME}* > /dev/null 2>&1
-
+set -e
 if [ ! -f ${TARGET_OS}/idbloader.img -a ! -f ${TARGET_OS}/trust.img ]; then
 	fusing_bin ${BOOT_DIR}/idbloader.img  64
 	fusing_bin ${BOOT_DIR}/uboot.img      16384
@@ -157,11 +155,9 @@ if [ ! -f ${TARGET_OS}/idbloader.img -a ! -f ${TARGET_OS}/trust.img ]; then
 fi
 
 #<Message Display>
-if [ "${ddret}" = "0" ]; then
-	echo "---------------------------------"
-	echo "Bootloader image is fused successfully."
-	echo ""
-fi
+echo "---------------------------------"
+echo "Bootloader image is fused successfully."
+echo ""
 
 # ----------------------------------------------------------
 # partition card & fusing filesystem
@@ -211,9 +207,7 @@ fi
 
 # write ext4 image
 ${SD_UPDATE} -d /dev/${DEV_NAME} -p ${PARTMAP}
-SDUPDATE_RET=$?
-
-if [ $SDUPDATE_RET -ne 0 ]; then
+if [ $? -ne 0 ]; then
 	echo "Error: filesystem fusing failed, Stop."
 	exit 1
 fi
@@ -222,11 +216,11 @@ if [ -z ${ARCH} ]; then
 	partprobe /dev/${DEV_NAME} -s 2>/dev/null
 fi
 if [ $? -ne 0 ]; then
-	echo "Warn: Re-read the partition table failed"
+	echo "Warning: Re-reading the partition table failed"
 
 else
 	case ${TARGET_OS} in
-	debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu*)
+	debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt*)
 		sleep 1
 		resize2fs -f /dev/${DEV_PART};;
 	esac

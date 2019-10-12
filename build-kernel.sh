@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
 # (http://www.friendlyarm.com)
@@ -19,16 +20,18 @@
 
 
 true ${SOC:=rk3399}
+true ${DISABLE_MKIMG:=0}
+true ${LOGO:=}
+true ${KERNEL_LOGO:=}
+
 KERNEL_REPO=https://github.com/friendlyarm/kernel-rockchip
 KERNEL_BRANCH=nanopi4-linux-v4.4.y
 
-KERNEL_DIRNAME=kernel-$SOC
-
 ARCH=arm64
 KCFG=nanopi4_linux_defconfig
-KALL=nanopi4-images
 KIMG=kernel.img
 KDTB=resource.img
+KALL=nanopi4-images
 CROSS_COMPILER=aarch64-linux-gnu-
 
 # 
@@ -40,14 +43,6 @@ CROSS_COMPILER=aarch64-linux-gnu-
 # KERNEL_LOGO=/tmp/logo_kernel.bmp
 #
 
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-	echo "Re-running script under sudo..."
-	sudo "$0" "$@"
-	exit
-fi
-
-
 TOPPATH=$PWD
 OUT=$TOPPATH/out
 if [ ! -d $OUT ]; then
@@ -55,24 +50,27 @@ if [ ! -d $OUT ]; then
 	exit 1
 fi
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
+true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
 
 function usage() {
-       echo "Usage: $0 <buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
+       echo "Usage: $0 <buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|friendlywrt|eflasher>"
        echo "# example:"
        echo "# clone kernel source from github:"
-       echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${OUT}/${KERNEL_DIRNAME}"
+       echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# or clone your local repo:"
-       echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} out/kernel-${SOC}"
+       echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# then"
        echo "    convert files/logo.jpg -type truecolor /tmp/logo.bmp"
        echo "    convert files/logo.jpg -type truecolor /tmp/logo_kernel.bmp"
        echo "    LOGO=/tmp/logo.bmp KERNEL_LOGO=/tmp/logo_kernel.bmp ./build-kernel.sh eflasher"
        echo "    LOGO=/tmp/logo.bmp KERNEL_LOGO=/tmp/logo_kernel.bmp ./build-kernel.sh friendlycore-arm64"
        echo "    ./mk-emmc-image.sh friendlycore-arm64"
+       echo "# also can do:"
+       echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore-arm64"
        exit 0
 }
 
-if [ -z $1 ]; then
+if [ $# -ne 1 ]; then
     usage
 fi
 
@@ -80,12 +78,13 @@ fi
 # Get target OS
 true ${TARGET_OS:=${1,,}}
 
+
 case ${TARGET_OS} in
-buildroot* | android7 | android8 | friendlycore* | friendlydesktop* | lubuntu* | eflasher )
+buildroot* | android7 | android8 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
-        exit 0
+        exit 1
 esac
 
 download_img() {
@@ -100,7 +99,7 @@ Warn: Image not found for ${1}
 you may download them from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
 the image files are stored in a directory called images-for-eflasher, for example:
     tar xvzf ../NETDISK/images-for-eflasher/friendlycore-arm64-images.tgz
-    sudo ./fusing.sh /dev/sdX friendlycore-arm64
+    sudo ./fusing.sh /dev/sdX ${1}
 ----------------
 Or, download from http (Y/N)?
 EOF
@@ -122,45 +121,27 @@ EOF
     fi
 }
 
-function build_kernel_modules() {
-    rm -rf ${KMODULES_OUTDIR}
-    mkdir -p ${KMODULES_OUTDIR}
-    make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules -j$(nproc)
-    make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules_install
-    KREL=`make kernelrelease`
-    rm -rf ${KMODULES_OUTDIR}/lib/modules/${KREL}/kernel/drivers/gpu/arm/mali400/
-    [ ! -f "${KMODULES_OUTDIR}/lib/modules/${KREL}/modules.dep" ] && depmod -b ${KMODULES_OUTDIR} -E Module.symvers -F System.map -w ${KREL}
-    (cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILER}strip --strip-unneeded)
-}
-
-download_img ${TARGET_OS}
-
-if [ ! -d ${OUT}/${KERNEL_DIRNAME} ]; then
-	git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${OUT}/${KERNEL_DIRNAME}
+if [ ! -d ${KERNEL_SRC} ]; then
+	git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}
 fi
-
-KERNEL_BUILD_DIR=${OUT}/${KERNEL_DIRNAME}_build
-rm -rf ${KERNEL_BUILD_DIR} 
-echo "coping kernel src..."
-rsync -a --exclude='.git/' ${OUT}/${KERNEL_DIRNAME}/* ${KERNEL_BUILD_DIR}
 
 if [ ! -d /opt/FriendlyARM/toolchain/6.4-aarch64 ]; then
 	echo "please install aarch64-gcc-6.4 first, using these commands: "
-	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git"
-	echo "\tsudo mkdir -p /opt/FriendlyARM/toolchain"
-	echo "\tsudo tar xf prebuilts/gcc-x64/aarch64-cortexa53-linux-gnu-6.4.tar.xz -C /opt/FriendlyARM/toolchain/"
+	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1"
+	echo "\tcd prebuilts/gcc-x64"
+	echo "\tcat toolchain-6.4-aarch64.tar.gz* | sudo tar xz -C /"
 	exit 1
 fi
 
 if [ -f "${LOGO}" ]; then
-	cp -f ${LOGO} ${KERNEL_BUILD_DIR}/logo.bmp
+	cp -f ${LOGO} ${KERNEL_SRC}/logo.bmp
 	echo "using ${LOGO} as logo."
 else
 	echo "using official logo."
 fi
 
 if [ -f "${KERNEL_LOGO}" ]; then
-        cp -f ${KERNEL_LOGO} ${KERNEL_BUILD_DIR}/logo_kernel.bmp
+        cp -f ${KERNEL_LOGO} ${KERNEL_SRC}/logo_kernel.bmp
         echo "using ${KERNEL_LOGO} as kernel logo."
 else
         echo "using official kernel logo."
@@ -168,10 +149,14 @@ fi
 
 export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
 
-cd ${KERNEL_BUILD_DIR}
+cd ${KERNEL_SRC}
 make distclean
 touch .scmversion
 make ARCH=${ARCH} ${KCFG}
+if [ $? -ne 0 ]; then
+	echo "failed to build kernel."
+	exit 1
+fi
 if [ x"${TARGET_OS}" = x"eflasher" ]; then
     cp -avf .config .config.old
     sed -i "s/.*\(PROT_MT_SYNC\).*/CONFIG_TOUCHSCREEN_\1=y/g" .config
@@ -179,49 +164,52 @@ if [ x"${TARGET_OS}" = x"eflasher" ]; then
 fi
 
 make ARCH=${ARCH} ${KALL} -j$(nproc)
-build_kernel_modules
-
-if [ $? -eq 0 ]; then
-	cp ${KIMG} ${KDTB} ${TOPPATH}/${TARGET_OS}/
-	echo "build kernel ok."
-else
-	echo "fail to build kernel."
-	exit 1
+if [ $? -ne 0 ]; then
+        echo "failed to build kernel."
+        exit 1
 fi
+
+rm -rf ${KMODULES_OUTDIR}
+mkdir -p ${KMODULES_OUTDIR}
+make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules -j$(nproc)
+if [ $? -ne 0 ]; then
+	echo "failed to build kernel modules."
+        exit 1
+fi
+make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules_install
+if [ $? -ne 0 ]; then
+	echo "failed to build kernel modules."
+        exit 1
+fi
+KREL=`make kernelrelease`
+rm -rf ${KMODULES_OUTDIR}/lib/modules/${KREL}/kernel/drivers/gpu/arm/mali400/
+[ ! -f "${KMODULES_OUTDIR}/lib/modules/${KREL}/modules.dep" ] && depmod -b ${KMODULES_OUTDIR} -E Module.symvers -F System.map -w ${KREL}
+(cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILER}strip --strip-unneeded)
+
 
 if [ ! -d ${KMODULES_OUTDIR}/lib ]; then
 	echo "not found kernel modules."
 	exit 1
 fi
 
-# update kernel modules
-# apt install android-tools-fsutils
-cd $TOPPATH
-if [ -f ${TARGET_OS}/rootfs.img ]; then
-    simg2img ${TARGET_OS}/rootfs.img ${TARGET_OS}/r.img
-    mkdir -p ${OUT}/old_rootfs
-    mount -t ext4 -o loop ${TARGET_OS}/r.img ${OUT}/old_rootfs
-    mkdir -p ${OUT}/rootfs
-    rm -rf ${OUT}/rootfs/*
-    cp -af ${OUT}/old_rootfs/* ${OUT}/rootfs
-    umount ${OUT}/old_rootfs
-    rm ${TARGET_OS}/r.img
-    rm -rf ${OUT}/old_rootfs
-
-    cp -af ${KMODULES_OUTDIR}/lib/firmware/* ${OUT}/rootfs/lib/firmware/
-    rm -rf ${OUT}/rootfs/lib/modules/*
-    cp -af ${KMODULES_OUTDIR}/lib/modules/* ${OUT}/rootfs/lib/modules/
-
-    ./build-rootfs-img.sh ${OUT}/rootfs ${TARGET_OS}/rootfs.img
-    if [ $? -eq 0 ]; then
-        echo "update kernel-modules to rootfs.img ok."
-        exit 0
-    else
-        echo "fail."
-        exit 1
-    fi
-else 
-	echo "not found ${TARGET_OS}/rootfs.img"
-	exit 1
+if [ x"$DISABLE_MKIMG" = x"1" ]; then
+    exit 0
 fi
 
+echo "building kernel ok."
+if ! [ -x "$(command -v simg2img)" ]; then
+    sudo apt update
+    sudo apt install android-tools-fsutils
+fi
+
+cd ${TOPPATH}
+download_img ${TARGET_OS}
+./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TARGET_OS} ${TOPPATH}/prebuilt
+
+
+if [ $? -eq 0 ]; then
+    echo "updating kernel ok."
+else
+    echo "failed."
+    exit 1
+fi

@@ -31,12 +31,12 @@ if [ ! -b $1 ]; then
 fi
 
 case $1 in
-/dev/sd[a-z] | /dev/loop[0-9] | /dev/mmcblk1)
+/dev/sd[a-z] | /dev/loop[0-9]* | /dev/mmcblk1)
 	DEV_NAME=`basename $1`
 	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size` ;;&
 /dev/sd[a-z])
 	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
-/dev/mmcblk1 | /dev/loop[0-9])
+/dev/mmcblk1 | /dev/loop[0-9]*)
 	DEV_NAME=`basename $1`p
 	REMOVABLE=1 ;;
 *)
@@ -45,7 +45,7 @@ case $1 in
 esac
 
 if [ ${REMOVABLE} -le 0 ]; then
-	echo "Error: $1 is non-removable device. Stop."
+	echo "Error: $1 is a non-removable device. Stop."
 	exit 1
 fi
 

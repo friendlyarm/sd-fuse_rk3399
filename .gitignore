@@ -6,14 +6,14 @@
 # Normal rules
 #
 
+/test/out
+/test/tmp
+/out
 *.rej
 *.orig
 *.patch
 *~
 *.diff
-/out
-/kernel-rockchip
-/rootfs
 
 #
 # Top-level generic files
@@ -21,6 +21,7 @@
 
 /mnt
 /vendor
+/friendlywrt*
 /debian*
 /android*
 /friendlycore*
@@ -29,6 +30,7 @@
 /buildroot
 /lubuntu*
 /*-images.tgz*
+/rootfs-*.tgz
 /*.raw*
 
 #
