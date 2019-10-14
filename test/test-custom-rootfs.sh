@@ -1,8 +1,13 @@
 #!/bin/bash
 set -eux
 
-# HTTP_SERVER=112.124.9.243
-HTTP_SERVER=192.168.1.9
+HTTP_SERVER=112.124.9.243
+
+# hack for me
+PCNAME=`hostname`
+if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
+       HTTP_SERVER=192.168.1.9
+fi
 
 # clean
 mkdir -p tmp

@@ -8,6 +8,7 @@
 
 /test/out
 /test/tmp
+/test/*.tgz
 /out
 *.rej
 *.orig
