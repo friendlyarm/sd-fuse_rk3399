@@ -40,7 +40,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu* | eflasher*)
+debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu* | eflasher* | friendlywrt)
 	;;
 *)
 	echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -55,6 +55,9 @@ CODENAME=bionic
 case ${TARGET_OS} in
 friendlycore-arm64)
 	RAW_FILE=${SOC}-sd-friendlycore-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
+	RAW_SIZE_MB=7800 ;;
+friendlywrt)
+	RAW_FILE=${SOC}-sd-friendlywrt-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
 	RAW_SIZE_MB=7800 ;;
 friendlydesktop-arm64)
 	RAW_FILE=${SOC}-sd-friendlydesktop-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
@@ -73,7 +76,7 @@ buildroot)
         RAW_SIZE_MB=4000 ;;
 *)
 	RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
-	RAW_SIZE_MB=3800 ;;
+	RAW_SIZE_MB=4000 ;;
 esac
 
 OUT=out
