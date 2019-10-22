@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
 # (http://www.friendlyarm.com)
@@ -16,20 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
-
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-	echo "Re-running script under sudo..."
-	sudo "$0" "$@"
-	exit
-fi
-
 function usage() {
-       echo "Usage: $0 <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
+       echo "Usage: $0 <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|friendlywrt|eflasher>"
        exit 0
 }
 
-if [ -z $1 ]; then
+if [ $# -eq 0 ]; then
     usage
 fi
 
@@ -47,37 +40,51 @@ debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu* | eflasher* |
 	exit 0
 esac
 
+
+# Automatically re-run script under sudo if not root
+if [ $(id -u) -ne 0 ]; then
+	echo "Re-running script under sudo..."
+	sudo "$0" "$@"
+	exit
+fi
+
+
+
 # ----------------------------------------------------------
 # Create zero file
 
 CODENAME=bionic
-
-case ${TARGET_OS} in
-friendlycore-arm64)
-	RAW_FILE=${SOC}-sd-friendlycore-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-friendlywrt)
-	RAW_FILE=${SOC}-sd-friendlywrt-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-friendlydesktop-arm64)
-	RAW_FILE=${SOC}-sd-friendlydesktop-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-debian)
-	RAW_FILE=${SOC}-sd-debian9-4.4-armhf-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-lubuntu)
-	RAW_FILE=${SOC}-sd-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-eflasher)
-	RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-buildroot)
-        RAW_FILE=${SOC}-sd-buildroot-linux-4.4-arm64-$(date +%Y%m%d).img
-        RAW_SIZE_MB=4000 ;;
-*)
-	RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
-	RAW_SIZE_MB=4000 ;;
-esac
+if [ $# -eq 2 ]; then
+	RAW_FILE=$2
+	RAW_SIZE_MB=7800
+else
+	case ${TARGET_OS} in
+	friendlycore-arm64)
+		RAW_FILE=${SOC}-sd-friendlycore-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	friendlywrt)
+		RAW_FILE=${SOC}-sd-friendlywrt-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	friendlydesktop-arm64)
+		RAW_FILE=${SOC}-sd-friendlydesktop-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	debian)
+		RAW_FILE=${SOC}-sd-debian9-4.4-armhf-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	lubuntu)
+		RAW_FILE=${SOC}-sd-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	eflasher)
+		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	buildroot)
+	        RAW_FILE=${SOC}-sd-buildroot-linux-4.4-arm64-$(date +%Y%m%d).img
+	        RAW_SIZE_MB=4000 ;;
+	*)
+		RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	esac
+fi
 
 OUT=out
 if [ ! -d $OUT ]; then
@@ -105,7 +112,7 @@ sfdisk -u S -L -q ${RAW_FILE} 2>/dev/null << EOF
 EOF
 
 if [ $? -ne 0 ]; then
-	echo "Error: ${RAW_FILE}: Create RAW file failed"
+	echo "Error: ${RAW_FILE}: Creating RAW file failed"
 	exit 1
 fi
 
@@ -121,7 +128,7 @@ if losetup ${LOOP_DEVICE} ${RAW_FILE}; then
 	PART_DEVICE=/dev/mapper/`basename ${LOOP_DEVICE}`
 	sleep 1
 else
-	echo "Error: attach ${LOOP_DEVICE} failed, stop now."
+	echo "Error: attaching ${LOOP_DEVICE} failed, stop now."
 	rm ${RAW_FILE}
 	exit 1
 fi
