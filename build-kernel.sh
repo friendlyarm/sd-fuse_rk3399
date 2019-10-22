@@ -93,13 +93,13 @@ download_img() {
     if [ -f "${RKPARAM}" -o -f "${RKPARAM2}" ]; then
 	echo "${1} found."
     else
+	ROMFILE=`./tools/get_pkg_filename.sh ${1}`
         cat << EOF
 Warn: Image not found for ${1}
 ----------------
 you may download them from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
 the image files are stored in a directory called images-for-eflasher, for example:
-    tar xvzf ../NETDISK/images-for-eflasher/friendlycore-arm64-images.tgz
-    sudo ./fusing.sh /dev/sdX ${1}
+    tar xvzf /path/to/NETDISK/images-for-eflasher/${ROMFILE}
 ----------------
 Or, download from http (Y/N)?
 EOF
