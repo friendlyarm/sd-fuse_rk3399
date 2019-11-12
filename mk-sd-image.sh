@@ -56,7 +56,24 @@ fi
 CODENAME=bionic
 if [ $# -eq 2 ]; then
 	RAW_FILE=$2
-	RAW_SIZE_MB=7800
+    case ${TARGET_OS} in
+    friendlycore-arm64)
+        RAW_SIZE_MB=7800 ;;
+    friendlywrt)
+        RAW_SIZE_MB=640 ;;
+    friendlydesktop-arm64)
+        RAW_SIZE_MB=7800 ;;
+    debian)
+        RAW_SIZE_MB=7800 ;;
+    lubuntu)
+        RAW_SIZE_MB=7800 ;;
+    eflasher)
+        RAW_SIZE_MB=7800 ;;
+    buildroot)
+        RAW_SIZE_MB=4000 ;;
+    *)
+        RAW_SIZE_MB=7800 ;;
+    esac
 else
 	case ${TARGET_OS} in
 	friendlycore-arm64)
@@ -64,7 +81,7 @@ else
 		RAW_SIZE_MB=7800 ;;
 	friendlywrt)
 		RAW_FILE=${SOC}-sd-friendlywrt-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
-		RAW_SIZE_MB=7800 ;;
+		RAW_SIZE_MB=640 ;;
 	friendlydesktop-arm64)
 		RAW_FILE=${SOC}-sd-friendlydesktop-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
