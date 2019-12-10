@@ -60,7 +60,7 @@ if [ $# -eq 2 ]; then
     friendlycore-arm64)
         RAW_SIZE_MB=7800 ;;
     friendlywrt)
-        RAW_SIZE_MB=640 ;;
+        RAW_SIZE_MB=1000 ;;
     friendlydesktop-arm64)
         RAW_SIZE_MB=7800 ;;
     debian)
@@ -81,7 +81,7 @@ else
 		RAW_SIZE_MB=7800 ;;
 	friendlywrt)
 		RAW_FILE=${SOC}-sd-friendlywrt-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
-		RAW_SIZE_MB=640 ;;
+		RAW_SIZE_MB=1000 ;;
 	friendlydesktop-arm64)
 		RAW_FILE=${SOC}-sd-friendlydesktop-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
