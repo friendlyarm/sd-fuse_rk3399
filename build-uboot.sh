@@ -159,7 +159,7 @@ fi
 echo "building uboot ok."
 cd ${TOPPATH}
 download_img ${TARGET_OS}
-./tools/update_uboot_bin.sh ${OUT} ${UBOOT_SRC} ${TOPPATH}/${TARGET_OS}
+./tools/update_uboot_bin.sh ${UBOOT_SRC} ${TOPPATH}/${TARGET_OS}
 if [ $? -eq 0 ]; then
     echo "updating ${TARGET_OS}/bootloader.img ok."
 else
