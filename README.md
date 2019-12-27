@@ -146,19 +146,19 @@ tar xzf rootfs-friendlycore-arm64-YYMMDD.tgz
 ```
 Now,  change something under rootfs directory, like this:
 ```
-echo hello > friendlycore/rootfs/root/welcome.txt  
+echo hello > friendlycore-arm64/rootfs/root/welcome.txt  
 ```
 Remake rootfs.img:
 ```
-./build-rootfs-img.sh friendlycore/rootfs friendlycore/rootfs.img
+./build-rootfs-img.sh friendlycore-arm64/rootfs friendlycore-arm64
 ```
 Make sdboot image:
 ```
-sudo ./mk-sd-image.sh friendlycore
+sudo ./mk-sd-image.sh friendlycore-arm64
 ```
 or make sd-to-emmc image (eflasher rom):
 ```
-sudo ./mk-emmc-image.sh friendlycore
+sudo ./mk-emmc-image.sh friendlycore-arm64
 ```
 
 ### Build Android8
