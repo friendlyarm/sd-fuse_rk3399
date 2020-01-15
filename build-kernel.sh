@@ -32,7 +32,7 @@ KCFG=nanopi4_linux_defconfig
 KIMG=kernel.img
 KDTB=resource.img
 KALL=nanopi4-images
-CROSS_COMPILER=aarch64-linux-gnu-
+CROSS_COMPILE=aarch64-linux-gnu-
 
 # 
 # kernel logo:
@@ -184,7 +184,7 @@ fi
 KREL=`make kernelrelease`
 rm -rf ${KMODULES_OUTDIR}/lib/modules/${KREL}/kernel/drivers/gpu/arm/mali400/
 [ ! -f "${KMODULES_OUTDIR}/lib/modules/${KREL}/modules.dep" ] && depmod -b ${KMODULES_OUTDIR} -E Module.symvers -F System.map -w ${KREL}
-(cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILER}strip --strip-unneeded)
+(cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILE}strip --strip-unneeded)
 
 
 if [ ! -d ${KMODULES_OUTDIR}/lib ]; then

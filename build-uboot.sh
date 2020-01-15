@@ -26,7 +26,7 @@ UBOOT_BRANCH=nanopi4-v2014.10_oreo
 
 ARCH=arm64
 UCFG=rk3399_defconfig
-CROSS_COMPILER=aarch64-linux-
+CROSS_COMPILE=aarch64-linux-
 
 TOPPATH=$PWD
 OUT=$TOPPATH/out
@@ -144,8 +144,8 @@ fi
 
 cd ${UBOOT_SRC}
 make distclean
-make CROSS_COMPILE=${CROSS_COMPILER} ${UCFG}
-make CROSS_COMPILE=${CROSS_COMPILER} -j$(nproc)
+make CROSS_COMPILE=${CROSS_COMPILE} ${UCFG}
+make CROSS_COMPILE=${CROSS_COMPILE} -j$(nproc)
 
 if [ $? -ne 0 ]; then
 	echo "failed to build uboot."
