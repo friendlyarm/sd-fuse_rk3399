@@ -129,9 +129,9 @@ make CROSS_COMPILE=aarch64-linux-
 cp uboot.img trust.img ../lubuntu
 cp uboot.img trust.img ../friendlycore-arm64
 cp uboot.img trust.img ../friendlydesktop-arm64
-cp rk3399_loader_v1.22.119.bin ../lubuntu/MiniLoaderAll.bin
-cp rk3399_loader_v1.22.119.bin ../friendlycore-arm64/MiniLoaderAll.bin
-cp rk3399_loader_v1.22.119.bin ../friendlydesktop-arm64/MiniLoaderAll.bin
+cp rk3399_loader_v1.24.119.bin ../lubuntu/MiniLoaderAll.bin
+cp rk3399_loader_v1.24.119.bin ../friendlycore-arm64/MiniLoaderAll.bin
+cp rk3399_loader_v1.24.119.bin ../friendlydesktop-arm64/MiniLoaderAll.bin
 ```
 
 ### Custom rootfs for Lubuntu, FriendlyCore and FriendlyDesktop
