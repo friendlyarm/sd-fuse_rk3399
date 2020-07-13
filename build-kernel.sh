@@ -181,7 +181,7 @@ if [ $? -ne 0 ]; then
 	echo "failed to build kernel modules."
         exit 1
 fi
-KREL=`make kernelrelease`
+KREL=`make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} kernelrelease`
 rm -rf ${KMODULES_OUTDIR}/lib/modules/${KREL}/kernel/drivers/gpu/arm/mali400/
 [ ! -f "${KMODULES_OUTDIR}/lib/modules/${KREL}/modules.dep" ] && depmod -b ${KMODULES_OUTDIR} -E Module.symvers -F System.map -w ${KREL}
 (cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILE}strip --strip-unneeded)
