@@ -71,21 +71,18 @@ fi
 
 true ${TARGET_OS:=${2,,}}
 
-RKPARAM=$(dirname $0)/${TARGET_OS}/parameter.txt
-RKPARAM2=$(dirname $0)/${TARGET_OS}/param4sd.txt
+RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
 case ${2,,} in
-debian* | friendlywrt | buildroot* | friendlycore* | friendlydesktop* | lubuntu*)
+debian* | friendlywrt | buildroot* | friendlycore* | friendlydesktop* | lubuntu* | android10)
 	;;
 eflasher*)
-	[ -f ./${TARGET_OS}/idbloader.img ] && touch ${RKPARAM} ;;
+	;;
 *)
 	echo "Error: Unsupported target OS: ${TARGET_OS}"
 	exit -1;;
 esac
 
-if [ -f "${RKPARAM}" -o -f "${RKPARAM2}" ]; then
-        echo ""
-else
+if [ ! -f "${RK_PARAMETER_TXT}" ]; then
 	ROMFILE=`./tools/get_pkg_filename.sh ${TARGET_OS}`
 	cat << EOF
 Warn: Image not found for ${TARGET_OS}
@@ -165,49 +162,16 @@ echo ""
 
 true ${SD_UPDATE:=$(dirname $0)/tools/sd_update}
 
-[[ -z $2 && ! -f "${RKPARAM}" ]] && exit 0
+[[ -z $2 && ! -f "${RK_PARAMETER_TXT}" ]] && exit 0
 
 echo "---------------------------------"
 echo "${TARGET_OS^} filesystem fusing"
-echo "Image root: `dirname ${RKPARAM}`"
+echo "Image root: `dirname ${RK_PARAMETER_TXT}`"
 echo
 
-PARTMAP=$(dirname $0)/${TARGET_OS}/partmap.txt
-PARAM4SD=$(dirname $0)/${TARGET_OS}/param4sd.txt
-
-# ----------------------------------------------------------
-# Prepare image for sd raw img
-#     emmc boot: need parameter.txt, do not need partmap.txt
-#     sdraw: all need parameter.txt and partmap.txt
-
-if [ ! -f "${PARTMAP}" ]; then
-	if [ -d ${TARGET_OS}/sd-boot ]; then
-      		(cd ${TARGET_OS}/sd-boot && { \
-               		cp partmap.txt ../; \
-       		})
-       fi	
-fi
-
-if [ ! -f "${PARAM4SD}" ]; then
-	if [ -d ${TARGET_OS}/sd-boot ]; then
-	       (cd ${TARGET_OS}/sd-boot && { \
-        	       cp param4sd.txt ../; \
-	       })
-       fi
-fi
-
-if [ ! -f "${PARTMAP}" ]; then
-		echo "File not found: ${PARTMAP}, please download the latest version of the image files from http://dl.friendlyarm.com/nanopct4"
-		exit 1
-fi
-
-if [ ! -f "${PARAM4SD}" ]; then
-		echo "File not found: ${PARAM4SD}, please download the latest version of the image files from http://dl.friendlyarm.com/nanopct4"
-		exit 1
-fi
 
 # write ext4 image
-${SD_UPDATE} -d /dev/${DEV_NAME} -p ${PARTMAP}
+${SD_UPDATE} -d /dev/${DEV_NAME} -p ${RK_PARAMETER_TXT}
 if [ $? -ne 0 ]; then
 	echo "Error: filesystem fusing failed, Stop."
 	exit 1
@@ -218,7 +182,6 @@ if [ -z ${ARCH} ]; then
 fi
 if [ $? -ne 0 ]; then
 	echo "Warning: Re-reading the partition table failed"
-
 else
 	case ${TARGET_OS} in
 	debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt*)

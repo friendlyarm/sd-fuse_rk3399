@@ -34,7 +34,7 @@ TOP=$PWD
 function get_root_address_in_partmap()
 {
     declare -a platfroms=("s5p4418" "s5p6818" "rk3399" "h3")
-    declare -a rootfs_partition_address=(0x4400000 0x4400000 0x6000000 0x4000000)
+    declare -a rootfs_partition_address=(0x4400000 0x4400000 0x8000000 0x4000000)
 
     INDEX=0
     FOUND=0
@@ -58,26 +58,8 @@ if [ -z ${IMG_SIZE} ]; then
     exit 1
 fi
 
-SRC_PARAM4SD_TPL=${TOP}/prebuilt/param4sd.template
 SRC_PARAMETER_TPL=${TOP}/prebuilt/parameter.template
-SRC_PARTMAP_TPL=${TOP}/prebuilt/partmap.template
-
-
-DEST_PARAM4SD_TXT=${TARGET_OS}/param4sd.txt
 DEST_PARAMETER_TXT=${TARGET_OS}/parameter.txt
-DEST_PARTMAP_TXT=${TARGET_OS}/partmap.txt
-
-if [ -f ${SRC_PARAM4SD_TPL} ]; then
-    cp -avf ${SRC_PARAM4SD_TPL} ${DEST_PARAM4SD_TXT}
-    # Byte to sector size
-    ROOTFS_PARTITION_SIZE=`printf "0x%X" $(($IMG_SIZE/512))`
-    sed -i "s|<ROOTFS_PARTITION_SIZE>|${ROOTFS_PARTITION_SIZE}|g" ${DEST_PARAM4SD_TXT}
-
-    ROOTFS_PARTITION_ADDR=0x00030000
-    USERDATA_PARTITION_ADDR=`printf "0x%X" $((${ROOTFS_PARTITION_ADDR}+${ROOTFS_PARTITION_SIZE}))`
-    sed -i "s|<USERDATA_PARTITION_ADDR>|${USERDATA_PARTITION_ADDR}|g" ${DEST_PARAM4SD_TXT}
-fi
-echo "generating ${DEST_PARAM4SD_TXT} done."
 
 if [ -f ${SRC_PARAMETER_TPL} ]; then
     cp -avf ${SRC_PARAMETER_TPL} ${DEST_PARAMETER_TXT}
@@ -91,14 +73,4 @@ if [ -f ${SRC_PARAMETER_TPL} ]; then
 fi
 echo "generating ${DEST_PARAMETER_TXT} done."
 
-if [ -f ${SRC_PARTMAP_TPL} ]; then
-    cp -avf ${SRC_PARTMAP_TPL} ${DEST_PARTMAP_TXT}
-    ROOTFS_PARTITION_SIZE=`printf "0x%X" ${IMG_SIZE}`
-    sed -i "s|<ROOTFS_PARTITION_SIZE>|${ROOTFS_PARTITION_SIZE}|g" ${DEST_PARTMAP_TXT}
-    ROOTFS_PARTITION_ADDR=$(get_root_address_in_partmap ${SOC})
-    USERDATA_PARTITION_ADDR=`printf "0x%X" $((${ROOTFS_PARTITION_ADDR}+${ROOTFS_PARTITION_SIZE}))`
-    sed -i "s|<USERDATA_PARTITION_ADDR>|${USERDATA_PARTITION_ADDR}|g" ${DEST_PARTMAP_TXT}
-fi
-
-echo "generating ${DEST_PARTMAP_TXT} done."
 echo 0

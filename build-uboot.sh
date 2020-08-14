@@ -64,7 +64,6 @@ fi
 # Get target OS
 true ${TARGET_OS:=${1,,}}
 RKPARAM=./${TARGET_OS}/parameter.txt
-RKPARAM2=./${TARGET_OS}/param4sd.txt
 
 case ${TARGET_OS} in
 friendlycore | friendlywrt | eflasher)
@@ -82,7 +81,7 @@ esac
 # fi
 
 download_img() {
-    if [ -f "${RKPARAM}" -o -f "${RKPARAM2}" ]; then
+    if [ -f "${RKPARAM}" ]; then
         echo ""
     else
 	ROMFILE=`./tools/get_pkg_filename.sh ${1}`

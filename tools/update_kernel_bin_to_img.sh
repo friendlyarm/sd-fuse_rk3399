@@ -92,8 +92,8 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
         ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
     fi
 else 
-	echo "not found ${TARGET_OS}/rootfs.img"
-	exit 1
+    echo "not found ${TARGET_OS}/rootfs.img"
+    exit 1
 fi
 
 

@@ -108,17 +108,6 @@ rm -rf ${MNT}/${TARGET_OS}/*
 echo "copying ${OS_IMAGES_DIR}/* to ${MNT}/${TARGET_OS} ..."
 (cd ${OS_IMAGES_DIR} && find . -maxdepth 1 -type f -exec cp {} ${MNT}/${TARGET_OS} \;)
 
-# RK3399: 
-#     emmc boot: need parameter.txt, do not need partmap.txt
-#     sdraw: all need parameter.txt and partmap.txt
-(cd ${MNT}/${TARGET_OS} && {
-	if [ -f emmc-boot/parameter.txt ]; then 
-		rm -f partmap.txt
-		rm -f parameter.txt
-		cp -f emmc-boot/parameter.txt .
-	fi
-})
-
 umount ${MNT}
 losetup -d ${DEV}
 ls -l ${FULLIMG}

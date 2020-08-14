@@ -42,8 +42,7 @@ esac
 
 download_img() {
     local RKPARAM=$(dirname $0)/${1}/parameter.txt
-    local RKPARAM2=$(dirname $0)/${1}/param4sd.txt
-    if [ -f "${RKPARAM}" -o -f "${RKPARAM2}" ]; then
+    if [ -f "${RKPARAM}" ]; then
         echo ""
     else
 	ROMFILE=`./tools/get_pkg_filename.sh ${1}`
