@@ -33,10 +33,8 @@ case $1 in
 	DEV_NAME=`basename $1`
 	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size` ;;&
 /dev/sd[a-z])
-	DEV_PART=${DEV_NAME}1
 	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
 /dev/mmcblk[0-9]* | /dev/loop[0-9]*)
-	DEV_PART=${DEV_NAME}p1
 	REMOVABLE=1 ;;
 *)
 	echo "Error: Unsupported SD reader"
@@ -182,12 +180,6 @@ if [ -z ${ARCH} ]; then
 fi
 if [ $? -ne 0 ]; then
 	echo "Warning: Re-reading the partition table failed"
-else
-	case ${TARGET_OS} in
-	debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt*)
-		sleep 1
-		resize2fs -f /dev/${DEV_PART};;
-	esac
 fi
 
 echo "---------------------------------"
