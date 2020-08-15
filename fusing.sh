@@ -118,14 +118,6 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 # ----------------------------------------------------------
-# Get host machine
-ARCH=
-if uname -mpi | grep aarch64 >/dev/null; then
-#	EMMC=.emmc
-	ARCH=aarch64/
-fi
-
-# ----------------------------------------------------------
 # Fusing idbloader, bootloader, trust to card
 
 true ${BOOT_DIR:=./prebuilt}
@@ -170,18 +162,11 @@ echo
 
 # write ext4 image
 ${SD_UPDATE} -d /dev/${DEV_NAME} -p ${RK_PARAMETER_TXT}
-if [ $? -ne 0 ]; then
+RET=$?
+if [ $RET -ne 0 ]; then
 	echo "Error: filesystem fusing failed, Stop."
 	exit 1
 fi
-
-if [ -z ${ARCH} ]; then
-	partprobe /dev/${DEV_NAME} -s 2>/dev/null
-fi
-if [ $? -ne 0 ]; then
-	echo "Warning: Re-reading the partition table failed"
-fi
-
 echo "---------------------------------"
 echo "${TARGET_OS^} is fused successfully."
 echo "All done."
