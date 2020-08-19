@@ -23,6 +23,7 @@ true ${SOC:=rk3399}
 true ${DISABLE_MKIMG:=0}
 true ${LOGO:=}
 true ${KERNEL_LOGO:=}
+true ${MK_HEADERS_DEB:=0}
 
 KERNEL_REPO=https://github.com/friendlyarm/kernel-rockchip
 KERNEL_BRANCH=nanopi4-linux-v4.4.y
@@ -50,6 +51,7 @@ if [ ! -d $OUT ]; then
 	exit 1
 fi
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
+HEADERS_OUTDIR="${OUT}/linux-kernel-headers-${SOC}"
 true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
 
 function usage() {
@@ -67,6 +69,8 @@ function usage() {
        echo "    ./mk-emmc-image.sh friendlycore-arm64"
        echo "# also can do:"
        echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore-arm64"
+       echo "# build kernel-headers deb:"
+       echo "    MK_HEADERS_DEB=1 ./build-kernel.sh friendlycore-arm64"
        exit 0
 }
 
@@ -171,6 +175,10 @@ fi
 
 rm -rf ${KMODULES_OUTDIR}
 mkdir -p ${KMODULES_OUTDIR}
+
+rm -rf ${HEADERS_OUTDIR}
+mkdir -p ${HEADERS_OUTDIR}
+
 make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules -j$(nproc)
 if [ $? -ne 0 ]; then
 	echo "failed to build kernel modules."
@@ -190,6 +198,14 @@ rm -rf ${KMODULES_OUTDIR}/lib/modules/${KREL}/kernel/drivers/gpu/arm/mali400/
 if [ ! -d ${KMODULES_OUTDIR}/lib ]; then
 	echo "not found kernel modules."
 	exit 1
+fi
+
+if [ ${MK_HEADERS_DEB} -eq 1 ]; then
+    make ARCH=${ARCH} bindeb-pkg
+    if [ $? -ne 0 ]; then
+        echo "failed to build kernel header."
+        exit 1
+    fi
 fi
 
 if [ x"$DISABLE_MKIMG" = x"1" ]; then
