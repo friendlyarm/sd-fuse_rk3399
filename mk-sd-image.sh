@@ -18,7 +18,7 @@ set -eu
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 function usage() {
-       echo "Usage: $0 <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|friendlywrt|eflasher>"
+       echo "Usage: $0 <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|friendlywrt|eflasher|android10>"
        exit 0
 }
 
@@ -33,7 +33,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu* | eflasher* | friendlywrt)
+debian* | buildroot* | android7 | android8 | android10 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
 	;;
 *)
 	echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -95,8 +95,11 @@ else
 		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	buildroot)
-	        RAW_FILE=${SOC}-sd-buildroot-linux-4.4-arm64-$(date +%Y%m%d).img
-	        RAW_SIZE_MB=4000 ;;
+	    RAW_FILE=${SOC}-sd-buildroot-linux-4.4-arm64-$(date +%Y%m%d).img
+	    RAW_SIZE_MB=4000 ;;
+    android10)
+        RAW_FILE=${SOC}-sd-android10-$(date +%Y%m%d).img
+        RAW_SIZE_MB=7800 ;;
 	*)
 		RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;

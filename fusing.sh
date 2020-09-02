@@ -20,7 +20,7 @@
 # Checking device for fusing
 
 if [ $# -eq 0 ]; then
-	echo "Usage: $0 DEVICE <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher|friendlywrt>"
+	echo "Usage: $0 DEVICE <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher|friendlywrt|android10>"
 	exit 0
 fi
 
@@ -71,7 +71,7 @@ true ${TARGET_OS:=${2,,}}
 
 RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
 case ${2,,} in
-debian* | friendlywrt | buildroot* | friendlycore* | friendlydesktop* | lubuntu* | android10)
+debian* | buildroot* | android7 | android8 | android10 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
 	;;
 eflasher*)
 	;;
