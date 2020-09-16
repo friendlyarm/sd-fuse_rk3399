@@ -28,20 +28,9 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 
 # rootfs
 rm -rf ${ROOTFS_DIR}/lib/modules/*
-cp -af ${KMODULES_OUTDIR}/* ${ROOTFS_DIR}
+cp -af ${KMODULES_OUTDIR}/* ${ROOTFS_DIR}/
 
 # firmware
-if [ ! -d ${ROOTFS_DIR}/system/etc/firmware ]; then
-	tar xzf ${PREBUILT}/firmware/system.tgz -C ${ROOTFS_DIR}/
-	(cd  ${ROOTFS_DIR}/etc/ && {
-		if [ ! -e firmware ]; then
-			ln -s /system/etc/firmware .
-		fi
-	})
-fi
-
-if [ ! -d ${ROOTFS_DIR}/lib/firmware/rockchip ]; then
-	tar xzf ${PREBUILT}/firmware/lib.tgz -C ${ROOTFS_DIR}/
-fi
+cp -avf ${PREBUILT}/firmware/* ${ROOTFS_DIR}/    
 
 exit 0
