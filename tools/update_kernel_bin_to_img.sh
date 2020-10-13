@@ -60,7 +60,7 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
     # Processing rootfs_new
     # Here s5pxx18 is different from h3/h5
 	
-    cp -af ${KMODULES_OUTDIR}/lib/firmware/* ${OUT}/rootfs_new/lib/firmware/
+    [ -d ${KMODULES_OUTDIR}/lib/firmware ] && cp -af ${KMODULES_OUTDIR}/lib/firmware/* ${OUT}/rootfs_new/lib/firmware/
     rm -rf ${OUT}/rootfs_new/lib/modules/*
     cp -af ${KMODULES_OUTDIR}/lib/modules/* ${OUT}/rootfs_new/lib/modules/
 
