@@ -68,8 +68,8 @@ function usage() {
        echo "    ./mk-emmc-image.sh friendlycore-arm64"
        echo "# also can do:"
        echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore-arm64"
-       echo "# other options, build kernel-headers, enable/disable 3rd drivers:"
-       echo "    MK_HEADERS_DEB=1 BUILD_THIRD_PARTY_DRIVER=0 ./build-kernel.sh friendlycore-arm64"
+       echo "# other options, build kernel-headers:"
+       echo "    MK_HEADERS_DEB=1 ./build-kernel.sh friendlycore-arm64"
        exit 0
 }
 
@@ -213,7 +213,7 @@ if [ ${MK_HEADERS_DEB} -eq 1 ]; then
         if [ -d ${HEADERS_SCRIPT_DIR} ]; then
             cp -avf ${HEADERS_SCRIPT_DIR}/* ./usr/src/linux-headers-*${KERNEL_VER}*/scripts/
             if [ $? -ne 0 ]; then
-                echo "failed to copy bin file to /usr/src/linux-headers-5.4.y."
+                echo "failed to copy bin file to /usr/src/linux-headers-${KERNEL_VER}."
                 exit 1
             fi
         else
