@@ -51,7 +51,6 @@ if [ ! -d $OUT ]; then
 	exit 1
 fi
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
-HEADERS_OUTDIR="${OUT}/linux-kernel-headers-${SOC}"
 true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
 
 function usage() {
@@ -69,8 +68,8 @@ function usage() {
        echo "    ./mk-emmc-image.sh friendlycore-arm64"
        echo "# also can do:"
        echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore-arm64"
-       echo "# build kernel-headers deb:"
-       echo "    MK_HEADERS_DEB=1 ./build-kernel.sh friendlycore-arm64"
+       echo "# other options, build kernel-headers, enable/disable 3rd drivers:"
+       echo "    MK_HEADERS_DEB=1 BUILD_THIRD_PARTY_DRIVER=0 ./build-kernel.sh friendlycore-arm64"
        exit 0
 }
 
@@ -156,7 +155,7 @@ export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
 cd ${KERNEL_SRC}
 make distclean
 touch .scmversion
-make ARCH=${ARCH} ${KCFG}
+make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} ${KCFG}
 if [ $? -ne 0 ]; then
 	echo "failed to build kernel."
 	exit 1
@@ -167,7 +166,7 @@ if [ x"${TARGET_OS}" = x"eflasher" ]; then
     sed -i "s/\(.*PROT_MT_SLOT\).*/# \1 is not set/g" .config
 fi
 
-make ARCH=${ARCH} ${KALL} -j$(nproc)
+make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} ${KALL} -j$(nproc)
 if [ $? -ne 0 ]; then
         echo "failed to build kernel."
         exit 1
@@ -176,22 +175,19 @@ fi
 rm -rf ${KMODULES_OUTDIR}
 mkdir -p ${KMODULES_OUTDIR}
 
-rm -rf ${HEADERS_OUTDIR}
-mkdir -p ${HEADERS_OUTDIR}
-
-make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules -j$(nproc)
+make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules -j$(nproc)
 if [ $? -ne 0 ]; then
 	echo "failed to build kernel modules."
         exit 1
 fi
-make ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules_install
+make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules_install
 if [ $? -ne 0 ]; then
 	echo "failed to build kernel modules."
         exit 1
 fi
-KREL=`make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} kernelrelease`
-rm -rf ${KMODULES_OUTDIR}/lib/modules/${KREL}/kernel/drivers/gpu/arm/mali400/
-[ ! -f "${KMODULES_OUTDIR}/lib/modules/${KREL}/modules.dep" ] && depmod -b ${KMODULES_OUTDIR} -E Module.symvers -F System.map -w ${KREL}
+KERNEL_VER=`make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} kernelrelease`
+rm -rf ${KMODULES_OUTDIR}/lib/modules/${KERNEL_VER}/kernel/drivers/gpu/arm/mali400/
+[ ! -f "${KMODULES_OUTDIR}/lib/modules/${KERNEL_VER}/modules.dep" ] && depmod -b ${KMODULES_OUTDIR} -E Module.symvers -F System.map -w ${KERNEL_VER}
 (cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILE}strip --strip-unneeded)
 
 
@@ -201,11 +197,47 @@ if [ ! -d ${KMODULES_OUTDIR}/lib ]; then
 fi
 
 if [ ${MK_HEADERS_DEB} -eq 1 ]; then
-    make ARCH=${ARCH} bindeb-pkg
+	KERNEL_HEADERS_DEB=${OUT}/linux-headers-${KERNEL_VER}.deb
+	rm -f ${KERNEL_HEADERS_DEB}
+    make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} bindeb-pkg
     if [ $? -ne 0 ]; then
         echo "failed to build kernel header."
         exit 1
     fi
+
+    (cd ${KERNEL_SRC}/debian/hdrtmp && {
+        find usr/src/linux-headers*/scripts/ \
+            -name "*.o" -o -name ".*.cmd" | xargs rm -rf
+
+        HEADERS_SCRIPT_DIR=${TOPPATH}/files/linux-headers-4.4.y-bin_arm64/scripts
+        if [ -d ${HEADERS_SCRIPT_DIR} ]; then
+            cp -avf ${HEADERS_SCRIPT_DIR}/* ./usr/src/linux-headers-*${KERNEL_VER}*/scripts/
+            if [ $? -ne 0 ]; then
+                echo "failed to copy bin file to /usr/src/linux-headers-5.4.y."
+                exit 1
+            fi
+        else
+            echo "not found files/linux-headers-x.y.z-bin_arm64, why?"
+            exit 1
+        fi
+
+        find . -type f ! -path './DEBIAN/*' -printf '%P\0' | xargs -r0 md5sum > DEBIAN/md5sums
+    })
+    dpkg -b ${KERNEL_SRC}/debian/hdrtmp ${KERNEL_HEADERS_DEB}
+    if [ $? -ne 0 ]; then
+        echo "failed to re-make deb package."
+        exit 1
+    fi
+
+    # clean up
+    (cd $TOPPATH && {
+        rm -f linux-*${KERNEL_VER}*_arm64.buildinfo
+        rm -f linux-*${KERNEL_VER}*_arm64.changes
+        rm -f linux-headers-*${KERNEL_VER}*_arm64.deb
+        rm -f linux-image-*${KERNEL_VER}*_arm64.deb
+        rm -f linux-libc-dev_*${KERNEL_VER}*_arm64.deb
+		rm -f linux-firmware-image-*${KERNEL_VER}*_arm64.deb
+    })
 fi
 
 if [ x"$DISABLE_MKIMG" = x"1" ]; then
@@ -228,4 +260,11 @@ if [ $? -eq 0 ]; then
 else
     echo "failed."
     exit 1
+fi
+
+if [ ${MK_HEADERS_DEB} -eq 1 ]; then
+    echo "-----------------------------------------"
+    echo "the kernel header package has been generated:"
+    echo "    ${KERNEL_HEADERS_DEB}"
+    echo "-----------------------------------------"
 fi
