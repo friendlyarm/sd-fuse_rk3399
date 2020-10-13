@@ -82,11 +82,15 @@ echo "generating ${DEST_PARAM4SD_TXT} done."
 if [ -f ${SRC_PARAMETER_TPL} ]; then
     cp -avf ${SRC_PARAMETER_TPL} ${DEST_PARAMETER_TXT}
     # Byte to sector size
-    ROOTFS_PARTITION_SIZE=`printf "0x%X" $(($IMG_SIZE/512))`
+    ROOTFS_PARTITION_SIZE=`printf "0x%08x" $(($IMG_SIZE/512))`
     sed -i "s|<ROOTFS_PARTITION_SIZE>|${ROOTFS_PARTITION_SIZE}|g" ${DEST_PARAMETER_TXT}
 
-    ROOTFS_PARTITION_ADDR=0x00030000
-    USERDATA_PARTITION_ADDR=`printf "0x%X" $((${ROOTFS_PARTITION_ADDR}+${ROOTFS_PARTITION_SIZE}))`
+    ROOTFS_PARTITION_ADDR=$(grep "^CMDLINE:" ${SRC_PARAMETER_TPL} | sed 's/.*SIZE>@//g;s/(rootfs).*//g')
+    USERDATA_PARTITION_ADDR=`printf "0x%08x" $((${ROOTFS_PARTITION_ADDR}+${ROOTFS_PARTITION_SIZE}))`
+    if [ $? -ne 0 ]; then
+        echo "failed to get partition address of rootfs."
+        exit 1
+    fi
     sed -i "s|<USERDATA_PARTITION_ADDR>|${USERDATA_PARTITION_ADDR}|g" ${DEST_PARAMETER_TXT}
 fi
 echo "generating ${DEST_PARAMETER_TXT} done."
