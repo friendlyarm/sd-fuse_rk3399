@@ -22,7 +22,7 @@ true ${SOC:=rk3399}
 true ${DISABLE_MKIMG:=0}
 
 UBOOT_REPO=https://github.com/friendlyarm/uboot-rockchip
-UBOOT_BRANCH=nanopi4-v2014.10_oreo
+UBOOT_BRANCH=nanopi4-v2017.09
 
 ARCH=arm64
 UCFG=rk3399_defconfig
