@@ -24,10 +24,6 @@ true ${DISABLE_MKIMG:=0}
 UBOOT_REPO=https://github.com/friendlyarm/uboot-rockchip
 UBOOT_BRANCH=nanopi4-v2017.09
 
-ARCH=arm64
-UCFG=rk3399_defconfig
-CROSS_COMPILE=aarch64-linux-
-
 TOPPATH=$PWD
 OUT=$TOPPATH/out
 if [ ! -d $OUT ]; then
@@ -126,7 +122,6 @@ fi
 
 export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
 
-
 if ! [ -x "$(command -v simg2img)" ]; then
     sudo apt install android-tools-fsutils
 fi
@@ -143,8 +138,7 @@ fi
 
 cd ${UBOOT_SRC}
 make distclean
-make CROSS_COMPILE=${CROSS_COMPILE} ${UCFG}
-make CROSS_COMPILE=${CROSS_COMPILE} -j$(nproc)
+./make.sh nanopi4
 
 if [ $? -ne 0 ]; then
 	echo "failed to build uboot."
