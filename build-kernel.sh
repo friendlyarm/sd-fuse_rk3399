@@ -92,8 +92,14 @@ esac
 
 download_img() {
     local RKPARAM=$(dirname $0)/${1}/parameter.txt
+    case ${1} in
+    eflasher)
+        RKPARAM=$(dirname $0)/${1}/partmap.txt
+        ;;
+    esac
+    
     if [ -f "${RKPARAM}" ]; then
-	echo "${1} found."
+	    echo "${1} found."
     else
 	ROMFILE=`./tools/get_pkg_filename.sh ${1}`
         cat << EOF

@@ -69,7 +69,14 @@ fi
 
 true ${TARGET_OS:=${2,,}}
 
+
 RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
+case ${TARGET_OS} in
+eflasher)
+	RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/partmap.txt
+	;;
+esac
+
 case ${2,,} in
 debian* | buildroot* | android7 | android8 | android10 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
 	;;

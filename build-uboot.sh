@@ -59,7 +59,6 @@ fi
 # ----------------------------------------------------------
 # Get target OS
 true ${TARGET_OS:=${1,,}}
-RKPARAM=./${TARGET_OS}/parameter.txt
 
 case ${TARGET_OS} in
 debian* | buildroot* | android7 | android8 | android10 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
@@ -77,6 +76,13 @@ esac
 # fi
 
 download_img() {
+    local RKPARAM=$(dirname $0)/${1}/parameter.txt
+    case ${1} in
+    eflasher)
+        RKPARAM=$(dirname $0)/${1}/partmap.txt
+        ;;
+    esac
+
     if [ -f "${RKPARAM}" ]; then
         echo ""
     else
