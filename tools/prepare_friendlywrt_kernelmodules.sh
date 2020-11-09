@@ -9,13 +9,15 @@ set -eu
 true ${SOC:=rk3399}
 ROOTFS_DIR=$1
 
-MODULES_DIR=./lib/modules/4.4.179
 (cd $ROOTFS_DIR && {
-    for f in `find ${MODULES_DIR} -name *.ko`; do
-        ko=${MODULES_DIR}/`basename ${f}`
-        if [ ! -e "${ko}" ] ; then
-            mv ${f} ${MODULES_DIR}/
-        fi
+    ls ./lib/modules -1 | while read VER; do
+        MODULES_DIR=./lib/modules/${VER}
+        for f in `find ${MODULES_DIR} -name *.ko`; do
+            ko=${MODULES_DIR}/`basename ${f}`
+            if [ ! -e "${ko}" ] ; then
+                mv ${f} ${MODULES_DIR}/
+            fi
+        done
     done
 })
 
