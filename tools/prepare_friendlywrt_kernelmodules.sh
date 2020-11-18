@@ -6,12 +6,11 @@ set -eu
 	exit 1
 }
 
-true ${SOC:=rk3399}
 ROOTFS_DIR=$1
 
-(cd $ROOTFS_DIR && {
-    ls ./lib/modules -1 | while read VER; do
-        MODULES_DIR=./lib/modules/${VER}
+(cd ${ROOTFS_DIR}/lib/modules/ && {
+    for MODULES_DIR in `ls .`
+    do
         for f in `find ${MODULES_DIR} -name *.ko`; do
             ko=${MODULES_DIR}/`basename ${f}`
             if [ ! -e "${ko}" ] ; then

@@ -10,8 +10,7 @@ function has_built_uboot() {
 }
 
 function has_built_kernel() {
-	local KIMG=kernel.img
-	if [ -f $1/${KIMG} ]; then
+	if [ -f $1/arch/arm64/boot/Image ]; then
 		echo 1
 	else
 		echo 0

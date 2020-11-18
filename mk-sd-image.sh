@@ -81,13 +81,13 @@ else
 		RAW_FILE=${SOC}-sd-friendlycore-bionic-4.4-arm64-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	friendlywrt)
-		RAW_FILE=${SOC}-sd-friendlywrt-4.19-arm64-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-friendlywrt-5.4-arm64-$(date +%Y%m%d).img
 		RAW_SIZE_MB=1000 ;;
 	friendlydesktop-arm64)
 		RAW_FILE=${SOC}-sd-friendlydesktop-bionic-4.4-arm64-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
     friendlycore-focal-arm64)
-        RAW_FILE=${SOC}-sd-friendlycore-focal-4.19-arm64-$(date +%Y%m%d).img
+        RAW_FILE=${SOC}-sd-friendlycore-focal-5.4-arm64-$(date +%Y%m%d).img
         RAW_SIZE_MB=7800 ;; 
 	debian)
 		RAW_FILE=${SOC}-sd-debian9-4.4-armhf-$(date +%Y%m%d).img
