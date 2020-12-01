@@ -26,7 +26,7 @@ true ${KERNEL_LOGO:=}
 true ${MK_HEADERS_DEB:=0}
 
 KERNEL_REPO=https://github.com/friendlyarm/kernel-rockchip
-KERNEL_BRANCH=nanopi4-linux-v4.19.y
+KERNEL_BRANCH=nanopi4-v4.19.y
 
 ARCH=arm64
 KCFG=nanopi4_linux_defconfig

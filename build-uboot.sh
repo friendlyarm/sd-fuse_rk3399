@@ -117,6 +117,13 @@ EOF
 if [ ! -d ${UBOOT_SRC} ]; then
 	git clone ${UBOOT_REPO} --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}
 fi
+if [ ! -d ${UBOOT_SRC}/../rkbin ]; then
+    (cd ${UBOOT_SRC}/../ && {
+        git clone https://github.com/friendlyarm/rkbin
+        cd rkbin
+        git reset 25de1a8bffb1e971f1a69d1aa4bc4f9e3d352ea3 --hard
+    })
+fi
 
 if [ ! -d /opt/FriendlyARM/toolchain/6.4-aarch64 ]; then
 	echo "please install aarch64-gcc-6.4 first, using these commands: "
