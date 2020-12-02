@@ -14,7 +14,7 @@ diff ~/before.txt ~/after.txt
 
 ## Build friendlycore-focal bootable SD card
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git
+git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-4.19
 cd sd-fuse_rk3399
 sudo ./fusing.sh /dev/sdX friendlycore-focal-arm64
 ```
@@ -23,14 +23,14 @@ fusing.sh will check the local directory for a directory with the same name as O
 So you can download from the netdisk in advance, on netdisk, the images files are stored in a directory called images-for-eflasher, for example:
 ```
 cd sd-fuse_rk3399
-tar xvzf ../images-for-eflasher/friendlycore-focal-arm64-images.tgz
+tar xvzf /path/to/NETDISK/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 sudo ./fusing.sh /dev/sdX friendlycore-focal-arm64
 ```
 
 ## Build an sd card image
 First, download and unpack:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git
+git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-4.19
 cd sd-fuse_rk3399
 wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
@@ -46,11 +46,11 @@ sudo ./mk-sd-image.sh friendlycore-focal-arm64
 ```
 The following file will be generated:  
 ```
-out/rk3399-sd-friendlycore-bionic-4.4-arm64-yyyymmdd.img
+out/rk3399-sd-friendlycore-focal-4.19-arm64-yyyymmdd.img
 ```
 You can use dd to burn this file into an sd card:
 ```
-dd if=out/rk3399-sd-friendlycore-bionic-4.4-arm64-20181112.img of=/dev/sdX bs=1M
+sudo dd if=out/rk3399-sd-friendlycore-focal-4.19-arm64-yyyymmdd.img of=/dev/sdX bs=1M
 ```
 ## Replace the file you compiled
 
@@ -58,13 +58,15 @@ dd if=out/rk3399-sd-friendlycore-bionic-4.4-arm64-20181112.img of=/dev/sdX bs=1M
 
 Install the package:
 ```
-apt install liblz4-tool android-tools-fsutils
+sudo apt install liblz4-tool
+sudo apt install android-tools-fsutils
+sudo apt install swig
+sudo apt install python-dev python3-dev
 ```
 Install Cross Compiler:
 ```
-git clone https://github.com/friendlyarm/prebuilts.git
-sudo mkdir -p /opt/FriendlyARM/toolchain
-sudo tar xf prebuilts/gcc-x64/aarch64-cortexa53-linux-gnu-6.4.tar.xz -C /opt/FriendlyARM/toolchain/
+git clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1 friendlyelec-toolchain
+(cd friendlyelec-toolchain/gcc-x64 && cat toolchain-6.4-aarch64.tar.gz* | sudo tar xz -C /)
 ```
 
 ### Build U-boot and Kernel for friendlycore-focal
@@ -74,23 +76,24 @@ cd sd-fuse_rk3399
 wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xzf friendlycore-focal-arm64-images.tgz
 ```
-Build kernel for friendlycore-focal and regenerate sd-raw file:
+Build kernel for friendlycore-focal, the relevant image files in the friendlycore-focal-arm64 directory will be automatically updated, including the kernel modules in the file system:
 ```
 git clone https://github.com/friendlyarm/kernel-rockchip --depth 1 -b nanopi4-v4.19.y kernel-rk3399
-KERNEL_SRC=$PWDkernel-rk3399 ./build-kernel.sh friendlycore-focal-arm64
-./mk-sd-image.sh friendlycore-focal-arm64
+KERNEL_SRC=$PWD/kernel-rk3399 ./build-kernel.sh friendlycore-focal-arm64
 ```
-Build uboot for friendlycore-focal and regenerate sd-raw file:
+Build uboot for friendlycore-focal, the relevant image files in the friendlycore-focal-arm64 directory will be automatically updated:
 ```
-git clone https://github.com/friendlyarm/rkbin
+[ -d rkbin ] || git clone https://github.com/friendlyarm/rkbin
 (cd rkbin && git reset 25de1a8bffb1e971f1a69d1aa4bc4f9e3d352ea3 --hard)
 git clone https://github.com/friendlyarm/uboot-rockchip --depth 1 -b nanopi4-v2017.09
 UBOOT_SRC=$PWD/uboot-rockchip ./build-uboot.sh friendlycore-focal-arm64
+```
+re-generate new firmware:
+```
 ./mk-sd-image.sh friendlycore-focal-arm64
 ```
 
 ### Custom rootfs for friendlycore-focal
-#### Custom rootfs in the bootable SD card
 Use FriendlyCore as an example:
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399.git
@@ -101,13 +104,13 @@ tar xzf rootfs-friendlycore-focal-arm64.tgz
 ```
 Now,  change something under rootfs directory, like this:
 ```
-echo hello > friendlycore-focal-arm64/rootfs/root/welcome.txt  
+echo hello > friendlycore-focal-arm64/rootfs/root/welcome.txt
 ```
-Remake rootfs.img:
+Re-make rootfs.img:
 ```
 ./build-rootfs-img.sh friendlycore-focal-arm64/rootfs friendlycore-focal-arm64
 ```
 Make sdboot image:
 ```
-sudo ./mk-sd-image.sh friendlycore-focal-arm64
+./mk-sd-image.sh friendlycore-focal-arm64
 ```
