@@ -1,6 +1,19 @@
 # sd-fuse_rk3399
-Create bootable SD card for NanoPC T4/NanoPi M4/NanoPi NEO4
-
+Create bootable SD card for NanoPC T4/NanoPi R4S/NanoPi M4/Som-RK3399/NanoPi NEO4  
+  
+***Note: Since RK3399 contains multiple different versions of kernel and uboot, please refer to the table below to switch this repo to the specified branch according to the OS***  
+| OS                     | branch          |
+| ---------------------- | --------------- |
+| friendlywrt            | kernel-5.4.y    |
+| friendlycore focal     | kernel-4.19     |
+| android10              | kernel-4.19     |
+| friendlydesktop bionic | master          |
+| friendlycore bionic    | master          |
+| lubuntu xenial         | master          |
+| eflasher               | master          |
+| android8               | --unsupported-- |
+| android7               | --unsupported-- |
+  
 ## How to find the /dev name of my SD Card
 Unplug all usb devices:
 ```
