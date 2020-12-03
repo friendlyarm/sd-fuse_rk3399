@@ -14,7 +14,7 @@ mkdir -p tmp
 sudo rm -rf tmp/*
 
 cd tmp
-git clone ../../.git sd-fuse_rk3399
+git clone ../../.git -b kernel-4.19 sd-fuse_rk3399
 cd sd-fuse_rk3399
 git checkout kernel-4.19
 wget http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
