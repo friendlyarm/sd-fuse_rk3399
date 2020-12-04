@@ -1,18 +1,18 @@
-# sd-fuse_rk3399
+# sd-fuse_rk3399 for kernel-4.19
 Create bootable SD card for NanoPC T4/NanoPi R4S/NanoPi M4/Som-RK3399/NanoPi NEO4  
   
 ***Note: Since RK3399 contains multiple different versions of kernel and uboot, please refer to the table below to switch this repo to the specified branch according to the OS***  
-| OS                     | branch          |
-| ---------------------- | --------------- |
-| friendlywrt            | kernel-5.4.y    |
-| friendlycore focal     | kernel-4.19     |
-| android10              | kernel-4.19     |
-| friendlydesktop bionic | master          |
-| friendlycore bionic    | master          |
-| lubuntu xenial         | master          |
-| eflasher               | master          |
-| android8               | --unsupported-- |
-| android7               | --unsupported-- |
+| OS                        | branch          |
+| ------------------------- | --------------- |
+| [ ]friendlywrt            | kernel-5.4.y    |
+| [*]friendlycore focal     | kernel-4.19     |
+| [*]android10              | kernel-4.19     |
+| [ ]friendlydesktop bionic | master          |
+| [ ]friendlycore bionic    | master          |
+| [ ]lubuntu xenial         | master          |
+| [ ]eflasher               | master          |
+| [ ]android8               | --unsupported-- |
+| [ ]android7               | --unsupported-- |
   
 ## How to find the /dev name of my SD Card
 Unplug all usb devices:
@@ -65,6 +65,30 @@ You can use dd to burn this file into an sd card:
 ```
 sudo dd if=out/rk3399-sd-friendlycore-focal-4.19-arm64-yyyymmdd.img of=/dev/sdX bs=1M
 ```
+## Build an sdcard-to-emmc image (eflasher rom)
+Enable exFAT file system support on Ubuntu:
+```
+sudo apt-get install exfat-fuse exfat-utils
+```
+Generate the eflasher raw image, and put friendlycore image files into eflasher:
+```
+git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-4.19
+cd sd-fuse_rk3399
+wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/emmc-flasher-images.tgz
+tar xzf emmc-flasher-images.tgz
+wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
+tar xzf friendlycore-focal-arm64-images.tgz
+sudo ./mk-emmc-image.sh friendlycore-focal-arm64
+```
+The following file will be generated:  
+```
+out/rk3399-eflasher-friendlycore-focal-arm64-yyyymmdd.img
+```
+You can use dd to burn this file into an sd card:
+```
+dd if=out/rk3399-eflasher-friendlycore-focal-arm64-yyyymmdd.img of=/dev/sdX bs=1M
+```
+
 ## Replace the file you compiled
 
 ### Install cross compiler and tools
@@ -89,15 +113,13 @@ cd sd-fuse_rk3399
 wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xzf friendlycore-focal-arm64-images.tgz
 ```
-Build kernel for friendlycore-focal, the relevant image files in the friendlycore-focal-arm64 directory will be automatically updated, including the kernel modules in the file system:
+Build kernel for friendlycore-focal, the relevant image files in the images directory will be automatically updated, including the kernel modules in the file system:
 ```
 git clone https://github.com/friendlyarm/kernel-rockchip --depth 1 -b nanopi4-v4.19.y kernel-rk3399
 KERNEL_SRC=$PWD/kernel-rk3399 ./build-kernel.sh friendlycore-focal-arm64
 ```
-Build uboot for friendlycore-focal, the relevant image files in the friendlycore-focal-arm64 directory will be automatically updated:
+Build uboot for friendlycore-focal, the relevant image files in the images directory will be automatically updated:
 ```
-[ -d rkbin ] || git clone https://github.com/friendlyarm/rkbin
-(cd rkbin && git reset 25de1a8bffb1e971f1a69d1aa4bc4f9e3d352ea3 --hard)
 git clone https://github.com/friendlyarm/uboot-rockchip --depth 1 -b nanopi4-v2017.09
 UBOOT_SRC=$PWD/uboot-rockchip ./build-uboot.sh friendlycore-focal-arm64
 ```
@@ -109,7 +131,7 @@ re-generate new firmware:
 ### Custom rootfs for friendlycore-focal
 Use FriendlyCore as an example:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git
+git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-4.19
 cd sd-fuse_rk3399
 
 wget http://112.124.9.243/dvdfiles/RK3399/rootfs/rootfs-friendlycore-focal-arm64.tgz
@@ -127,3 +149,8 @@ Make sdboot image:
 ```
 ./mk-sd-image.sh friendlycore-focal-arm64
 ```
+or make sd-to-emmc image (eflasher rom):
+```
+./mk-emmc-image.sh friendlycore-focal-arm64
+```
+
