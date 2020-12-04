@@ -25,9 +25,6 @@ else
 	tar xvzf friendlycore-focal-arm64-images.tgz
 fi
 
-[ -d rkbin ] || git clone https://github.com/friendlyarm/rkbin
-
 git clone ${UBOOT_URL} --depth 1 -b ${UBOOT_BRANCH} uboot-rk3399
-(cd rkbin && git reset 25de1a8bffb1e971f1a69d1aa4bc4f9e3d352ea3 --hard)
 UBOOT_SRC=$PWD/uboot-rk3399 ./build-uboot.sh friendlycore-focal-arm64
 sudo ./mk-sd-image.sh friendlycore-focal-arm64
