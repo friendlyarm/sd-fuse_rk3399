@@ -1,6 +1,19 @@
-# sd-fuse_rk3399
-Create bootable SD card for NanoPC T4/NanoPi M4/NanoPi NEO4
-
+# sd-fuse_rk3399 for kernel-4.4.y
+Create bootable SD card for NanoPC T4/NanoPi R4S/NanoPi M4/Som-RK3399/NanoPi NEO4  
+  
+***Note: Since RK3399 contains multiple different versions of kernel and uboot, please refer to the table below to switch this repo to the specified branch according to the OS***  
+| OS                        | branch          |
+| ------------------------- | --------------- |
+| [ ]friendlywrt            | kernel-5.4.y    |
+| [ ]friendlycore focal     | kernel-4.19     |
+| [ ]android10              | kernel-4.19     |
+| [*]friendlydesktop bionic | master          |
+| [*]friendlycore bionic    | master          |
+| [*]lubuntu xenial         | master          |
+| [*]eflasher               | master          |
+| [ ]android8               | --unsupported-- |
+| [ ]android7               | --unsupported-- |
+  
 ## How to find the /dev name of my SD Card
 Unplug all usb devices:
 ```
@@ -26,7 +39,7 @@ fusing.sh will check the local directory for a directory with the same name as O
 So you can download from the netdisk in advance, on netdisk, the images files are stored in a directory called images-for-eflasher, for example:
 ```
 cd sd-fuse_rk3399
-tar xvzf ../images-for-eflasher/friendlycore-arm64-images.tgz
+tar xvzf /path/to/NETDISK/images-for-eflasher/friendlycore-arm64-images.tgz
 sudo ./fusing.sh /dev/sdX friendlycore-arm64
 ```
 
@@ -85,13 +98,16 @@ dd if=out/rk3399-eflasher-friendlycore-bionic-4.4-arm64-20181112.img of=/dev/sdX
 
 Install the package:
 ```
-apt install liblz4-tool android-tools-fsutils
+sudo apt install liblz4-tool
+sudo apt install android-tools-fsutils
+sudo apt install swig
+sudo apt install python-dev python3-dev
 ```
 Install Cross Compiler:
 ```
-git clone https://github.com/friendlyarm/prebuilts.git
-sudo mkdir -p /opt/FriendlyARM/toolchain
-sudo tar xf prebuilts/gcc-x64/aarch64-cortexa53-linux-gnu-6.4.tar.xz -C /opt/FriendlyARM/toolchain/
+git clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1 friendlyelec-toolchain
+(cd friendlyelec-toolchain/gcc-x64 && cat toolchain-6.4-aarch64.tar.gz* | sudo tar xz -C /)
+
 ```
 
 ### Build U-boot and Kernel for Lubuntu, FriendlyCore and FriendlyDesktop
@@ -105,7 +121,7 @@ tar xzf friendlycore-arm64-images.tgz
 wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlydesktop-arm64-images.tgz
 tar xzf friendlydesktop-arm64-images.tgz
 ```
-Build kernel:
+Build kernel, the relevant image files in the images directory will be automatically updated, including the kernel modules in the file system:
 ```
 cd sd-fuse_rk3399
 git clone https://github.com/friendlyarm/kernel-rockchip --depth 1 -b nanopi4-linux-v4.4.y out/kernel-rk3399
@@ -141,8 +157,8 @@ Use FriendlyCore as an example:
 git clone https://github.com/friendlyarm/sd-fuse_rk3399.git
 cd sd-fuse_rk3399
 
-wget http://112.124.9.243/dvdfiles/RK3399/rootfs/rootfs-friendlycore-arm64-YYMMDD.tgz
-tar xzf rootfs-friendlycore-arm64-YYMMDD.tgz
+wget http://112.124.9.243/dvdfiles/RK3399/rootfs/rootfs-friendlycore-arm64.tgz
+tar xzf rootfs-friendlycore-arm64.tgz
 ```
 Now,  change something under rootfs directory, like this:
 ```
@@ -154,11 +170,11 @@ Remake rootfs.img:
 ```
 Make sdboot image:
 ```
-sudo ./mk-sd-image.sh friendlycore-arm64
+./mk-sd-image.sh friendlycore-arm64
 ```
 or make sd-to-emmc image (eflasher rom):
 ```
-sudo ./mk-emmc-image.sh friendlycore-arm64
+./mk-emmc-image.sh friendlycore-arm64
 ```
 
 ### Build Android8
