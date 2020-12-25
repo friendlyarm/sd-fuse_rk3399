@@ -130,6 +130,7 @@ export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
 
 if ! [ -x "$(command -v simg2img)" ]; then
     sudo apt install android-tools-fsutils
+    # 20.04: sudo apt-get install android-sdk-libsparse-utils android-sdk-ext4-utils
 fi
 
 if ! [ -x "$(command -v swig)" ]; then
@@ -137,10 +138,10 @@ if ! [ -x "$(command -v swig)" ]; then
 fi
 
 # get include path for this python version
-INCLUDE_PY=$(python -c "from distutils import sysconfig as s; print s.get_config_vars()['INCLUDEPY']")
-if [ ! -f "${INCLUDE_PY}/Python.h" ]; then
-    sudo apt install python-dev python3-dev
-fi  
+# INCLUDE_PY=$(python -c "from distutils import sysconfig as s; print s.get_config_vars()['INCLUDEPY']")
+# if [ ! -f "${INCLUDE_PY}/Python.h" ]; then
+#     sudo apt install python-dev python3-dev
+# fi  
 
 cd ${UBOOT_SRC}
 make distclean

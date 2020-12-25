@@ -25,7 +25,7 @@ true ${LOGO:=}
 true ${KERNEL_LOGO:=}
 
 KERNEL_REPO=https://github.com/friendlyarm/kernel-rockchip
-KERNEL_BRANCH=nanopi-r2-v5.4.y
+KERNEL_BRANCH=nanopi-r2-v5.10.y
 
 declare -a KERNEL_3RD_DRIVERS=("https://github.com/friendlyarm/rtl8821CU" "https://github.com/friendlyarm/rtl8822bu" "https://github.com/friendlyarm/rtl8812au")
 declare -a KERNEL_3RD_DRIVER_BRANCHES=("nanopi-r2" "nanopi-r2" "nanopi-r2")
@@ -212,19 +212,6 @@ if [ ${BUILD_THIRD_PARTY_DRIVER} -eq 1 ]; then
         })
 
     done
-
-    # wireguard
-    (cd ${OUT} && {
-        if [ ! -d wireguard ]; then
-            git clone https://git.zx2c4.com/wireguard-linux-compat -b master wireguard
-            # old version# git clone https://git.zx2c4.com/wireguard-monolithic-historical -b master wireguard
-        fi
-        (cd wireguard/src && {
-            make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} KERNELDIR=${KERNEL_SRC}
-            ${CROSS_COMPILE}strip --strip-unneeded wireguard.ko
-            cp wireguard.ko ${KMODULES_OUTDIR}/lib/modules/${KERNEL_VER} -afv
-        })
-    })
 fi
 
 if [ ! -d ${KMODULES_OUTDIR}/lib ]; then
