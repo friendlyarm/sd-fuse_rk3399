@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eux
+set -eu
 
 HTTP_SERVER=112.124.9.243
 

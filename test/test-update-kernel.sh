@@ -3,14 +3,14 @@ set -eux
 
 HTTP_SERVER=112.124.9.243
 KERNEL_URL=https://github.com/friendlyarm/kernel-rockchip
-KERNEL_BRANCH=nanopi4-linux-v4.4.y
+KERNEL_BRANCH=nanopi-r2-v5.10.y
 
 # hack for me
 PCNAME=`hostname`
 if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
 	HTTP_SERVER=192.168.1.9
 	KERNEL_URL=git@192.168.1.5:/devel/kernel/linux.git
-	KERNEL_BRANCH=nanopi4-linux-v4.4.y
+	KERNEL_BRANCH=nanopi-r2-v5.10.y
 fi
 
 # clean
@@ -24,6 +24,7 @@ if [ -f ../../friendlycore-arm64-images.tgz ]; then
 	tar xvzf ../../friendlycore-arm64-images.tgz
 else
 	wget http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlycore-arm64-images.tgz
+    tar xvzf friendlycore-arm64-images.tgz
 fi
 
 if [ -f ../../kernel-rk3399.tgz ]; then

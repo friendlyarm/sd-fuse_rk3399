@@ -49,7 +49,7 @@ else
 	friendlycore-arm64)
 	        RAW_FILE=${SOC}-eflasher-friendlycore-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img ;;
 	friendlywrt)
-	        RAW_FILE=${SOC}-eflasher-friendlywrt-4.4-$(date +%Y%m%d).img ;;
+	        RAW_FILE=${SOC}-eflasher-friendlywrt-5.10-$(date +%Y%m%d).img ;;
 	friendlydesktop-arm64)
 	        RAW_FILE=${SOC}-eflasher-friendlydesktop-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img ;;
 	lubuntu)

@@ -23,6 +23,8 @@ true ${SOC:=rk3399}
 true ${DISABLE_MKIMG:=0}
 true ${LOGO:=}
 true ${KERNEL_LOGO:=}
+true ${MK_HEADERS_DEB:=0}
+true ${BUILD_THIRD_PARTY_DRIVER:=1}
 
 KERNEL_REPO=https://github.com/friendlyarm/kernel-rockchip
 KERNEL_BRANCH=nanopi-r2-v5.10.y
@@ -66,7 +68,9 @@ function usage() {
        echo "    LOGO=/tmp/logo.bmp KERNEL_LOGO=/tmp/logo_kernel.bmp ./build-kernel.sh friendlycore-focal-arm64"
        echo "    ./mk-emmc-image.sh friendlycore-focal-arm64"
        echo "# also can do:"
-       echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore-arm64"
+       echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore-focal-arm64"
+       echo "# other options, build kernel-headers, enable/disable 3rd drivers:"
+       echo "    MK_HEADERS_DEB=1 BUILD_THIRD_PARTY_DRIVER=0 ./build-kernel.sh friendlycore-focal-arm64"
        exit 0
 }
 
@@ -219,6 +223,48 @@ if [ ! -d ${KMODULES_OUTDIR}/lib ]; then
 	exit 1
 fi
 
+if [ ${MK_HEADERS_DEB} -eq 1 ]; then
+	KERNEL_HEADERS_DEB=${OUT}/linux-headers-${KERNEL_VER}.deb
+	rm -f ${KERNEL_HEADERS_DEB}
+    make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} bindeb-pkg
+    if [ $? -ne 0 ]; then
+        echo "failed to build kernel header."
+        exit 1
+    fi
+
+    (cd ${KERNEL_SRC}/debian/hdrtmp && {
+        find usr/src/linux-headers*/scripts/ \
+            -name "*.o" -o -name ".*.cmd" | xargs rm -rf
+
+        HEADERS_SCRIPT_DIR=${TOPPATH}/files/linux-headers-5.10-bin_arm64/scripts
+        if [ -d ${HEADERS_SCRIPT_DIR} ]; then
+            cp -avf ${HEADERS_SCRIPT_DIR}/* ./usr/src/linux-headers-*${KERNEL_VER}*/scripts/
+            if [ $? -ne 0 ]; then
+                echo "failed to copy bin file to /usr/src/linux-headers-5.10.y."
+                exit 1
+            fi
+        else
+            echo "not found files/linux-headers-x.y.z-bin_arm64, why?"
+            exit 1
+        fi
+
+        find . -type f ! -path './DEBIAN/*' -printf '%P\0' | xargs -r0 md5sum > DEBIAN/md5sums
+    })
+    dpkg -b ${KERNEL_SRC}/debian/hdrtmp ${KERNEL_HEADERS_DEB}
+    if [ $? -ne 0 ]; then
+        echo "failed to re-make deb package."
+        exit 1
+    fi
+
+    # clean up
+    (cd $TOPPATH && {
+        rm -f linux-*${KERNEL_VER}*_arm64.buildinfo
+        rm -f linux-*${KERNEL_VER}*_arm64.changes
+        rm -f linux-headers-*${KERNEL_VER}*_arm64.deb
+        rm -f linux-image-*${KERNEL_VER}*_arm64.deb
+        rm -f linux-libc-dev_*${KERNEL_VER}*_arm64.deb
+    })
+fi
 if [ x"$DISABLE_MKIMG" = x"1" ]; then
     exit 0
 fi
@@ -239,4 +285,11 @@ if [ $? -eq 0 ]; then
 else
     echo "failed."
     exit 1
+fi
+
+if [ ${MK_HEADERS_DEB} -eq 1 ]; then
+    echo "-----------------------------------------"
+    echo "the kernel header package has been generated:"
+    echo "    ${KERNEL_HEADERS_DEB}"
+    echo "-----------------------------------------"
 fi
