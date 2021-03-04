@@ -27,7 +27,7 @@ diff ~/before.txt ~/after.txt
 
 ## Build friendlycore bootable SD card
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git
+git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b master
 cd sd-fuse_rk3399
 sudo ./fusing.sh /dev/sdX friendlycore-arm64
 ```
@@ -46,7 +46,7 @@ sudo ./fusing.sh /dev/sdX friendlycore-arm64
 ## Build an sd card image
 First, download and unpack:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git
+git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b master
 cd sd-fuse_rk3399
 wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz
@@ -126,28 +126,21 @@ Build kernel, the relevant image files in the images directory will be automatic
 cd sd-fuse_rk3399
 git clone https://github.com/friendlyarm/kernel-rockchip --depth 1 -b nanopi4-linux-v4.4.y out/kernel-rk3399
 # lubuntu
-./build-kernel.sh lubuntu
+KERNEL_SRC=$PWD/out/kernel-rk3399 ./build-kernel.sh lubuntu
 
 # friendlycore-arm64
-./build-kernel.sh friendlycore-arm64
+KERNEL_SRC=$PWD/out/kernel-rk3399 ./build-kernel.sh friendlycore-arm64
 
 # friendlydesktop-arm64
-./build-kernel.sh friendlydesktop-arm64
+KERNEL_SRC=$PWD/out/kernel-rk3399 ./build-kernel.sh friendlydesktop-arm64
 ```
 Build uboot:
 ```
 cd sd-fuse_rk3399
-git clone https://github.com/friendlyarm/uboot-rockchip --depth 1 -b nanopi4-v2014.10_oreo
-cd uboot-rockchip
-make CROSS_COMPILE=aarch64-linux- rk3399_defconfig
-export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
-make CROSS_COMPILE=aarch64-linux-
-cp uboot.img trust.img ../lubuntu
-cp uboot.img trust.img ../friendlycore-arm64
-cp uboot.img trust.img ../friendlydesktop-arm64
-cp rk3399_loader_v1.24.119.bin ../lubuntu/MiniLoaderAll.bin
-cp rk3399_loader_v1.24.119.bin ../friendlycore-arm64/MiniLoaderAll.bin
-cp rk3399_loader_v1.24.119.bin ../friendlydesktop-arm64/MiniLoaderAll.bin
+git clone https://github.com/friendlyarm/uboot-rockchip --depth 1 -b nanopi4-v2014.10_oreo uboot-rk3399
+UBOOT_SRC=$PWD/uboot-rk3399 ./build-uboot.sh lubuntu
+UBOOT_SRC=$PWD/uboot-rk3399 ./build-uboot.sh friendlycore-arm64
+UBOOT_SRC=$PWD/uboot-rk3399 ./build-uboot.sh friendlydesktop-arm64
 ```
 
 ### Custom rootfs for Lubuntu, FriendlyCore and FriendlyDesktop
