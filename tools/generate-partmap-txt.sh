@@ -25,7 +25,7 @@ set -eu
 #----------------------------------------------------------
 # local functions
 
-SOC=rk3399
+
 IMG_SIZE=$1
 TARGET_OS=$2
 
@@ -33,8 +33,8 @@ TOP=$PWD
 
 function get_root_address_in_partmap()
 {
-    declare -a platfroms=("s5p4418" "s5p6818" "rk3399" "h3")
-    declare -a rootfs_partition_address=(0x4400000 0x4400000 0x8000000 0x4000000)
+    declare -a platfroms=("s5p4418" "s5p6818" "rk3328" "rk3399" "h3")
+    declare -a rootfs_partition_address=(0x4400000 0x4400000 0x6000000 0x8000000 0x4000000)
 
     INDEX=0
     FOUND=0
@@ -47,7 +47,7 @@ function get_root_address_in_partmap()
             fi
     done
     if [ ${FOUND} == 0 ]; then
-        echo "${0} only support [s5p4418/s5p6818/rk3399/h3]"
+        echo "${0} only support [s5p4418/s5p6818/rk3328/rk3399/h3]"
         exit 1
     fi
     echo ${rootfs_partition_address[$INDEX]}
