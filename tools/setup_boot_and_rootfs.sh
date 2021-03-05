@@ -42,7 +42,7 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 # rootfs
 rm -rf ${ROOTFS_DIR}/lib/modules/*
 (cd ${KMODULES_OUTDIR}/lib/ && {
-        tar -cf - * --exclude=lost+found | tar -xf - -p --same-owner --numeric-owner -C `readlink -f ${ROOTFS_DIR}/lib`
+        tar -cf - * | tar -xf - -p --same-owner --numeric-owner -C `readlink -f ${ROOTFS_DIR}/lib`
 })
 
 # firmware

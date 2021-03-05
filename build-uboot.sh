@@ -119,9 +119,7 @@ if [ ! -d ${UBOOT_SRC} ]; then
 fi
 if [ ! -d ${UBOOT_SRC}/../rkbin ]; then
     (cd ${UBOOT_SRC}/../ && {
-        git clone https://github.com/friendlyarm/rkbin
-        cd rkbin
-        git reset 25de1a8bffb1e971f1a69d1aa4bc4f9e3d352ea3 --hard
+        git clone https://github.com/friendlyarm/rkbin -b friendlyelec
     })
 fi
 
