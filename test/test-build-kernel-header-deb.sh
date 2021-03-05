@@ -33,5 +33,4 @@ else
 	git clone ${KERNEL_URL} --depth 1 -b ${KERNEL_BRANCH} kernel-rk3399
 fi
 
-KERNEL_SRC=$PWD/kernel-rk3399 ./build-kernel.sh friendlycore-arm64
-sudo ./mk-sd-image.sh friendlycore-arm64
+MK_HEADERS_DEB=1 KERNEL_SRC=$PWD/kernel-rk3399 ./build-kernel.sh friendlycore-arm64

@@ -232,7 +232,7 @@ if [ ${MK_HEADERS_DEB} -eq 1 ]; then
         exit 1
     fi
 
-    (cd ${KERNEL_SRC}/debian/hdrtmp && {
+    (cd ${KERNEL_SRC}/debian/linux-headers && {
         find usr/src/linux-headers*/scripts/ \
             -name "*.o" -o -name ".*.cmd" | xargs rm -rf
 
@@ -250,7 +250,7 @@ if [ ${MK_HEADERS_DEB} -eq 1 ]; then
 
         find . -type f ! -path './DEBIAN/*' -printf '%P\0' | xargs -r0 md5sum > DEBIAN/md5sums
     })
-    dpkg -b ${KERNEL_SRC}/debian/hdrtmp ${KERNEL_HEADERS_DEB}
+    dpkg -b ${KERNEL_SRC}/debian/linux-headers ${KERNEL_HEADERS_DEB}
     if [ $? -ne 0 ]; then
         echo "failed to re-make deb package."
         exit 1
