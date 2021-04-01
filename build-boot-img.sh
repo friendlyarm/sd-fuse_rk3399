@@ -29,7 +29,7 @@ IMG_SIZE=67108864
 TOP=$PWD
 true ${MKFS:="${TOP}/tools/make_ext4fs"}
 
-${MKFS} -s -l ${IMG_SIZE} -a root -L boot ${IMG_FILE} ${BOOT_DIR}
+${MKFS} -0 -s -l ${IMG_SIZE} -a root -L boot ${IMG_FILE} ${BOOT_DIR}
 RET=$?
 
 if [ $RET -eq 0 ]; then
