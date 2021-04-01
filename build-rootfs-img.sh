@@ -33,6 +33,11 @@ if [ $(id -u) -ne 0 ]; then
         exit
 fi
 
+MKFS_OPTS="-s -a root -L rootfs"
+if echo ${TARGET_OS} | grep friendlywrt -i >/dev/null; then
+    # set default uid/gid to 0
+    MKFS_OPTS="-0 ${MKFS_OPTS}"
+fi
 if [ ${IMG_SIZE} -eq 0 ]; then
     # calc image size
     ROOTFS_SIZE=`du -s -B 1 ${ROOTFS_DIR} | cut -f1`
@@ -48,13 +53,13 @@ if [ ${IMG_SIZE} -eq 0 ]; then
     fi
 
     # make fs
-    ${MKFS} -s -l ${IMG_SIZE} -a root -L rootfs ${IMG_FILE} ${ROOTFS_DIR}
+    ${MKFS} ${MKFS_OPTS} -l ${IMG_SIZE} ${IMG_FILE} ${ROOTFS_DIR}
     if [ $? -ne 0 ]; then
             echo "error: failed to  make rootfs.img."
             exit 1
      fi
 else
-    ${MKFS} -s -l ${IMG_SIZE} -a root -L rootfs ${IMG_FILE} ${ROOTFS_DIR}
+    ${MKFS} ${MKFS_OPTS} -l ${IMG_SIZE} ${IMG_FILE} ${ROOTFS_DIR}
     if [ $? -ne 0 ]; then
             echo "error: failed to  make rootfs.img."
             exit 1
