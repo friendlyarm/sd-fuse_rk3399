@@ -76,12 +76,18 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
     rm -rf ${OUT}/rootfs_new/lib/modules/*
     cp -af ${KMODULES_OUTDIR}/lib/modules/* ${OUT}/rootfs_new/lib/modules/
 
+    MKFS_OPTS="-s -a root -L rootfs"
+    if echo ${TARGET_OS} | grep friendlywrt -i >/dev/null; then
+        # set default uid/gid to 0
+        MKFS_OPTS="-0 ${MKFS_OPTS}"
+    fi
 
     # Make rootfs.img
     ROOTFS_DIR=${OUT}/rootfs_new
     # calc image size
     ROOTFS_SIZE=`du -s -B 1 ${ROOTFS_DIR} | cut -f1`
-    MAX_IMG_SIZE=7100000000
+    # +1024m + 10% rootfs size
+    MAX_IMG_SIZE=$((${ROOTFS_SIZE} + 1024*1024*1024 + ${ROOTFS_SIZE}/10))
     TMPFILE=`tempfile`
     ${MKFS} -s -l ${MAX_IMG_SIZE} -a root -L rootfs /dev/null ${ROOTFS_DIR} > ${TMPFILE}
     IMG_SIZE=`cat ${TMPFILE} | grep "Suggest size:" | cut -f2 -d ':' | awk '{gsub(/^\s+|\s+$/, "");print}'`
@@ -93,7 +99,7 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
     fi
 
     # make fs
-    ${MKFS} -s -l ${IMG_SIZE} -a root -L rootfs ${TARGET_OS}/rootfs.img ${ROOTFS_DIR}
+    ${MKFS} ${MKFS_OPTS} -l ${IMG_SIZE} ${TARGET_OS}/rootfs.img ${ROOTFS_DIR}
     if [ $? -ne 0 ]; then
             echo "error: failed to make rootfs.img."
             exit 1
