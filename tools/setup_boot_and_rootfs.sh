@@ -28,7 +28,9 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 
 # rootfs
 rm -rf ${ROOTFS_DIR}/lib/modules/*
-cp -af ${KMODULES_OUTDIR}/* ${ROOTFS_DIR}/
+(cd ${KMODULES_OUTDIR}/lib/ && {
+        tar -cf - * | tar -xf - -p --same-owner --numeric-owner -C `readlink -f ${ROOTFS_DIR}/lib`
+})
 
 # firmware
 cp -avf ${PREBUILT}/firmware/* ${ROOTFS_DIR}/    
