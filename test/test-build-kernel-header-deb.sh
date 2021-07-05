@@ -20,11 +20,11 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_rk3399
 cd sd-fuse_rk3399
-if [ -f ../../friendlycore-arm64-images.tgz ]; then
-	tar xvzf ../../friendlycore-arm64-images.tgz
+if [ -f ../../friendlycore-lite-focal-arm64-images.tgz ]; then
+	tar xvzf ../../friendlycore-lite-focal-arm64-images.tgz
 else
-	wget http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlycore-arm64-images.tgz
-    tar xvzf friendlycore-arm64-images.tgz
+	wget http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-arm64-images.tgz
+    tar xvzf friendlycore-lite-focal-arm64-images.tgz
 fi
 
 if [ -f ../../kernel-rk3399.tgz ]; then
@@ -33,4 +33,4 @@ else
 	git clone ${KERNEL_URL} --depth 1 -b ${KERNEL_BRANCH} kernel-rk3399
 fi
 
-MK_HEADERS_DEB=1 KERNEL_SRC=$PWD/kernel-rk3399 ./build-kernel.sh friendlycore-arm64
+MK_HEADERS_DEB=1 KERNEL_SRC=$PWD/kernel-rk3399 ./build-kernel.sh friendlycore-lite-focal-arm64

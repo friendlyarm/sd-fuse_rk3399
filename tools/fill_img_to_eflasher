@@ -48,6 +48,10 @@ else
 	        RAW_FILE=${SOC}-eflasher-android8-$(date +%Y%m%d).img ;;
 	friendlycore-arm64)
 	        RAW_FILE=${SOC}-eflasher-friendlycore-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img ;;
+	friendlycore-focal-arm64)
+	        RAW_FILE=${SOC}-eflasher-friendlycore-focal-${CODENAME}-arm64-$(date +%Y%m%d).img ;;
+	friendlycore-lite-focal-arm64)
+	        RAW_FILE=${SOC}-eflasher-friendlycore-lite-focal-${CODENAME}-arm64-$(date +%Y%m%d).img ;;
 	friendlywrt)
 	        RAW_FILE=${SOC}-eflasher-friendlywrt-5.10-$(date +%Y%m%d).img ;;
 	friendlydesktop-arm64)

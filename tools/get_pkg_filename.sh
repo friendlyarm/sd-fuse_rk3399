@@ -14,6 +14,10 @@ android8)
         ROMFILE=android-oreo-images.tgz;;
 friendlycore-arm64)
         ROMFILE=friendlycore-arm64-images.tgz;;
+friendlycore-lite-focal-arm64)
+        ROMFILE=friendlycore-lite-focal-arm64-images.tgz;;
+friendlycore-focal-arm64)
+        ROMFILE=friendlycore-focal-arm64-images.tgz;;
 friendlydesktop-arm64)
         ROMFILE=friendlydesktop-arm64-images.tgz;;
 lubuntu)

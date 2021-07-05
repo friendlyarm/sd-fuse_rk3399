@@ -18,7 +18,7 @@ set -eu
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 function usage() {
-       echo "Usage: $0 <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|friendlywrt|eflasher|android10>"
+       echo "Usage: $0 <friendlycore-lite-focal-arm64|friendlywrt>"
        exit 0
 }
 
@@ -33,7 +33,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-debian* | buildroot* | android7 | android8 | android10 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
+friendlycore-lite-focal-arm64|friendlywrt )
 	;;
 *)
 	echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -64,6 +64,8 @@ if [ $# -eq 2 ]; then
         RAW_SIZE_MB=7800 ;;
     friendlycore-focal-arm64)
         RAW_SIZE_MB=7800 ;;
+    friendlycore-lite-focal-arm64)
+        RAW_SIZE_MB=7800 ;;
     debian)
         RAW_SIZE_MB=7800 ;;
     lubuntu)
@@ -88,6 +90,9 @@ else
 		RAW_SIZE_MB=7800 ;;
     friendlycore-focal-arm64)
         RAW_FILE=${SOC}-sd-friendlycore-focal-5.10-arm64-$(date +%Y%m%d).img
+        RAW_SIZE_MB=7800 ;; 
+    friendlycore-lite-focal-arm64)
+        RAW_FILE=${SOC}-sd-friendlycore-lite-focal-5.10-arm64-$(date +%Y%m%d).img
         RAW_SIZE_MB=7800 ;; 
 	debian)
 		RAW_FILE=${SOC}-sd-debian9-4.4-armhf-$(date +%Y%m%d).img

@@ -18,7 +18,7 @@
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <debian|buildroot|android7|android8|android10|friendlywrt|friendlycore-arm64|friendlydesktop-arm64|lubuntu>"
+       echo "Usage: $0 <friendlycore-lite-focal-arm64|friendlywrt>"
        exit 0
 }
 
@@ -33,7 +33,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-debian* | buildroot* | android7 | android8 | android10 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
+friendlycore-lite-focal-arm64|friendlywrt )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

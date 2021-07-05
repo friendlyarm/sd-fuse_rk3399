@@ -55,22 +55,19 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
 
 function usage() {
-       echo "Usage: $0 <debian|buildroot|friendlycore-focal-arm64|friendlycore-arm64|friendlydesktop-arm64|lubuntu|friendlywrt|eflasher|android10>"
+       echo "Usage: $0 <friendlycore-lite-focal-arm64|friendlywrt>"
        echo "# example:"
        echo "# clone kernel source from github:"
        echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# or clone your local repo:"
        echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# then"
-       echo "    convert files/logo.jpg -type truecolor /tmp/logo.bmp"
-       echo "    convert files/logo.jpg -type truecolor /tmp/logo_kernel.bmp"
-       echo "    LOGO=/tmp/logo.bmp KERNEL_LOGO=/tmp/logo_kernel.bmp ./build-kernel.sh eflasher"
-       echo "    LOGO=/tmp/logo.bmp KERNEL_LOGO=/tmp/logo_kernel.bmp ./build-kernel.sh friendlycore-focal-arm64"
-       echo "    ./mk-emmc-image.sh friendlycore-focal-arm64"
+       echo "    ./build-kernel.sh friendlycore-lite-focal-arm64"
+       echo "    ./mk-emmc-image.sh friendlycore-lite-focal-arm64"
        echo "# also can do:"
-       echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore-focal-arm64"
+       echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore-lite-focal-arm64"
        echo "# other options, build kernel-headers, enable/disable 3rd drivers:"
-       echo "    MK_HEADERS_DEB=1 BUILD_THIRD_PARTY_DRIVER=0 ./build-kernel.sh friendlycore-focal-arm64"
+       echo "    MK_HEADERS_DEB=1 BUILD_THIRD_PARTY_DRIVER=0 ./build-kernel.sh friendlycore-lite-focal-arm64"
        exit 0
 }
 
@@ -84,7 +81,7 @@ true ${TARGET_OS:=${1,,}}
 
 
 case ${TARGET_OS} in
-debian* | buildroot* | android7 | android8 | android10 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
+friendlycore-lite-focal-arm64|friendlywrt )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
