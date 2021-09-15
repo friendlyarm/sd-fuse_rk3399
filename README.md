@@ -2,17 +2,20 @@
 Create bootable SD card for NanoPC T4/NanoPi R4S/NanoPi M4/Som-RK3399/NanoPi NEO4  
   
 ***Note: Since RK3399 contains multiple different versions of kernel and uboot, please refer to the table below to switch this repo to the specified branch according to the OS***  
-| OS                        | branch          |
-| ------------------------- | --------------- |
-| [ ]friendlywrt            | kernel-5.10.y   |
-| [*]friendlycore focal     | kernel-4.19     |
-| [*]android10              | kernel-4.19     |
-| [ ]friendlydesktop bionic | master          |
-| [ ]friendlycore bionic    | master          |
-| [ ]lubuntu xenial         | master          |
-| [ ]eflasher               | master          |
-| [ ]android8               | --unsupported-- |
-| [ ]android7               | --unsupported-- |
+| OS                                     | branch          | image directory name                  |
+| -------------------------------------- | --------------- | ------------------------------------- |
+| [ ]friendlywrt                         | kernel-5.10.y   | friendlywrt                           |
+| [*]friendlywrt-kernel4                 | kernel-4.19     | friendlywrt-kernel4                   |
+| [*]friendlycore focal                  | kernel-4.19     | friendlycore-focal-arm64              |
+| [ ]friendlycore lite focal (kernel5.x) | kernel-5.10.y   | friendlycore-lite-focal-kernel5-arm64 |
+| [*]friendlycore lite focal (kernel4.x) | kernel-4.19     | friendlycore-lite-focal-kernel4-arm64 |
+| [*]android10                           | kernel-4.19     | android10                             |
+| [ ]friendlydesktop bionic              | master          | friendlydesktop-arm64                 |
+| [ ]friendlycore bionic                 | master          | friendlycore-arm64                    |
+| [ ]lubuntu xenial                      | master          | lubuntu                               |
+| [ ]eflasher                            | master          | eflasher                              |
+| [ ]android8                            | master          | android8                              |
+| [ ]android7                            | master          | android7                              |
   
 ## How to find the /dev name of my SD Card
 Unplug all usb devices:

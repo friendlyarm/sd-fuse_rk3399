@@ -54,7 +54,7 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
 
 function usage() {
-       echo "Usage: $0 <debian|buildroot|friendlycore-focal-arm64|friendlycore-arm64|friendlydesktop-arm64|lubuntu|friendlywrt|eflasher|android10>"
+       echo "Usage: $0 <android10|friendlycore-focal-arm64|friendlycore-lite-focal-kernel4-arm64|friendlywrt-kernel4>"
        echo "# example:"
        echo "# clone kernel source from github:"
        echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
@@ -63,7 +63,6 @@ function usage() {
        echo "# then"
        echo "    convert files/logo.jpg -type truecolor /tmp/logo.bmp"
        echo "    convert files/logo.jpg -type truecolor /tmp/logo_kernel.bmp"
-       echo "    LOGO=/tmp/logo.bmp KERNEL_LOGO=/tmp/logo_kernel.bmp ./build-kernel.sh eflasher"
        echo "    LOGO=/tmp/logo.bmp KERNEL_LOGO=/tmp/logo_kernel.bmp ./build-kernel.sh friendlycore-focal-arm64"
        echo "    ./mk-emmc-image.sh friendlycore-focal-arm64"
        echo "# also can do:"
@@ -83,7 +82,7 @@ true ${TARGET_OS:=${1,,}}
 
 
 case ${TARGET_OS} in
-debian* | buildroot* | android7 | android8 | android10 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
+android10|friendlycore-lite-focal-kernel4-arm64 | friendlywrt-kernel4 )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

@@ -18,7 +18,7 @@ set -eu
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 function usage() {
-       echo "Usage: $0 <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|friendlywrt|eflasher|android10>"
+       echo "Usage: $0 <android10|friendlycore-focal-arm64|friendlycore-lite-focal-kernel4-arm64|friendlywrt-kernel4|eflasher>"
        exit 0
 }
 
@@ -33,7 +33,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-debian* | buildroot* | android7 | android8 | android10 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
+android10 | friendlycore-lite-focal-kernel4-arm64 | friendlywrt-kernel4 | eflasher)
 	;;
 *)
 	echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -54,56 +54,38 @@ fi
 # Create zero file
 
 if [ $# -eq 2 ]; then
-	RAW_FILE=$2
+    RAW_FILE=$2
     case ${TARGET_OS} in
-    friendlycore-arm64)
-        RAW_SIZE_MB=7800 ;;
-    friendlywrt)
+    friendlywrt-kernel4)
         RAW_SIZE_MB=1000 ;;
-    friendlydesktop-arm64)
-        RAW_SIZE_MB=7800 ;;
     friendlycore-focal-arm64)
         RAW_SIZE_MB=7800 ;;
-    debian)
+    friendlycore-lite-focal-kernel4-arm64)
         RAW_SIZE_MB=7800 ;;
-    lubuntu)
+    android10)
         RAW_SIZE_MB=7800 ;;
     eflasher)
         RAW_SIZE_MB=7800 ;;
-    buildroot)
-        RAW_SIZE_MB=4000 ;;
     *)
         RAW_SIZE_MB=7800 ;;
     esac
 else
 	case ${TARGET_OS} in
-	friendlycore-arm64)
-		RAW_FILE=${SOC}-sd-friendlycore-bionic-4.4-arm64-$(date +%Y%m%d).img
-		RAW_SIZE_MB=7800 ;;
-	friendlywrt)
+	friendlywrt-kernel4)
 		RAW_FILE=${SOC}-sd-friendlywrt-4.19-arm64-$(date +%Y%m%d).img
 		RAW_SIZE_MB=1000 ;;
-	friendlydesktop-arm64)
-		RAW_FILE=${SOC}-sd-friendlydesktop-bionic-4.4-arm64-$(date +%Y%m%d).img
-		RAW_SIZE_MB=7800 ;;
-    friendlycore-focal-arm64)
+   friendlycore-focal-arm64)
         RAW_FILE=${SOC}-sd-friendlycore-focal-4.19-arm64-$(date +%Y%m%d).img
         RAW_SIZE_MB=7800 ;; 
-	debian)
-		RAW_FILE=${SOC}-sd-debian9-4.4-armhf-$(date +%Y%m%d).img
-		RAW_SIZE_MB=7800 ;;
-	lubuntu)
-		RAW_FILE=${SOC}-sd-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img
-		RAW_SIZE_MB=7800 ;;
+   friendlycore-lite-focal-kernel4-arm64)
+        RAW_FILE=${SOC}-sd-friendlycore-lite-focal-4.19-arm64-$(date +%Y%m%d).img
+        RAW_SIZE_MB=7800 ;; 
+	android10)
+        RAW_FILE=${SOC}-sd-android10-$(date +%Y%m%d).img
+        RAW_SIZE_MB=7800 ;; 
 	eflasher)
 		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
-	buildroot)
-	    RAW_FILE=${SOC}-sd-buildroot-linux-4.4-arm64-$(date +%Y%m%d).img
-	    RAW_SIZE_MB=4000 ;;
-    android10)
-        RAW_FILE=${SOC}-sd-android10-$(date +%Y%m%d).img
-        RAW_SIZE_MB=7800 ;;
 	*)
 		RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;

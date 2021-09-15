@@ -38,17 +38,17 @@ echo "uboot src: ${UBOOT_SRC}"
 # apt-get install swig python-dev python3-dev
 
 function usage() {
-       echo "Usage: $0 <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|friendlywrt|eflasher|android10>"
+       echo "Usage: $0 <android10|friendlycore-focal-arm64|friendlycore-lite-focal-kernel4-arm64|friendlywrt-kernel4>"
        echo "# example:"
        echo "# clone uboot source from github:"
        echo "    git clone ${UBOOT_REPO} --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}"
        echo "# or clone your local repo:"
        echo "    git clone git@192.168.1.2:/path/to/uboot.git --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}"
        echo "# then"
-       echo "    ./build-uboot.sh friendlycore "
-       echo "    ./mk-emmc-image.sh friendlycore "
+       echo "    ./build-uboot.sh friendlycore-focal-arm64 "
+       echo "    ./mk-emmc-image.sh friendlycore-focal-arm64 "
        echo "# also can do:"
-       echo "	UBOOT_SRC=~/myuboot ./build-uboot.sh friendlycore"
+       echo "	UBOOT_SRC=~/myuboot ./build-uboot.sh friendlycore-focal-arm64"
        exit 0
 }
 
@@ -61,7 +61,7 @@ fi
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-debian* | buildroot* | android7 | android8 | android10 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
+friendlycore* | friendlywrt-kernel4 )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

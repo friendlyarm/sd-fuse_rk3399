@@ -20,7 +20,7 @@
 # Checking device for fusing
 
 if [ $# -eq 0 ]; then
-	echo "Usage: $0 DEVICE <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher|friendlywrt|android10>"
+	echo "Usage: $0 DEVICE <android10|friendlycore-focal-arm64|friendlycore-lite-focal-kernel4-arm64|friendlywrt-kernel4>"
 	exit 0
 fi
 
@@ -78,9 +78,7 @@ eflasher)
 esac
 
 case ${2,,} in
-debian* | buildroot* | android7 | android8 | android10 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
-	;;
-eflasher*)
+android10 | friendlycore-lite-focal-kernel4-arm64 | friendlywrt-kernel4 | eflasher )
 	;;
 *)
 	echo "Error: Unsupported target OS: ${TARGET_OS}"
