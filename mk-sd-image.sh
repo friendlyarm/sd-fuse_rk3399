@@ -18,7 +18,7 @@ set -eu
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 function usage() {
-       echo "Usage: $0 <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|friendlywrt|eflasher>"
+       echo "Usage: $0 <friendlycore-arm64|friendlydesktop-arm64|buildroot|lubuntu|eflasher>"
        exit 0
 }
 
@@ -33,7 +33,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-debian* | buildroot* | friendlycore* | friendlydesktop* | lubuntu* | eflasher* | friendlywrt)
+friendlycore-arm64 | friendlydesktop-arm64 | buildroot | lubuntu | eflasher)
 	;;
 *)
 	echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -59,11 +59,7 @@ if [ $# -eq 2 ]; then
     case ${TARGET_OS} in
     friendlycore-arm64)
         RAW_SIZE_MB=7800 ;;
-    friendlywrt)
-        RAW_SIZE_MB=1000 ;;
     friendlydesktop-arm64)
-        RAW_SIZE_MB=7800 ;;
-    debian)
         RAW_SIZE_MB=7800 ;;
     lubuntu)
         RAW_SIZE_MB=7800 ;;
@@ -79,14 +75,8 @@ else
 	friendlycore-arm64)
 		RAW_FILE=${SOC}-sd-friendlycore-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
-	friendlywrt)
-		RAW_FILE=${SOC}-sd-friendlywrt-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
-		RAW_SIZE_MB=1000 ;;
 	friendlydesktop-arm64)
 		RAW_FILE=${SOC}-sd-friendlydesktop-${CODENAME}-4.4-arm64-$(date +%Y%m%d).img
-		RAW_SIZE_MB=7800 ;;
-	debian)
-		RAW_FILE=${SOC}-sd-debian9-4.4-armhf-$(date +%Y%m%d).img
 		RAW_SIZE_MB=7800 ;;
 	lubuntu)
 		RAW_FILE=${SOC}-sd-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img

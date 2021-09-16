@@ -20,7 +20,7 @@
 # Checking device for fusing
 
 if [ $# -eq 0 ]; then
-	echo "Usage: $0 DEVICE <debian|buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher|friendlywrt>"
+	echo "Usage: $0 DEVICE <friendlycore-arm64|friendlydesktop-arm64|buildroot|lubuntu|android7|android8|eflasher>"
 	exit 0
 fi
 
@@ -74,9 +74,9 @@ true ${TARGET_OS:=${2,,}}
 RKPARAM=$(dirname $0)/${TARGET_OS}/parameter.txt
 RKPARAM2=$(dirname $0)/${TARGET_OS}/param4sd.txt
 case ${2,,} in
-debian* | friendlywrt | buildroot* | friendlycore* | friendlydesktop* | lubuntu*)
+friendlycore-arm64 | friendlydesktop-arm64 | buildroot | android7 | android8 | lubuntu)
 	;;
-eflasher*)
+eflasher)
 	[ -f ./${TARGET_OS}/idbloader.img ] && touch ${RKPARAM} ;;
 *)
 	echo "Error: Unsupported target OS: ${TARGET_OS}"

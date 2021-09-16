@@ -18,7 +18,11 @@
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <debian|buildroot|android7|android8|friendlywrt|friendlycore-arm64|friendlydesktop-arm64|lubuntu|eflasher>"
+       echo "Usage: $0 <friendlycore-arm64|friendlydesktop-arm64|buildroot|lubuntu|android7|android8>"
+       echo "    examples:"
+       echo "        ./mk-emmc-image.sh friendlycore-arm64 myimg-emmc.img autostart=yes"
+       echo "        ./mk-emmc-image.sh friendlycore-arm64 autostart=yes"
+       echo "        ./mk-emmc-image.sh friendlycore-arm64"
        exit 0
 }
 
@@ -33,7 +37,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-debian* | buildroot* | android7 | android8 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt)
+friendlycore-arm64 | friendlydesktop-arm64 | buildroot | android7 | android8 | lubuntu)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -85,7 +89,7 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 ./mk-sd-image.sh eflasher && \
-	./tools/fill_img_to_eflasher out/${SOC}-eflasher-$(date +%Y%m%d).img ${SOC} $@ && { 
+	./tools/fill_img_to_eflasher out/${SOC}-eflasher-$(date +%Y%m%d).img ${SOC} $@ && {
 		rm -f out/${SOC}-eflasher-$(date +%Y%m%d).img
 		mkdir -p out/images-for-eflasher
 		tar czf out/images-for-eflasher/${TARGET_OS}-images.tgz ${TARGET_OS}

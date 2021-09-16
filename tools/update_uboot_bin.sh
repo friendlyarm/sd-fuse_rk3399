@@ -18,7 +18,13 @@ if [ $# -ne 2 ]; then
 	exit 1
 fi
 
-cp -f $1/rk3399_loader_v1.24.119.bin $2/MiniLoaderAll.bin
+LOADER_DOT_BIN=`ls $1/rk3399_loader_*.bin 2>/dev/null | sort -n | tail -1`
+if [ -f ${LOADER_DOT_BIN} ]; then
+    cp -f ${LOADER_DOT_BIN} $2/MiniLoaderAll.bin
+else
+    echo "not found $1/rk3399_loader_*.bin, pls build u-boot first."
+    exit 1
+fi
 cp -f $1/uboot.img $2/
 cp -f $1/trust.img $2/
 

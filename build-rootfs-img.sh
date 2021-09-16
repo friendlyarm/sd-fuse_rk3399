@@ -2,10 +2,10 @@
 set -eu
 
 if [ $# -lt 2 ]; then
-	echo "Usage: $0 <rootfs dir> <img filename> "
+	echo "Usage: $0 <rootfs dir> <img dir> "
     echo "example:"
-    echo "    tar xvzf NETDISK/RK3399/rootfs/rootfs-friendlycore-20190603.tgz"
-    echo "    ./build-rootfs-img.sh friendlycore/rootfs friendlycore"
+    echo "    tar xvzf NETDISK/RK3399/rootfs/rootfs-friendlycore-arm64.tgz"
+    echo "    ./build-rootfs-img.sh friendlycore-arm64 /rootfs friendlycore-arm64"
 	exit 0
 fi
 

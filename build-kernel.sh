@@ -54,7 +54,7 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
 
 function usage() {
-       echo "Usage: $0 <buildroot|friendlycore-arm64|friendlydesktop-arm64|lubuntu|friendlywrt|eflasher>"
+       echo "Usage: $0 <friendlycore-arm64|friendlydesktop-arm64|buildroot|lubuntu|android7|android8|eflasher>"
        echo "# example:"
        echo "# clone kernel source from github:"
        echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
@@ -83,7 +83,7 @@ true ${TARGET_OS:=${1,,}}
 
 
 case ${TARGET_OS} in
-buildroot* | android7 | android8 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
+friendlycore-arm64 | friendlydesktop-arm64 | buildroot | android7 | android8 | lubuntu | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -174,7 +174,6 @@ fi
 
 rm -rf ${KMODULES_OUTDIR}
 mkdir -p ${KMODULES_OUTDIR}
-
 make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} INSTALL_MOD_PATH=${KMODULES_OUTDIR} modules -j$(nproc)
 if [ $? -ne 0 ]; then
 	echo "failed to build kernel modules."
