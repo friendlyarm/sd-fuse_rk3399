@@ -18,7 +18,11 @@
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <friendlycore-lite-focal-arm64|friendlywrt>"
+       echo "Usage: $0 <friendlywr,friendlycore-lite-focal-kernel5-arm64> [img filename] [options]"
+       echo "    examples:"
+       echo "        ./mk-emmc-image.sh friendlywrt myimg-emmc.img autostart=yes"
+       echo "        ./mk-emmc-image.sh friendlywrt autostart=yes"
+       echo "        ./mk-emmc-image.sh friendlywrt"
        exit 0
 }
 
@@ -33,7 +37,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-friendlycore-lite-focal-arm64|friendlywrt )
+friendlycore-lite-focal-kernel5-arm64|friendlywrt )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -90,7 +94,7 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 ./mk-sd-image.sh eflasher && \
-	./tools/fill_img_to_eflasher out/${SOC}-eflasher-$(date +%Y%m%d).img ${SOC} $@ && { 
+	./tools/fill_img_to_eflasher out/${SOC}-eflasher-$(date +%Y%m%d).img ${SOC} $@ && {
 		rm -f out/${SOC}-eflasher-$(date +%Y%m%d).img
 		mkdir -p out/images-for-eflasher
 		tar czf out/images-for-eflasher/${TARGET_OS}-images.tgz ${TARGET_OS}

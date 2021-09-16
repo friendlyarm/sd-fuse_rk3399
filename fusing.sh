@@ -20,7 +20,7 @@
 # Checking device for fusing
 
 if [ $# -eq 0 ]; then
-	echo "Usage: $0 DEVICE <friendlycore-lite-focal-arm64|friendlywrt>"
+	echo "Usage: $0 DEVICE <friendlycore-lite-focal-kernel5-arm64|friendlywrt>"
 	exit 0
 fi
 
@@ -78,7 +78,7 @@ eflasher)
 esac
 
 case ${2,,} in
-debian* | buildroot* | android7 | android8 | android10 | friendlycore* | friendlydesktop* | lubuntu* | friendlywrt | eflasher )
+friendlycore-lite-focal-kernel5-arm64 | friendlywrt | eflasher )
 	;;
 eflasher*)
 	;;
