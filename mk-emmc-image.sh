@@ -20,7 +20,7 @@
 function usage() {
        echo "Usage: $0 <friendlywr,friendlycore-lite-focal-kernel5-arm64> [img filename] [options]"
        echo "    examples:"
-       echo "        ./mk-emmc-image.sh friendlywrt myimg-emmc.img autostart=yes"
+       echo "        ./mk-emmc-image.sh friendlywrt filename=myimg-emmc.img autostart=yes"
        echo "        ./mk-emmc-image.sh friendlywrt autostart=yes"
        echo "        ./mk-emmc-image.sh friendlywrt"
        exit 0

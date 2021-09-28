@@ -34,6 +34,6 @@ sudo ./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64
 sudo ./mk-sd-image.sh friendlywrt
 sudo ./mk-emmc-image.sh friendlywrt
 
-sudo ./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64 friendlycore-lite-focal-auto-eflasher.img autostart=yes
+sudo ./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64 filename=friendlycore-lite-focal-auto-eflasher.img autostart=yes
 
 echo "done."
