@@ -44,6 +44,6 @@ sudo ./mk-emmc-image.sh friendlywrt-kernel4
 sudo ./mk-sd-image.sh android10
 sudo ./mk-emmc-image.sh android10
 
-sudo ./mk-emmc-image.sh friendlycore-focal-arm64 friendlycore-focal-auto-eflasher.img autostart=yes
+sudo ./mk-emmc-image.sh friendlycore-focal-arm64 filename=friendlycore-focal-auto-eflasher.img autostart=yes
 
 echo "done."

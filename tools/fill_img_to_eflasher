@@ -33,6 +33,18 @@ OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
         exit 1
 }
 
+case ${TARGET_OS} in
+friendlycore-focal-arm64)
+        RAW_FILE=${SOC}-eflasher-friendlycore-focal-4.19-arm64-$(date +%Y%m%d).img ;;
+friendlycore-lite-focal-kernel4-arm64)
+        RAW_FILE=${SOC}-eflasher-friendlycore-lite-focal-4.19-arm64-$(date +%Y%m%d).img ;;
+friendlywrt-kernel4)
+        RAW_FILE=${SOC}-eflasher-friendlywrt-4.19-$(date +%Y%m%d).img ;;
+android10)
+        RAW_FILE=${SOC}-eflasher-android10-$(date +%Y%m%d).img ;;
+*)
+        RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
+esac
 AUTOSTART=no
 Args=( "$@" )
 # skip arg1,arg2,arg3
@@ -40,32 +52,12 @@ for (( i=3; i<${#Args[@]}; i++ ));
 do
     if [ "x${Args[$i]}" = x"autostart=yes" ]; then
         AUTOSTART=yes
-        break
-	elif [ "x${Args[$i]}" = x"autostart=y" ]; then
+    elif [ "x${Args[$i]}" = x"autostart=y" ]; then
         AUTOSTART=yes
-        break
+    elif [[ ! -z $(echo ${Args[$i]} | grep "filename=") ]]; then
+        RAW_FILE=${Args[$i]:9}
     fi
 done
-
-# >= 4
-if [ $# -ge 4 ]; then
-    if [[ -z $(echo ${4} | grep "autostart=") ]]; then
-	    RAW_FILE=$4
-    fi
-else
-	case ${TARGET_OS} in
-	friendlycore-focal-arm64)
-	        RAW_FILE=${SOC}-eflasher-friendlycore-focal-4.19-arm64-$(date +%Y%m%d).img ;;
-	friendlycore-lite-focal-kernel4-arm64)
-	        RAW_FILE=${SOC}-eflasher-friendlycore-lite-focal-4.19-arm64-$(date +%Y%m%d).img ;;
-	friendlywrt-kernel4)
-	        RAW_FILE=${SOC}-eflasher-friendlywrt-4.19-$(date +%Y%m%d).img ;;
-        android10)
-	        RAW_FILE=${SOC}-eflasher-android10-$(date +%Y%m%d).img ;;
-	*)
-	        RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
-	esac
-fi
 
 gen_eflasher_conf()
 {
