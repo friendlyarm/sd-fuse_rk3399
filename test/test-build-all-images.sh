@@ -55,7 +55,7 @@ sudo ./mk-emmc-image.sh android8
 sudo ./mk-sd-image.sh lubuntu
 sudo ./mk-emmc-image.sh lubuntu
 
-sudo ./mk-emmc-image.sh friendlydesktop-arm64 friendlydesktop-auto-eflasher.img autostart=yes
+sudo ./mk-emmc-image.sh friendlydesktop-arm64 filename=friendlydesktop-auto-eflasher.img autostart=yes
 
 
 echo "done."

@@ -100,11 +100,11 @@ download_img() {
         cat << EOF
 Warn: Image not found for ${1}
 ----------------
-you may download them from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
+you may download it from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
 the image files are stored in a directory called images-for-eflasher, for example:
     tar xvzf /path/to/NETDISK/images-for-eflasher/${ROMFILE}
 ----------------
-Or, download from http (Y/N)?
+Do you want to download it now via http? (Y/N):
 EOF
         while read -r -n 1 -t 3600 -s USER_REPLY; do
             if [[ ${USER_REPLY} = [Nn] ]]; then
