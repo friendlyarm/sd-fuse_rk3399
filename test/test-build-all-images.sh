@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eux
+set -eu
 
 HTTP_SERVER=112.124.9.243
 
@@ -28,12 +28,12 @@ wget http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/emmc-flasher-imag
 tar xzf emmc-flasher-images.tgz
 
 
-sudo ./mk-sd-image.sh friendlycore-lite-focal-kernel5-arm64
-sudo ./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64
+./mk-sd-image.sh friendlycore-lite-focal-kernel5-arm64
+./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64
 
-sudo ./mk-sd-image.sh friendlywrt
-sudo ./mk-emmc-image.sh friendlywrt
+./mk-sd-image.sh friendlywrt
+./mk-emmc-image.sh friendlywrt
 
-sudo ./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64 filename=friendlycore-lite-focal-auto-eflasher.img autostart=yes
+./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64 filename=friendlycore-lite-focal-auto-eflasher.img autostart=yes
 
 echo "done."

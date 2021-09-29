@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
 # (http://www.friendlyarm.com)
@@ -20,22 +21,36 @@
 # Checking device for fusing
 
 if [ $# -eq 0 ]; then
-	echo "Usage: $0 DEVICE <friendlycore-lite-focal-kernel5-arm64|friendlywrt>"
+	echo "Usage: $0 <DEVICE|RAWFILE> <OS>"
 	exit 0
+fi
+
+true ${RK_PARAMETER_TXT:=}
+if [ -z $RK_PARAMETER_TXT ]; then
+		echo "Error: pls set RK_PARAMETER_TXT."
+		exit 1
+fi
+
+if [ ! -e $1 ]; then
+	echo "Error: $1 does not exist."
+	exit 1
 fi
 
 case $1 in
 /dev/sd[a-z] | /dev/loop[0-9]* | /dev/mmcblk[0-9]*)
-	if [ ! -e $1 ]; then
-		echo "Error: $1 does not exist."
-		exit 1
-	fi
 	DEV_NAME=`basename $1`
-	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size` ;;&
+	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size`
+   ;;
+*)
+	echo "Error: Unsupported SD reader ($1)"
+	exit 0
+esac
+
+case $1 in
 /dev/sd[a-z])
-	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
+		REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
 /dev/mmcblk[0-9]* | /dev/loop[0-9]*)
-	REMOVABLE=1 ;;
+		REMOVABLE=1 ;;
 *)
 	echo "Error: Unsupported SD reader"
 	exit 0
@@ -64,77 +79,15 @@ if [ ${DEV_SIZE} -le ${MIN_SIZE} ]; then
     exit 1
 fi
 
-# ----------------------------------------------------------
-# Get target OS
-
-true ${TARGET_OS:=${2,,}}
-
-
-RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
-case ${TARGET_OS} in
-eflasher)
-	RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/partmap.txt
-	;;
-esac
-
-case ${2,,} in
-friendlycore-lite-focal-kernel5-arm64 | friendlywrt | eflasher )
-	;;
-eflasher*)
-	;;
-*)
-	echo "Error: Unsupported target OS: ${TARGET_OS}"
-	exit -1;;
-esac
-
-if [ ! -f "${RK_PARAMETER_TXT}" ]; then
-	ROMFILE=`./tools/get_pkg_filename.sh ${TARGET_OS}`
-	cat << EOF
-Warn: Image not found for ${TARGET_OS}
-----------------
-you may download it from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
-the image files are stored in a directory called images-for-eflasher, for example:
-   tar xvzf /path/to/NETDISK/images-for-eflasher/${ROMFILE}
-----------------
-Do you want to download it now via http? (Y/N):
-EOF
-
-	while read -r -n 1 -t 3600 -s USER_REPLY; do
-		if [[ ${USER_REPLY} = [Nn] ]]; then
-			echo ${USER_REPLY}
-			exit 1
-		elif [[ ${USER_REPLY} = [Yy] ]]; then
-			echo ${USER_REPLY}
-			break;
-		fi
-	done
-
-	if [ -z ${USER_REPLY} ]; then
-		echo "Cancelled."
-		exit 1
-	fi
-
-	./tools/get_rom.sh ${TARGET_OS} || exit 1
-fi
-
 # Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
+if [ -b $1 -a $(id -u) -ne 0 ]; then
 	echo "Re-running script under sudo..."
 	sudo "$0" "$@"
 	exit
 fi
 
 # ----------------------------------------------------------
-# Get host machine
-ARCH=
-if uname -mpi | grep aarch64 >/dev/null; then
-#	EMMC=.emmc
-	ARCH=aarch64/
-fi
-
-# ----------------------------------------------------------
 # Fusing idbloader, bootloader, trust to card
-
 true ${BOOT_DIR:=./prebuilt}
 
 function fusing_bin() {
@@ -148,13 +101,10 @@ function fusing_bin() {
 }
 
 # umount all at first
-set +e
-umount /dev/${DEV_NAME}* > /dev/null 2>&1
-set -e
-if [ ! -f ${TARGET_OS}/idbloader.img -a ! -f ${TARGET_OS}/trust.img ]; then
-	fusing_bin ${BOOT_DIR}/idbloader.img  64
-	fusing_bin ${BOOT_DIR}/uboot.img      16384
-	fusing_bin ${BOOT_DIR}/trust.img      24576
+if [ ! -z ${DEV_NAME} ]; then
+	set +e
+	umount /dev/${DEV_NAME}* > /dev/null 2>&1
+	set -e
 fi
 
 #<Message Display>
@@ -164,32 +114,21 @@ echo ""
 
 # ----------------------------------------------------------
 # partition card & fusing filesystem
-
 true ${SD_UPDATE:=$(dirname $0)/tools/sd_update}
 
-[[ -z $2 && ! -f "${RK_PARAMETER_TXT}" ]] && exit 0
+[[ -z $2 && ! -f "${RK_PARAMETER_TXT}" ]] && {
+	echo "Not found ${RK_PARAMETER_TXT}"
+	exit 1
+}
 
-echo "---------------------------------"
-echo "${TARGET_OS^} filesystem fusing"
-echo "Image root: `dirname ${RK_PARAMETER_TXT}`"
-echo
-
-
-# write ext4 image
 ${SD_UPDATE} -d /dev/${DEV_NAME} -p ${RK_PARAMETER_TXT}
 if [ $? -ne 0 ]; then
 	echo "Error: filesystem fusing failed, Stop."
 	exit 1
 fi
 
-if [ -z ${ARCH} ]; then
-	partprobe /dev/${DEV_NAME} -s 2>/dev/null
-fi
-if [ $? -ne 0 ]; then
-	echo "Warning: Re-reading the partition table failed"
-fi
+partprobe /dev/${DEV_NAME} -s 2>/dev/null
 
 echo "---------------------------------"
-echo "${TARGET_OS^} is fused successfully."
 echo "All done."
 

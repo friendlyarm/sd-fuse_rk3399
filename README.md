@@ -59,7 +59,7 @@ sudo ./fusing.sh /dev/sdX friendlywrt
 ```
 or build an sd card image:
 ```
-sudo ./mk-sd-image.sh friendlywrt
+./mk-sd-image.sh friendlywrt
 ```
 The following file will be generated:  
 ```
@@ -124,7 +124,7 @@ Build kernel:
 cd sd-fuse_rk3399
 git clone https://github.com/friendlyarm/kernel-rockchip --depth 1 -b nanopi-r2-v5.10.y out/kernel-rk3399
 KERNEL_SRC=$PWD/out/kernel-rk3399 ./build-kernel.sh friendlywrt
-sudo ./mk-sd-image.sh friendlywrt
+./mk-sd-image.sh friendlywrt
 
 ```
 Build uboot:
@@ -132,6 +132,6 @@ Build uboot:
 cd sd-fuse_rk3399
 git clone https://github.com/friendlyarm/uboot-rockchip --depth 1 -b nanopi4-v2017.09 uboot-rk3399
 UBOOT_SRC=$PWD/uboot-rk3399 ./build-uboot.sh friendlywrt
-sudo ./mk-sd-image.sh friendlywrt
+./mk-sd-image.sh friendlywrt
 
 ```

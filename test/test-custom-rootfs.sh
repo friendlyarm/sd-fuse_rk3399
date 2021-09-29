@@ -28,5 +28,5 @@ echo hello > friendlycore-focal-arm64/rootfs/root/welcome.txt
 	wget http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz -O deleteme.tgz
 });
 ./build-rootfs-img.sh friendlycore-focal-arm64/rootfs friendlycore-focal-arm64
-sudo ./mk-sd-image.sh friendlycore-focal-arm64
-sudo ./mk-emmc-image.sh friendlycore-focal-arm64
+./mk-sd-image.sh friendlycore-focal-arm64
+./mk-emmc-image.sh friendlycore-focal-arm64

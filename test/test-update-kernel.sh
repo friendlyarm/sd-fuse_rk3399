@@ -35,4 +35,4 @@ fi
 
 KERNEL_SRC=$PWD/kernel-rk3399 ./build-kernel.sh friendlycore-lite-focal-kernel5-arm64
 cp prebuilt/dtbo.img friendlycore-lite-focal-kernel5-arm64
-sudo ./mk-sd-image.sh friendlycore-lite-focal-kernel5-arm64
+./mk-sd-image.sh friendlycore-lite-focal-kernel5-arm64

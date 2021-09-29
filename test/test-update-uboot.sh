@@ -28,4 +28,4 @@ fi
 git clone ${UBOOT_REPO} --depth 1 -b ${UBOOT_BRANCH} uboot-rk3399
 
 UBOOT_SRC=$PWD/uboot-rk3399 ./build-uboot.sh friendlycore-lite-focal-kernel5-arm64
-sudo ./mk-sd-image.sh friendlycore-lite-focal-kernel5-arm64
+./mk-sd-image.sh friendlycore-lite-focal-kernel5-arm64
