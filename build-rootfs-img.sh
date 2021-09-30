@@ -26,13 +26,6 @@ if [ ! -d ${ROOTFS_DIR} ]; then
     exit 1
 fi
 
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-        echo "Re-running script under sudo..."
-        sudo "$0" "$@"
-        exit
-fi
-
 MKFS_OPTS="-s -a root -L rootfs"
 if echo ${TARGET_OS} | grep friendlywrt -i >/dev/null; then
     # set default uid/gid to 0

@@ -68,13 +68,6 @@ debian* | buildroot* | android7 | android8 | android10 | friendlycore* | friendl
         exit 0
 esac
 
-# Automatically re-run script under sudo if not root
-# if [ $(id -u) -ne 0 ]; then
-# 	echo "Re-running script under sudo..."
-# 	sudo UBOOT_SRC=${UBOOT_SRC} DISABLE_MKIMG=${DISABLE_MKIMG} "$0" "$@"
-# 	exit
-# fi
-
 download_img() {
     local RKPARAM=$(dirname $0)/${1}/parameter.txt
     case ${1} in
