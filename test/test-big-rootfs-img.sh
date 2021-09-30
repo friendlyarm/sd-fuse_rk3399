@@ -30,5 +30,5 @@ IMG_SIZE=`du -s -B 1 friendlycore-focal-arm64/rootfs.img | cut -f1`
 # re-gen parameter.txt
 ./tools/generate-partmap-txt.sh ${IMG_SIZE} friendlycore-focal-arm64
 
-sudo ./mk-sd-image.sh friendlycore-focal-arm64
+./mk-sd-image.sh friendlycore-focal-arm64
 sudo ./mk-emmc-image.sh friendlycore-focal-arm64

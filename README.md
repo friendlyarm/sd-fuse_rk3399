@@ -58,7 +58,7 @@ sudo ./fusing.sh /dev/sdX friendlycore-focal-arm64
 ```
 or build an sd card image:
 ```
-sudo ./mk-sd-image.sh friendlycore-focal-arm64
+./mk-sd-image.sh friendlycore-focal-arm64
 ```
 The following file will be generated:  
 ```
@@ -66,7 +66,7 @@ out/rk3399-sd-friendlycore-focal-4.19-arm64-yyyymmdd.img
 ```
 You can use dd to burn this file into an sd card:
 ```
-sudo dd if=out/rk3399-sd-friendlycore-focal-4.19-arm64-yyyymmdd.img of=/dev/sdX bs=1M
+dd if=out/rk3399-sd-friendlycore-focal-4.19-arm64-yyyymmdd.img of=/dev/sdX bs=1M
 ```
 ## Build an sdcard-to-emmc image (eflasher rom)
 Enable exFAT file system support on Ubuntu:

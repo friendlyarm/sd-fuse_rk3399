@@ -6,13 +6,6 @@ set -eu
 	exit 1
 }
 
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-        echo "Re-running script under sudo..."
-        sudo "$0" "$@"
-        exit
-fi
-
 TOP=$PWD
 true ${MKFS:="${TOP}/tools/make_ext4fs"}
 true ${MKFS:="${TOP}/tools/make_ext4fs"}

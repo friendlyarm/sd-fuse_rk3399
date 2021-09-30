@@ -32,18 +32,18 @@ tar xzf android-10-images.tgz
 wget http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
 
-sudo ./mk-sd-image.sh friendlycore-focal-arm64
-sudo ./mk-emmc-image.sh friendlycore-focal-arm64
+./mk-sd-image.sh friendlycore-focal-arm64
+./mk-emmc-image.sh friendlycore-focal-arm64
 
-sudo ./mk-sd-image.sh friendlycore-lite-focal-kernel4-arm64
-sudo ./mk-emmc-image.sh friendlycore-lite-focal-kernel4-arm64
+./mk-sd-image.sh friendlycore-lite-focal-kernel4-arm64
+./mk-emmc-image.sh friendlycore-lite-focal-kernel4-arm64
 
-sudo ./mk-sd-image.sh friendlywrt-kernel4
-sudo ./mk-emmc-image.sh friendlywrt-kernel4
+./mk-sd-image.sh friendlywrt-kernel4
+./mk-emmc-image.sh friendlywrt-kernel4
 
-sudo ./mk-sd-image.sh android10
-sudo ./mk-emmc-image.sh android10
+./mk-sd-image.sh android10
+./mk-emmc-image.sh android10
 
-sudo ./mk-emmc-image.sh friendlycore-focal-arm64 filename=friendlycore-focal-auto-eflasher.img autostart=yes
+./mk-emmc-image.sh friendlycore-focal-arm64 filename=friendlycore-focal-auto-eflasher.img autostart=yes
 
 echo "done."

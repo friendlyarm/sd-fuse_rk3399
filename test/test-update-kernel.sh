@@ -34,4 +34,5 @@ else
 fi
 
 KERNEL_SRC=$PWD/kernel-rk3399 ./build-kernel.sh friendlycore-focal-arm64
-sudo ./mk-sd-image.sh friendlycore-focal-arm64
+cp prebuilt/dtbo.img friendlycore-focal-arm64
+./mk-sd-image.sh friendlycore-focal-arm64
