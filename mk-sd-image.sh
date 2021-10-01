@@ -37,7 +37,7 @@ true ${TARGET_OS:=${1,,}}
 
 RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
 case ${TARGET_OS} in
-friendlywrt-kernel4)
+friendlywrt*)
     RAW_SIZE_MB=1000 ;;
 friendlycore-focal-arm64)
     RAW_SIZE_MB=7800 ;;
@@ -59,7 +59,7 @@ if [ $# -eq 2 ]; then
 	RAW_FILE=$2
 else
 	case ${TARGET_OS} in
-	friendlywrt-kernel4)
+	friendlywrt*)
 		RAW_FILE=${SOC}-sd-friendlywrt-4.19-arm64-$(date +%Y%m%d).img
 		;;
    friendlycore-focal-arm64)
