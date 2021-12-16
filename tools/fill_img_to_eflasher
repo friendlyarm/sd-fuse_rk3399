@@ -40,6 +40,8 @@ friendlycore-lite-focal-kernel4-arm64)
         RAW_FILE=${SOC}-eflasher-friendlycore-lite-focal-4.19-arm64-$(date +%Y%m%d).img ;;
 friendlywrt-kernel4)
         RAW_FILE=${SOC}-eflasher-friendlywrt-4.19-$(date +%Y%m%d).img ;;
+buildroot)
+        RAW_FILE=${SOC}-eflasher-buildroot-4.19-$(date +%Y%m%d).img ;;
 android10)
         RAW_FILE=${SOC}-eflasher-android10-$(date +%Y%m%d).img ;;
 *)

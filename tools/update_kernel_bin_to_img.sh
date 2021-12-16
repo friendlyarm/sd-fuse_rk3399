@@ -62,6 +62,10 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
         # set default uid/gid to 0
         MKFS_OPTS="-0 ${MKFS_OPTS}"
     fi
+    if echo ${TARGET_OS} | grep buildroot -i >/dev/null; then
+        # set default uid/gid to 0
+        MKFS_OPTS="-0 ${MKFS_OPTS}"
+    fi
 
     # Make rootfs.img
     ROOTFS_DIR=${OUT}/rootfs_new

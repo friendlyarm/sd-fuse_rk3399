@@ -38,7 +38,7 @@ echo "uboot src: ${UBOOT_SRC}"
 # apt-get install swig python-dev python3-dev
 
 function usage() {
-       echo "Usage: $0 <android10|friendlycore-focal-arm64|friendlycore-lite-focal-kernel4-arm64|friendlywrt-kernel4>"
+       echo "Usage: $0 <${SUPPORTED_OS}>"
        echo "# example:"
        echo "# clone uboot source from github:"
        echo "    git clone ${UBOOT_REPO} --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}"
@@ -61,7 +61,7 @@ fi
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-friendlycore* | friendlywrt* )
+friendlycore* | friendlywrt* | buildroot* )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

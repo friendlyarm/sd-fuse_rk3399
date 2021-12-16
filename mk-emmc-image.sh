@@ -18,7 +18,7 @@
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <android10|friendlywrt-kernel4|friendlycore-focal-arm64|friendlycore-lite-focal-kernel4-arm64> [img filename] [options]"
+       echo "Usage: $0 <${SUPPORTED_OS}> [img filename] [options]"
        echo "    examples:"
        echo "        ./mk-emmc-image.sh friendlywrt-kernel4 filename=myimg-emmc.img autostart=yes"
        echo "        ./mk-emmc-image.sh friendlywrt-kernel4 autostart=yes"
@@ -37,7 +37,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-android10|friendlycore-focal-arm64|friendlycore-lite-focal-kernel4-arm64|friendlywrt* )
+android10|friendlycore-focal-arm64|buildroot*|friendlycore-lite-focal-kernel4-arm64|friendlywrt* )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

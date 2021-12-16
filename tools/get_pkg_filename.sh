@@ -4,6 +4,8 @@ TARGET_OS=$1
 case ${TARGET_OS} in
 friendlywrt-kernel4)
         ROMFILE=friendlywrt-kernel4-images.tgz;;
+buildroot)
+        ROMFILE=buildroot-images.tgz;;
 friendlycore-focal-arm64)
         ROMFILE=friendlycore-focal-arm64-images.tgz;;
 friendlycore-lite-focal-kernel4-arm64)

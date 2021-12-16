@@ -18,7 +18,7 @@ set -eu
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 function usage() {
-       echo "Usage: $0 <android10|friendlycore-focal-arm64|friendlycore-lite-focal-kernel4-arm64|friendlywrt-kernel4|eflasher>"
+       echo "Usage: $0 <${SUPPORTED_OS}|eflasher>"
        exit 0
 }
 
@@ -39,6 +39,8 @@ RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
 case ${TARGET_OS} in
 friendlywrt*)
     RAW_SIZE_MB=1000 ;;
+buildroot*)
+    RAW_SIZE_MB=7800 ;;
 friendlycore-focal-arm64)
     RAW_SIZE_MB=7800 ;;
 friendlycore-lite-focal-kernel4-arm64)
@@ -50,7 +52,8 @@ eflasher)
 	RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/partmap.txt
 	;;
 *)
-	echo "Error: Unsupported target OS: ${TARGET_OS}"
+	echo "Error: ensupported target OS: ${TARGET_OS}"
+
 	exit -1
 	;;
 esac
@@ -61,6 +64,9 @@ else
 	case ${TARGET_OS} in
 	friendlywrt*)
 		RAW_FILE=${SOC}-sd-friendlywrt-4.19-arm64-$(date +%Y%m%d).img
+		;;
+	buildroot*)
+		RAW_FILE=${SOC}-sd-buildroot-4.19-arm64-$(date +%Y%m%d).img
 		;;
    friendlycore-focal-arm64)
         RAW_FILE=${SOC}-sd-friendlycore-focal-4.19-arm64-$(date +%Y%m%d).img

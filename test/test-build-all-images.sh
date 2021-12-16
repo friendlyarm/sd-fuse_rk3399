@@ -26,7 +26,10 @@ tar xzf friendlycore-lite-focal-kernel4-arm64-images.tgz
 wget http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/friendlywrt-kernel4-images.tgz
 tar xzf friendlywrt-kernel4-images.tgz
 
-wget http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/android-10-images.tgz
+wget http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/buildroot-images.tgz
+tar xzf buildroot-images.tgz
+
+wget http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/android-10-images.tgz
 tar xzf android-10-images.tgz
 
 wget http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/emmc-flasher-images.tgz
@@ -40,6 +43,9 @@ tar xzf emmc-flasher-images.tgz
 
 ./mk-sd-image.sh friendlywrt-kernel4
 ./mk-emmc-image.sh friendlywrt-kernel4
+
+./mk-sd-image.sh buildroot
+./mk-emmc-image.sh buildroot
 
 ./mk-sd-image.sh android10
 ./mk-emmc-image.sh android10

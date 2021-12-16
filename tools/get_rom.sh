@@ -27,7 +27,7 @@ BOARD=RK3399/images-for-eflasher
 TARGET_OS=${1,,}
 ROMFILE=`./tools/get_pkg_filename.sh ${TARGET_OS}`
 if [ -z ${ROMFILE} ]; then
-	echo "Usage: $0 <eflasher|android10|friendlycore-focal-arm64|friendlycore-lite-focal-kernel4-arm64|friendlywrt-kernel4>"
+	echo "Usage: $0 <${SUPPORTED_OS}|eflasher>"
 	exit 1
 fi
 
