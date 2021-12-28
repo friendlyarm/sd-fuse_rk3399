@@ -27,7 +27,7 @@ true ${MK_HEADERS_DEB:=0}
 true ${BUILD_THIRD_PARTY_DRIVER:=1}
 
 KERNEL_REPO=https://github.com/friendlyarm/kernel-rockchip
-KERNEL_BRANCH=nanopi-r2-v5.10.y
+KERNEL_BRANCH=nanopi-r2-v5.15.y
 
 declare -a KERNEL_3RD_DRIVERS=("https://github.com/friendlyarm/rtl8821CU" "https://github.com/friendlyarm/rtl8822bu" "https://github.com/friendlyarm/rtl8812au")
 declare -a KERNEL_3RD_DRIVER_BRANCHES=("nanopi-r2" "nanopi-r2" "nanopi-r2")
@@ -233,11 +233,11 @@ if [ ${MK_HEADERS_DEB} -eq 1 ]; then
         find usr/src/linux-headers*/scripts/ \
             -name "*.o" -o -name ".*.cmd" | xargs rm -rf
 
-        HEADERS_SCRIPT_DIR=${TOPPATH}/files/linux-headers-5.10-bin_arm64/scripts
+        HEADERS_SCRIPT_DIR=${TOPPATH}/files/linux-headers-5.15-bin_arm64/scripts
         if [ -d ${HEADERS_SCRIPT_DIR} ]; then
             cp -avf ${HEADERS_SCRIPT_DIR}/* ./usr/src/linux-headers-*${KERNEL_VER}*/scripts/
             if [ $? -ne 0 ]; then
-                echo "failed to copy bin file to /usr/src/linux-headers-5.10.y."
+                echo "failed to copy bin file to /usr/src/linux-headers-5.15.y."
                 exit 1
             fi
         else

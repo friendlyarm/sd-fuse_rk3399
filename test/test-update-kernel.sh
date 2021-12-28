@@ -3,14 +3,14 @@ set -eu
 
 HTTP_SERVER=112.124.9.243
 KERNEL_URL=https://github.com/friendlyarm/kernel-rockchip
-KERNEL_BRANCH=nanopi-r2-v5.10.y
+KERNEL_BRANCH=nanopi-r2-v5.15.y
 
 # hack for me
 PCNAME=`hostname`
 if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
 	HTTP_SERVER=192.168.1.9
 	KERNEL_URL=git@192.168.1.5:/devel/kernel/linux.git
-	KERNEL_BRANCH=nanopi-r2-v5.10.y
+	KERNEL_BRANCH=nanopi-r2-v5.15.y
 fi
 
 # clean

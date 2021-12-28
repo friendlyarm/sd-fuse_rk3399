@@ -1,13 +1,13 @@
-# sd-fuse_rk3399 for kernel-5.10.y
+# sd-fuse_rk3399 for kernel-5.15.y
 Create bootable SD card for NanoPC T4/NanoPi R4S/NanoPi M4/Som-RK3399/NanoPi NEO4  
   
 ***Note: Since RK3399 contains multiple different versions of kernel and uboot, please refer to the table below to switch this repo to the specified branch according to the OS***  
 | OS                                     | branch          | image directory name                  |
 | -------------------------------------- | --------------- | ------------------------------------- |
-| [*]friendlywrt                         | kernel-5.10.y   | friendlywrt                           |
+| [*]friendlywrt                         | kernel-5.15.y   | friendlywrt                           |
 | [ ]friendlywrt-kernel4                 | kernel-4.19     | friendlywrt-kernel4                   |
 | [ ]friendlycore focal                  | kernel-4.19     | friendlycore-focal-arm64              |
-| [*]friendlycore lite focal (kernel5.x) | kernel-5.10.y   | friendlycore-lite-focal-kernel5-arm64 |
+| [*]friendlycore lite focal (kernel5.x) | kernel-5.15.y   | friendlycore-lite-focal-kernel5-arm64 |
 | [ ]friendlycore lite focal (kernel4.x) | kernel-4.19     | friendlycore-lite-focal-kernel4-arm64 |
 | [ ]android10                           | kernel-4.19     | android10                             |
 | [ ]friendlydesktop bionic              | master          | friendlydesktop-arm64                 |
@@ -31,7 +31,7 @@ diff ~/before.txt ~/after.txt
 
 ## Build friendlywrt bootable SD card
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-5.10.y
+git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-5.15.y
 cd sd-fuse_rk3399
 sudo ./fusing.sh /dev/sdX friendlywrt
 ```
@@ -47,7 +47,7 @@ sudo ./fusing.sh /dev/sdX friendlywrt
 ## Build an sd card image
 First, download and unpack:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-5.10.y
+git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-5.15.y
 cd sd-fuse_rk3399
 wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlywrt-images.tgz
 tar xvzf friendlywrt-images.tgz
@@ -63,11 +63,11 @@ or build an sd card image:
 ```
 The following file will be generated:  
 ```
-out/rk3399-sd-friendlywrt-5.10-arm64-yyyymmdd.img
+out/rk3399-sd-friendlywrt-5.15-arm64-yyyymmdd.img
 ```
 You can use dd to burn this file into an sd card:
 ```
-dd if=out/rk3399-sd-friendlywrt-5.10-arm64-yyyymmdd.img of=/dev/sdX bs=1M
+dd if=out/rk3399-sd-friendlywrt-5.15-arm64-yyyymmdd.img of=/dev/sdX bs=1M
 ```
 ## Build an sdcard-to-emmc image (eflasher rom)
 Enable exFAT file system support on Ubuntu:
@@ -76,7 +76,7 @@ sudo apt-get install exfat-fuse exfat-utils
 ```
 Generate the eflasher raw image, and put friendlycore image files into eflasher:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-5.10.y
+git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-5.15.y
 cd sd-fuse_rk3399
 wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
@@ -86,11 +86,11 @@ sudo ./mk-emmc-image.sh friendlywrt
 ```
 The following file will be generated:  
 ```
-out/rk3399-eflasher-friendlywrt-5.10-yyyymmdd.img
+out/rk3399-eflasher-friendlywrt-5.15-yyyymmdd.img
 ```
 You can use dd to burn this file into an sd card:
 ```
-dd if=out/rk3399-eflasher-friendlywrt-5.10-yyyymmdd.img of=/dev/sdX bs=1M
+dd if=out/rk3399-eflasher-friendlywrt-5.15-yyyymmdd.img of=/dev/sdX bs=1M
 ```
 
 ## Replace the file you compiled
@@ -122,7 +122,7 @@ tar xzf friendlydesktop-arm64-images.tgz
 Build kernel:
 ```
 cd sd-fuse_rk3399
-git clone https://github.com/friendlyarm/kernel-rockchip --depth 1 -b nanopi-r2-v5.10.y out/kernel-rk3399
+git clone https://github.com/friendlyarm/kernel-rockchip --depth 1 -b nanopi-r2-v5.15.y out/kernel-rk3399
 KERNEL_SRC=$PWD/out/kernel-rk3399 ./build-kernel.sh friendlywrt
 ./mk-sd-image.sh friendlywrt
 

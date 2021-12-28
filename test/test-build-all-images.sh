@@ -14,7 +14,7 @@ mkdir -p tmp
 sudo rm -rf tmp/*
 
 cd tmp
-git clone ../../.git -b kernel-5.10.y sd-fuse_rk3399
+git clone ../../.git -b kernel-5.15.y sd-fuse_rk3399
 cd sd-fuse_rk3399
 
 
