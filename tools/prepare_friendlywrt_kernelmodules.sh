@@ -17,6 +17,11 @@ ROOTFS_DIR=$1
                 mv ${f} ${MODULES_DIR}/
             fi
         done
+        depmod -a -b ${ROOTFS_DIR} `basename ${MODULES_DIR}`
+        (cd ${MODULES_DIR} && {
+            rm -rf ./build ./source
+            find . -mindepth 1 -type d -print0 | xargs -0 rm -rf
+        })
     done
 })
 
