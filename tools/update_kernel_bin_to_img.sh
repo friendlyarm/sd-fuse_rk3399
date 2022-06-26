@@ -32,6 +32,12 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 	cp ${KIMG} ${KDTB} ${TOP}/${TARGET_OS}/
 })
 
+function clean_device_files()
+{
+	echo "clean device files..."
+    (cd ${1}/dev && find . ! -type d -exec rm {} \;)
+}
+
 # copy kernel modules to rootfs.img
 if [ -f ${TARGET_OS}/rootfs.img ]; then
     echo "copying kernel module and firmware to rootfs ..."
@@ -74,6 +80,7 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
     # +1024m + 10% rootfs size
     MAX_IMG_SIZE=$((${ROOTFS_SIZE} + 1024*1024*1024 + ${ROOTFS_SIZE}/10))
     TMPFILE=`tempfile`
+	clean_device_files ${ROOTFS_DIR}
     ${MKFS} -s -l ${MAX_IMG_SIZE} -a root -L rootfs /dev/null ${ROOTFS_DIR} > ${TMPFILE}
     IMG_SIZE=`cat ${TMPFILE} | grep "Suggest size:" | cut -f2 -d ':' | awk '{gsub(/^\s+|\s+$/, "");print}'`
     rm -f ${TMPFILE}
