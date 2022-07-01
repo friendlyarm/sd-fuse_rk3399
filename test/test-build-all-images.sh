@@ -20,6 +20,9 @@ cd sd-fuse_rk3399
 wget http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xzf friendlycore-focal-arm64-images.tgz
 
+wget http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/debian-buster-desktop-arm64-images.tgz
+tar xzf debian-buster-desktop-arm64-images.tgz
+
 wget http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/friendlycore-lite-focal-kernel4-arm64-images.tgz
 tar xzf friendlycore-lite-focal-kernel4-arm64-images.tgz
 
@@ -37,6 +40,9 @@ tar xzf emmc-flasher-images.tgz
 
 ./mk-sd-image.sh friendlycore-focal-arm64
 ./mk-emmc-image.sh friendlycore-focal-arm64
+
+./mk-sd-image.sh debian-buster-desktop-arm64
+./mk-emmc-image.sh debian-buster-desktop-arm64
 
 ./mk-sd-image.sh friendlycore-lite-focal-kernel4-arm64
 ./mk-emmc-image.sh friendlycore-lite-focal-kernel4-arm64

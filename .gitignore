@@ -17,6 +17,8 @@
 *.diff
 *.deb
 *.changes
+/rootfs*
+/kernel*
 
 #
 # Top-level generic files

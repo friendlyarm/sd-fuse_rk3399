@@ -8,6 +8,8 @@ buildroot)
         ROMFILE=buildroot-images.tgz;;
 friendlycore-focal-arm64)
         ROMFILE=friendlycore-focal-arm64-images.tgz;;
+debian-buster-desktop-arm64)
+        ROMFILE=debian-buster-desktop-arm64-images.tgz;;
 friendlycore-lite-focal-kernel4-arm64)
         ROMFILE=friendlycore-lite-focal-kernel4-arm64-images.tgz;;
 android10)
