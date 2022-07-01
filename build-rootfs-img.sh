@@ -37,12 +37,8 @@ if echo ${TARGET_OS} | grep buildroot -i >/dev/null; then
     MKFS_OPTS="-0 ${MKFS_OPTS}"
 fi
 
-function clean_device_files()
-{
-	echo "clean device files..."
-    (cd ${1}/dev && find . ! -type d -exec rm {} \;)
-}
-clean_device_files ${ROOTFS_DIR}
+# clean device files
+(cd ${ROOTFS_DIR}/dev && find . ! -type d -exec rm {} \;)
 
 if [ ${IMG_SIZE} -eq 0 ]; then
     # calc image size
