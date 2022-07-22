@@ -18,7 +18,7 @@ set -eu
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 function usage() {
-       echo "Usage: $0 <friendlycore-lite-focal-kernel5-arm64|friendlywrt|eflasher>"
+       echo "Usage: $0 <friendlycore-lite-focal-kernel5-arm64|friendlywrt22|friendlywrt22-docker|friendlywrt21|friendlywrt21-docker|eflasher>"
        exit 0
 }
 
@@ -37,10 +37,10 @@ true ${TARGET_OS:=${1,,}}
 
 RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
 case ${TARGET_OS} in
-friendlywrt)
-	RAW_SIZE_MB=1000 ;;
 friendlycore-lite-focal-kernel5-arm64)
 	RAW_SIZE_MB=7800 ;;
+friendlywrt*)
+	RAW_SIZE_MB=1000 ;;
 eflasher)
 	RAW_SIZE_MB=7800
 	RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/partmap.txt
@@ -55,15 +55,24 @@ if [ $# -eq 2 ]; then
 	RAW_FILE=$2
 else
 	case ${TARGET_OS} in
-	friendlywrt)
-		RAW_FILE=${SOC}-sd-friendlywrt-5.15-arm64-$(date +%Y%m%d).img
-		;;
     friendlycore-focal-arm64)
       RAW_FILE=${SOC}-sd-friendlycore-focal-5.15-arm64-$(date +%Y%m%d).img
 	  ;; 
     friendlycore-lite-focal-kernel5-arm64)
       RAW_FILE=${SOC}-sd-friendlycore-lite-focal-5.15-arm64-$(date +%Y%m%d).img
 	  ;; 
+	friendlywrt22)
+		RAW_FILE=${SOC}-sd-friendlywrt-22.03-arm64-$(date +%Y%m%d).img
+		;;
+	friendlywrt22-docker)
+		RAW_FILE=${SOC}-sd-friendlywrt-22.03-docker-arm64-$(date +%Y%m%d).img
+		;;
+	friendlywrt21)
+		RAW_FILE=${SOC}-sd-friendlywrt-21.02-arm64-$(date +%Y%m%d).img
+		;;
+	friendlywrt21-docker)
+		RAW_FILE=${SOC}-sd-friendlywrt-21.02-docker-5.10-arm64-$(date +%Y%m%d).img
+		;;
 	eflasher)
 		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
 		;;
@@ -166,6 +175,19 @@ if [ "x${TARGET_OS}" = "xeflasher" ]; then
 		exit 1
 	fi
 
+	if ! command -v mkfs.exfat &> /dev/null; then
+		if [ -f /etc/os-release ]; then
+			. /etc/os-release
+			case "$VERSION_CODENAME" in
+			jammy)
+				sudo apt-get install exfatprogs
+				;;
+			*)
+				sudo apt-get install exfat-fuse exfat-utils
+				;;
+			esac
+		fi
+	fi
 	mkfs.exfat ${LOOP_DEVICE}p1 -n FriendlyARM
 
 	# cleanup

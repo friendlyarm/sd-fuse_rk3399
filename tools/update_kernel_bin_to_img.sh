@@ -35,6 +35,7 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 	rm -rf ${OUT}/kernel-dtbs/*
 	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev09.dtb
 	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev0a.dtb
+	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4se.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev0b.dtb
 	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopc-t4.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev00.dtb
 
     # gen resource.img
@@ -57,6 +58,7 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
         echo "failed to mount ${TARGET_OS}/r.img."
         exit 1
     fi
+    rm -rf ${OUT}/rootfs_new/*
     cp -af ${OUT}/rootfs_mnt/* ${OUT}/rootfs_new/
     umount ${OUT}/rootfs_mnt
     rm -rf ${OUT}/rootfs_mnt
@@ -74,6 +76,10 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
         # set default uid/gid to 0
         MKFS_OPTS="-0 ${MKFS_OPTS}"
     fi
+    if echo ${TARGET_OS} | grep buildroot -i >/dev/null; then
+        # set default uid/gid to 0
+        MKFS_OPTS="-0 ${MKFS_OPTS}"
+    fi
 
     # Make rootfs.img
     ROOTFS_DIR=${OUT}/rootfs_new
@@ -82,6 +88,10 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
     # +1024m + 10% rootfs size
     MAX_IMG_SIZE=$((${ROOTFS_SIZE} + 1024*1024*1024 + ${ROOTFS_SIZE}/10))
     TMPFILE=`tempfile`
+
+    # clean device files
+    (cd ${ROOTFS_DIR}/dev && find . ! -type d -exec rm {} \;)
+
     ${MKFS} -s -l ${MAX_IMG_SIZE} -a root -L rootfs /dev/null ${ROOTFS_DIR} > ${TMPFILE}
     IMG_SIZE=`cat ${TMPFILE} | grep "Suggest size:" | cut -f2 -d ':' | awk '{gsub(/^\s+|\s+$/, "");print}'`
     rm -f ${TMPFILE}

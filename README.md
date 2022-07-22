@@ -4,7 +4,10 @@ Create bootable SD card for NanoPC T4/NanoPi R4S/NanoPi M4/Som-RK3399/NanoPi NEO
 ***Note: Since RK3399 contains multiple different versions of kernel and uboot, please refer to the table below to switch this repo to the specified branch according to the OS***  
 | OS                                     | branch          | image directory name                  |
 | -------------------------------------- | --------------- | ------------------------------------- |
-| [*]friendlywrt                         | kernel-5.15.y   | friendlywrt                           |
+| [*]friendlywrt21                       | kernel-5.15.y   | friendlywrt21                         |
+| [*]friendlywrt21-docker                | kernel-5.15.y   | friendlywrt21-docker                  |
+| [*]friendlywrt22                       | kernel-5.15.y   | friendlywrt22                         |
+| [*]friendlywrt22-docker                | kernel-5.15.y   | friendlywrt22-docker                  |
 | [ ]friendlywrt-kernel4                 | kernel-4.19     | friendlywrt-kernel4                   |
 | [ ]friendlycore focal                  | kernel-4.19     | friendlycore-focal-arm64              |
 | [*]friendlycore lite focal (kernel5.x) | kernel-5.15.y   | friendlycore-lite-focal-kernel5-arm64 |
@@ -33,15 +36,15 @@ diff ~/before.txt ~/after.txt
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-5.15.y
 cd sd-fuse_rk3399
-sudo ./fusing.sh /dev/sdX friendlywrt
+sudo ./fusing.sh /dev/sdX friendlywrt22
 ```
 Notes:  
 fusing.sh will check the local directory for a directory with the same name as OS, if it does not exist fusing.sh will go to download it from network.  
 So you can download from the netdisk in advance, on netdisk, the images files are stored in a directory called images-for-eflasher, for example:
 ```
 cd sd-fuse_rk3399
-tar xvzf /path/to/NETDISK/images-for-eflasher/friendlywrt-images.tgz
-sudo ./fusing.sh /dev/sdX friendlywrt
+tar xvzf /path/to/NETDISK/images-for-eflasher/friendlywrt22-images.tgz
+sudo ./fusing.sh /dev/sdX friendlywrt22
 ```
 
 ## Build an sd card image
@@ -49,25 +52,25 @@ First, download and unpack:
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-5.15.y
 cd sd-fuse_rk3399
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlywrt-images.tgz
-tar xvzf friendlywrt-images.tgz
+wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlywrt22-images.tgz
+tar xvzf friendlywrt22-images.tgz
 ```
-Now,  Change something under the friendlywrt directory, 
+Now,  Change something under the friendlywrt22 directory, 
 for example, replace the file you compiled, then build friendlywrt bootable SD card: 
 ```
-sudo ./fusing.sh /dev/sdX friendlywrt
+sudo ./fusing.sh /dev/sdX friendlywrt22
 ```
 or build an sd card image:
 ```
-./mk-sd-image.sh friendlywrt
+./mk-sd-image.sh friendlywrt22
 ```
 The following file will be generated:  
 ```
-out/rk3399-sd-friendlywrt-5.15-arm64-yyyymmdd.img
+out/rk3399-sd-friendlywrt-22.03-arm64-yyyymmdd.img
 ```
 You can use dd to burn this file into an sd card:
 ```
-dd if=out/rk3399-sd-friendlywrt-5.15-arm64-yyyymmdd.img of=/dev/sdX bs=1M
+dd if=out/rk3399-sd-friendlywrt-22.03-arm64-yyyymmdd.img of=/dev/sdX bs=1M
 ```
 ## Build an sdcard-to-emmc image (eflasher rom)
 Enable exFAT file system support on Ubuntu:
@@ -82,15 +85,15 @@ wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/emmc-flasher-image
 tar xzf emmc-flasher-images.tgz
 wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlywrt-images.tgz
 tar xzf friendlywrt-images.tgz
-sudo ./mk-emmc-image.sh friendlywrt
+sudo ./mk-emmc-image.sh friendlywrt22
 ```
 The following file will be generated:  
 ```
-out/rk3399-eflasher-friendlywrt-5.15-yyyymmdd.img
+out/rk3399-eflasher-friendlywrt-22.03-arm64-yyyymmdd.img
 ```
 You can use dd to burn this file into an sd card:
 ```
-dd if=out/rk3399-eflasher-friendlywrt-5.15-yyyymmdd.img of=/dev/sdX bs=1M
+dd if=out/rk3399-eflasher-friendlywrt-22.03-arm64-yyyymmdd.img of=/dev/sdX bs=1M
 ```
 
 ## Replace the file you compiled
@@ -112,26 +115,22 @@ sudo tar xf prebuilts/gcc-x64/aarch64-cortexa53-linux-gnu-6.4.tar.xz -C /opt/Fri
 Download image files:
 ```
 cd sd-fuse_rk3399
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/lubuntu-desktop-images.tgz
-tar xzf lubuntu-desktop-images.tgz
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlywrt-images.tgz
+wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlywrt22-images.tgz
 tar xzf friendlywrt-images.tgz
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlydesktop-arm64-images.tgz
-tar xzf friendlydesktop-arm64-images.tgz
 ```
 Build kernel:
 ```
 cd sd-fuse_rk3399
 git clone https://github.com/friendlyarm/kernel-rockchip --depth 1 -b nanopi-r2-v5.15.y out/kernel-rk3399
-KERNEL_SRC=$PWD/out/kernel-rk3399 ./build-kernel.sh friendlywrt
-./mk-sd-image.sh friendlywrt
+KERNEL_SRC=$PWD/out/kernel-rk3399 ./build-kernel.sh friendlywrt22
+./mk-sd-image.sh friendlywrt22
 
 ```
 Build uboot:
 ```
 cd sd-fuse_rk3399
 git clone https://github.com/friendlyarm/uboot-rockchip --depth 1 -b nanopi4-v2017.09 uboot-rk3399
-UBOOT_SRC=$PWD/uboot-rk3399 ./build-uboot.sh friendlywrt
-./mk-sd-image.sh friendlywrt
+UBOOT_SRC=$PWD/uboot-rk3399 ./build-uboot.sh friendlywrt22
+./mk-sd-image.sh friendlywrt22
 
 ```

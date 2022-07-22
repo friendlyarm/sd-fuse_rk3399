@@ -31,8 +31,18 @@ tar xzf emmc-flasher-images.tgz
 ./mk-sd-image.sh friendlycore-lite-focal-kernel5-arm64
 ./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64
 
-./mk-sd-image.sh friendlywrt
-./mk-emmc-image.sh friendlywrt
+./mk-sd-image.sh friendlywrt22
+./mk-emmc-image.sh friendlywrt22
+
+./mk-sd-image.sh friendlywrt22-docker
+./mk-emmc-image.sh friendlywrt22-docker
+
+./mk-sd-image.sh friendlywrt21
+./mk-emmc-image.sh friendlywrt21
+
+./mk-sd-image.sh friendlywrt21-docker
+./mk-emmc-image.sh friendlywrt21-docker
+
 
 ./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64 filename=friendlycore-lite-focal-auto-eflasher.img autostart=yes
 

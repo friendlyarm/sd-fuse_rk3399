@@ -30,6 +30,7 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 	rm -rf ${OUT}/kernel-dtbs/*
 	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev09.dtb
 	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev0a.dtb
+	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4se.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev0b.dtb
 	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopc-t4.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev00.dtb
 
     # gen resource.img
