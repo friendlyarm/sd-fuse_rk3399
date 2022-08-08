@@ -14,6 +14,8 @@ friendlycore-lite-focal-kernel4-arm64)
         ROMFILE=friendlycore-lite-focal-kernel4-arm64-images.tgz;;
 android10)
         ROMFILE=android-10-images.tgz;;
+android11)
+        ROMFILE=android-11-images.tgz;;
 eflasher)
         ROMFILE=emmc-flasher-images.tgz;;
 *)

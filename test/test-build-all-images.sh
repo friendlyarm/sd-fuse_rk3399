@@ -53,8 +53,8 @@ tar xzf emmc-flasher-images.tgz
 ./mk-sd-image.sh buildroot
 ./mk-emmc-image.sh buildroot
 
-./mk-sd-image.sh android10
-./mk-emmc-image.sh android10
+./mk-sd-image.sh android11
+./mk-emmc-image.sh android11
 
 ./mk-emmc-image.sh friendlycore-focal-arm64 filename=friendlycore-focal-auto-eflasher.img autostart=yes
 

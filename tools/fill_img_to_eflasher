@@ -44,8 +44,8 @@ friendlywrt-kernel4)
         RAW_FILE=${SOC}-eflasher-friendlywrt-4.19-$(date +%Y%m%d).img ;;
 buildroot)
         RAW_FILE=${SOC}-eflasher-buildroot-4.19-$(date +%Y%m%d).img ;;
-android10)
-        RAW_FILE=${SOC}-eflasher-android10-$(date +%Y%m%d).img ;;
+android*)
+        RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
 *)
         RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
 esac
@@ -69,7 +69,7 @@ gen_eflasher_conf()
     if [ ${3} = "yes" ]; then
         AutoFlashOSName=${2}
     fi
-    OSNamesMergeWithComma="friendlywr,debian-buster-desktop-arm64,friendlycore-focal-arm64,friendlycore-lite-focal-kernel4-arm64,android10"
+    OSNamesMergeWithComma="friendlywr,debian-buster-desktop-arm64,friendlycore-focal-arm64,friendlycore-lite-focal-kernel4-arm64,android10,android11"
     cat > ${1}/eflasher.conf <<EOL
 ; This is the eFlasher configuration file.
 ; See http://wiki.friendlyarm.com/wiki/index.php/EFlasher for detailed information.

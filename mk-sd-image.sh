@@ -47,7 +47,7 @@ debian-buster-desktop-arm64)
     RAW_SIZE_MB=7800 ;;
 friendlycore-lite-focal-kernel4-arm64)
     RAW_SIZE_MB=7800 ;;
-android10)
+android*)
     RAW_SIZE_MB=7800 ;;
 eflasher)
 	RAW_SIZE_MB=7800
@@ -79,8 +79,8 @@ else
    friendlycore-lite-focal-kernel4-arm64)
         RAW_FILE=${SOC}-sd-friendlycore-lite-focal-4.19-arm64-$(date +%Y%m%d).img
         ;;
-	android10)
-        RAW_FILE=${SOC}-sd-android10-$(date +%Y%m%d).img
+	android*)
+        RAW_FILE=${SOC}-sd-${TARGET_OS}-$(date +%Y%m%d).img
         ;;
 	eflasher)
 		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img

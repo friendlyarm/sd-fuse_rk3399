@@ -12,6 +12,7 @@ Create bootable SD card for NanoPC T4/NanoPi R4S/NanoPi M4/Som-RK3399/NanoPi NEO
 | [ ]friendlycore lite focal (kernel5.x) | kernel-5.10.y   | friendlycore-lite-focal-kernel5-arm64 |
 | [*]friendlycore lite focal (kernel4.x) | kernel-4.19     | friendlycore-lite-focal-kernel4-arm64 |
 | [*]android10                           | kernel-4.19     | android10                             |
+| [*]android11                           | kernel-4.19     | android11                             |
 | [ ]friendlydesktop bionic              | master          | friendlydesktop-arm64                 |
 | [ ]friendlycore bionic                 | master          | friendlycore-arm64                    |
 | [ ]lubuntu xenial                      | master          | lubuntu                               |
