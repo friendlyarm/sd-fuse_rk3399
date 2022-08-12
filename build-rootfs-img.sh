@@ -4,8 +4,8 @@ set -eu
 if [ $# -lt 2 ]; then
 	echo "Usage: $0 <rootfs dir> <img dir> "
     echo "example:"
-    echo "    tar xvzf NETDISK/RK3399/rootfs/rootfs-friendlycore-focal-arm64.tgz"
-    echo "    ./build-rootfs-img.sh friendlycore-focal-arm64/rootfs friendlycore-focal-arm64"
+    echo "    tar xvzf NETDISK/rk3399/rootfs/rootfs-debian-buster-desktop-arm64-20190603.tgz"
+    echo "    ./build-rootfs-img.sh debian-buster-desktop-arm64/rootfs debian-buster-desktop-arm64"
 	exit 0
 fi
 
@@ -37,7 +37,7 @@ if echo ${TARGET_OS} | grep buildroot -i >/dev/null; then
     MKFS_OPTS="-0 ${MKFS_OPTS}"
 fi
 
-# clean device files
+# clean device file
 (cd ${ROOTFS_DIR}/dev && find . ! -type d -exec rm {} \;)
 
 if [ ${IMG_SIZE} -eq 0 ]; then

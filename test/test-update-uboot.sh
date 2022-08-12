@@ -8,7 +8,7 @@ UBOOT_BRANCH=nanopi4-v2017.09
 # hack for me
 PCNAME=`hostname`
 if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
-	HTTP_SERVER=192.168.1.9
+	HTTP_SERVER=127.0.0.1
 fi
 
 # clean
@@ -21,7 +21,7 @@ cd sd-fuse_rk3399
 if [ -f ../../friendlycore-focal-arm64-images.tgz ]; then
 	tar xvzf ../../friendlycore-focal-arm64-images.tgz
 else
-	wget http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
+	wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 	tar xvzf friendlycore-focal-arm64-images.tgz
 fi
 

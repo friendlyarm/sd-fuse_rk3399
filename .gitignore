@@ -17,8 +17,9 @@
 *.diff
 *.deb
 *.changes
-/rootfs*
-/kernel*
+rootfs*
+kernel*
+.vscode
 
 #
 # Top-level generic files
