@@ -17,6 +17,8 @@ set -eu
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
+
+source tools/global.sh
 function usage() {
        echo "Usage: $0 <${SUPPORTED_OS}|eflasher>"
        exit 0
@@ -37,24 +39,14 @@ true ${TARGET_OS:=${1,,}}
 
 RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
 case ${TARGET_OS} in
-friendlywrt*)
-    RAW_SIZE_MB=1000 ;;
-buildroot*)
-    RAW_SIZE_MB=7800 ;;
-friendlycore-focal-arm64)
-    RAW_SIZE_MB=7800 ;;
 debian-buster-desktop-arm64)
-    RAW_SIZE_MB=7800 ;;
-friendlycore-lite-focal-kernel4-arm64)
-    RAW_SIZE_MB=7800 ;;
-android*)
     RAW_SIZE_MB=7800 ;;
 eflasher)
 	RAW_SIZE_MB=7800
 	RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/partmap.txt
 	;;
 *)
-	echo "Error: ensupported target OS: ${TARGET_OS}"
+	echo "Error: Unsupported target OS: ${TARGET_OS}"
 
 	exit -1
 	;;
@@ -64,27 +56,12 @@ if [ $# -eq 2 ]; then
 	RAW_FILE=$2
 else
 	case ${TARGET_OS} in
-	friendlywrt*)
-		RAW_FILE=${SOC}-sd-friendlywrt-4.19-arm64-$(date +%Y%m%d).img
-		;;
-	buildroot*)
-		RAW_FILE=${SOC}-sd-buildroot-4.19-arm64-$(date +%Y%m%d).img
-		;;
-   friendlycore-focal-arm64)
-        RAW_FILE=${SOC}-sd-friendlycore-focal-4.19-arm64-$(date +%Y%m%d).img
-        ;;
     debian-buster-desktop-arm64)
-        RAW_FILE=${SOC}-sd-debian-buster-desktop-4.19-arm64-$(date +%Y%m%d).img
-        ;;
-   friendlycore-lite-focal-kernel4-arm64)
-        RAW_FILE=${SOC}-sd-friendlycore-lite-focal-4.19-arm64-$(date +%Y%m%d).img
-        ;;
-	android*)
-        RAW_FILE=${SOC}-sd-${TARGET_OS}-$(date +%Y%m%d).img
-        ;;
+        RAW_FILE=${SOC}-sd-debian-buster-desktop-5.10-arm64-$(date +%Y%m%d).img
+		;;
 	eflasher)
 		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
-		;;
+        ;;
 	*)
 		RAW_FILE=${SOC}-${TARGET_OS}-$(date +%Y%m%d).img
 		;;
@@ -184,6 +161,19 @@ if [ "x${TARGET_OS}" = "xeflasher" ]; then
 		exit 1
 	fi
 
+	if ! command -v mkfs.exfat &> /dev/null; then
+		if [ -f /etc/os-release ]; then
+			. /etc/os-release
+			case "$VERSION_CODENAME" in
+			jammy)
+				sudo apt-get install exfatprogs
+				;;
+			*)
+				sudo apt-get install exfat-fuse exfat-utils
+				;;
+			esac
+		fi
+	fi
 	mkfs.exfat ${LOOP_DEVICE}p1 -n FriendlyARM
 
 	# cleanup

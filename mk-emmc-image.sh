@@ -1,7 +1,8 @@
 #!/bin/bash
+set -eu
 
-# Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
-# (http://www.friendlyarm.com)
+# Copyright (C) Guangzhou FriendlyElec Computer Tech. Co., Ltd.
+# (http://www.friendlyelec.com)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,12 +18,13 @@
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
+source tools/global.sh
 function usage() {
        echo "Usage: $0 <${SUPPORTED_OS}> [img filename] [options]"
        echo "    examples:"
-       echo "        ./mk-emmc-image.sh friendlywrt-kernel4 filename=myimg-emmc.img autostart=yes"
-       echo "        ./mk-emmc-image.sh friendlywrt-kernel4 autostart=yes"
-       echo "        ./mk-emmc-image.sh friendlywrt-kernel4"
+       echo "        ./mk-emmc-image.sh debian-buster-desktop-arm64 filename=myimg-emmc.img autostart=yes"
+       echo "        ./mk-emmc-image.sh debian-buster-desktop-arm64 autostart=yes"
+       echo "        ./mk-emmc-image.sh debian-buster-desktop-arm64"
        exit 0
 }
 
@@ -37,7 +39,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-android*|friendlycore-focal-arm64|debian-buster-desktop-arm64|buildroot*|friendlycore-lite-focal-kernel4-arm64|friendlywrt* )
+debian-buster-*)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

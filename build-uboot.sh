@@ -22,7 +22,7 @@ true ${SOC:=rk3399}
 true ${DISABLE_MKIMG:=0}
 
 UBOOT_REPO=https://github.com/friendlyarm/uboot-rockchip
-UBOOT_BRANCH=nanopi4-v2017.09
+UBOOT_BRANCH=nanopi6-v2017.09
 
 TOPPATH=$PWD
 OUT=$TOPPATH/out
@@ -37,6 +37,7 @@ echo "uboot src: ${UBOOT_SRC}"
 # You need to install:
 # apt-get install swig python-dev python3-dev
 
+source tools/global.sh
 function usage() {
        echo "Usage: $0 <${SUPPORTED_OS}>"
        echo "# example:"
@@ -45,10 +46,10 @@ function usage() {
        echo "# or clone your local repo:"
        echo "    git clone git@192.168.1.2:/path/to/uboot.git --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}"
        echo "# then"
-       echo "    ./build-uboot.sh friendlycore-focal-arm64 "
-       echo "    ./mk-emmc-image.sh friendlycore-focal-arm64 "
+       echo "    ./build-uboot.sh debian-buster-desktop-arm64 "
+       echo "    ./mk-emmc-image.sh debian-buster-desktop-arm64 "
        echo "# also can do:"
-       echo "	UBOOT_SRC=~/myuboot ./build-uboot.sh friendlycore-focal-arm64"
+       echo "	UBOOT_SRC=~/myuboot ./build-uboot.sh debian-buster-desktop-arm64"
        exit 0
 }
 
@@ -61,7 +62,7 @@ fi
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-friendlycore* | friendlywrt* | buildroot* )
+debian-buster-* )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -112,7 +113,7 @@ if [ ! -d ${UBOOT_SRC} ]; then
 fi
 if [ ! -d ${UBOOT_SRC}/../rkbin ]; then
     (cd ${UBOOT_SRC}/../ && {
-        git clone https://github.com/friendlyarm/rkbin -b friendlyelec
+        git clone https://github.com/friendlyarm/rkbin -b nanopi6
     })
 fi
 

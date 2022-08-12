@@ -12,10 +12,9 @@ true ${MKFS:="${TOP}/tools/make_ext4fs"}
 
 true ${SOC:=rk3399}
 ARCH=arm64
-KCFG=nanopi4_linux_defconfig
+KCFG=nanopi5_linux_defconfig
 KIMG=kernel.img
 KDTB=resource.img
-KALL=nanopi4-images
 CROSS_COMPILE=aarch64-linux-gnu-
 # ${OUT} ${KERNEL_SRC} ${TOPPATH}/${TARGET_OS} ${TOPPATH}/prebuilt
 if [ $# -ne 4 ]; then

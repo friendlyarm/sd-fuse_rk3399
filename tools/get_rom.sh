@@ -26,6 +26,7 @@ BOARD=RK3399/images-for-eflasher
 
 TARGET_OS=${1,,}
 ROMFILE=`./tools/get_pkg_filename.sh ${TARGET_OS}`
+source tools/global.sh
 if [ -z ${ROMFILE} ]; then
 	echo "Usage: $0 <${SUPPORTED_OS}|eflasher>"
 	exit 1
