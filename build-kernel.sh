@@ -220,7 +220,18 @@ function build_kernel() {
 	[ ! -f "${KMODULES_OUTDIR}/lib/modules/${KERNEL_VER}/modules.dep" ] && depmod -b ${KMODULES_OUTDIR} -E Module.symvers -F System.map -w ${KERNEL_VER}
 	(cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILE}strip --strip-unneeded)
 
-    # build 3rd driver
+    # build cryptodev-linux
+    (cd ${OUT} && {
+        if [ ! -d cryptodev-linux ]; then
+            git clone https://github.com/cryptodev-linux/cryptodev-linux.git -b master cryptodev-linux
+        fi
+        (cd cryptodev-linux && {
+            make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} KERNEL_DIR=${KERNEL_SRC}
+            cp cryptodev.ko ${KMODULES_OUTDIR}/lib/modules/${KERNEL_VER} -afv
+        })
+    })
+
+    # build usb wifi driver
     if [ ${BUILD_THIRD_PARTY_DRIVER} -eq 1 ]; then
         for (( i=0; i<${#KERNEL_3RD_DRIVERS[@]}; i++ ));
         do
