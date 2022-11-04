@@ -6,15 +6,7 @@ set -eu
 	exit 1
 }
 
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-    echo "Re-running script under sudo..."
-    sudo "$0" "$@"
-    exit
-fi
-
 TOP=$PWD
-true ${MKFS:="${TOP}/tools/make_ext4fs"}
 true ${MKFS:="${TOP}/tools/make_ext4fs"}
 
 true ${SOC:=rk3399}
@@ -75,7 +67,6 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
         MKFS_OPTS="-0 ${MKFS_OPTS}"
     fi
 
-    # Make rootfs.img
     ROOTFS_DIR=${OUT}/rootfs_new
 
     case ${TARGET_OS} in
@@ -106,14 +97,15 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
 
     # make fs
     ${MKFS} ${MKFS_OPTS} -l ${IMG_SIZE} ${TARGET_OS}/rootfs.img ${ROOTFS_DIR}
+
     if [ $? -ne 0 ]; then
-            echo "error: failed to make rootfs.img."
-            exit 1
+        echo "error: failed to  make rootfs.img."
+        exit 1
     fi
 
     if [ ${TARGET_OS} != "eflasher" ]; then
-        echo "IMG_SIZE=${IMG_SIZE}" > ${OUT}/${TARGET_OS}_rootfs-img.info
-        ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
+        echo "IMG_SIZE=${ROOTFS_SIZE}" > ${OUT}/${TARGET_OS}_rootfs-img.info
+        ${TOP}/tools/generate-partmap-txt.sh ${ROOTFS_SIZE} ${TARGET_OS}
     fi
 else 
     echo "not found ${TARGET_OS}/rootfs.img"

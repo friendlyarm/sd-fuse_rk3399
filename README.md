@@ -1,4 +1,3 @@
-
 # sd-fuse_rk3399
 ## Introduction
 This repository is a bunch of scripts to build bootable SD card images for FriendlyElec RK3399 boards, the main features are as follows:

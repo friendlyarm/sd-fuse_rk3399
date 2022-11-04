@@ -45,7 +45,7 @@ buildroot*)
     RAW_SIZE_MB=7800 ;;
 friendlycore-focal-arm64)
     RAW_SIZE_MB=7800 ;;
-debian-buster-desktop-arm64)
+debian-*-desktop-arm64)
     RAW_SIZE_MB=7800 ;;
 friendlycore-lite-focal-kernel4-arm64)
     RAW_SIZE_MB=7800 ;;
@@ -72,13 +72,16 @@ else
 	buildroot*)
 		RAW_FILE=${SOC}-sd-buildroot-4.19-arm64-$(date +%Y%m%d).img
 		;;
-   friendlycore-focal-arm64)
+    friendlycore-focal-arm64)
         RAW_FILE=${SOC}-sd-friendlycore-focal-4.19-arm64-$(date +%Y%m%d).img
         ;;
     debian-buster-desktop-arm64)
-        RAW_FILE=${SOC}-sd-debian-buster-desktop-4.19-arm64-$(date +%Y%m%d).img
-        ;;
-   friendlycore-lite-focal-kernel4-arm64)
+		RAW_FILE=${SOC}-sd-debian-buster-desktop-4.19-arm64-$(date +%Y%m%d).img
+		;;
+    debian-bullseye-desktop-arm64)
+		RAW_FILE=${SOC}-sd-debian-bullseye-desktop-4.19-arm64-$(date +%Y%m%d).img
+		;;
+    friendlycore-lite-focal-kernel4-arm64)
         RAW_FILE=${SOC}-sd-friendlycore-lite-focal-4.19-arm64-$(date +%Y%m%d).img
         ;;
 	android*)

@@ -82,7 +82,7 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
 
 function usage() {
-       echo "Usage: $0 <android10|android11|buildroot|friendlycore-focal-arm64|debian-buster-desktop-arm64|friendlycore-lite-focal-kernel4-arm64|friendlywrt-kernel4>"
+       echo "Usage: $0 <android10|android11|buildroot|friendlycore-focal-arm64|debian-buster-desktop-arm64|debian-bullseye-desktop-arm64|friendlycore-lite-focal-kernel4-arm64|friendlywrt-kernel4>"
        echo "# example:"
        echo "# clone kernel source from github:"
        echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
@@ -111,7 +111,7 @@ true ${TARGET_OS:=${1,,}}
 
 
 case ${TARGET_OS} in
-buildroot*|debian-buster-desktop-arm64|android10|android11|friendlycore-lite-focal-kernel4-arm64|friendlycore-focal-arm64|friendlywrt* )
+buildroot*|debian-buster-desktop-arm64|debian-bullseye-desktop-arm64|android10|android11|friendlycore-lite-focal-kernel4-arm64|friendlycore-focal-arm64|friendlywrt* )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

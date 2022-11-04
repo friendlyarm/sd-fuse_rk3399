@@ -36,7 +36,7 @@ OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
 case ${TARGET_OS} in
 friendlycore-focal-arm64)
         RAW_FILE=${SOC}-eflasher-friendlycore-focal-4.19-arm64-$(date +%Y%m%d).img ;;
-debian-buster-desktop-arm64)
+debian-*-desktop-arm64)
         RAW_FILE=${SOC}-eflasher-debian-buster-desktop-4.19-arm64-$(date +%Y%m%d).img ;;
 friendlycore-lite-focal-kernel4-arm64)
         RAW_FILE=${SOC}-eflasher-friendlycore-lite-focal-4.19-arm64-$(date +%Y%m%d).img ;;
@@ -81,7 +81,7 @@ gen_eflasher_conf()
     if [ ${3} = "yes" ]; then
         AutoFlashOSName=${2}
     fi
-    OSNamesMergeWithComma="friendlywr,debian-buster-desktop-arm64,friendlycore-focal-arm64,friendlycore-lite-focal-kernel4-arm64,android10,android11"
+    OSNamesMergeWithComma="friendlywr,debian-buster-desktop-arm64,debian-bullseye-desktop-arm64,friendlycore-focal-arm64,friendlycore-lite-focal-kernel4-arm64,android10,android11"
     cat > ${1}/eflasher.conf <<EOL
 ; This is the eFlasher configuration file.
 ; See http://wiki.friendlyarm.com/wiki/index.php/EFlasher for detailed information.

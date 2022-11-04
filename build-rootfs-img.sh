@@ -42,30 +42,20 @@ fi
 
 if [ ${IMG_SIZE} -eq 0 ]; then
     # calc image size
-    ROOTFS_SIZE=`du -s -B 1 ${ROOTFS_DIR} | cut -f1`
-    # +1024m + 10% rootfs size
-    MAX_IMG_SIZE=$((${ROOTFS_SIZE} + 1024*1024*1024 + ${ROOTFS_SIZE}/5))
-    TMPFILE=`tempfile`
-    ${MKFS} -s -l ${MAX_IMG_SIZE} -a root -L rootfs /dev/null ${ROOTFS_DIR} > ${TMPFILE}
-    IMG_SIZE=`cat ${TMPFILE} | grep "Suggest size:" | cut -f2 -d ':' | awk '{gsub(/^\s+|\s+$/, "");print}'`
-    rm -f ${TMPFILE}
+    ROOTFS_SIZE=$(((`du -s -B64M ${ROOTFS_DIR} | cut -f1` + 2) * 1024 * 1024 * 64))
+    INODE_SIZE=$((`find ${ROOTFS_DIR} | wc -l` + 128))
 
-    if [ ${ROOTFS_SIZE} -gt ${IMG_SIZE} ]; then
-            echo "IMG_SIZE less than ROOTFS_SIZE, why?"
-            exit 1
-    fi
-
-    # make fs
-    ${MKFS} ${MKFS_OPTS} -l ${IMG_SIZE} ${IMG_FILE} ${ROOTFS_DIR}
+    # make rootfs.img
+    ${MKFS} ${MKFS_OPTS} -l ${ROOTFS_SIZE} -i ${INODE_SIZE} ${IMG_FILE} ${ROOTFS_DIR}
     if [ $? -ne 0 ]; then
-            echo "error: failed to  make rootfs.img."
-            exit 1
-     fi
+        echo "error: failed to  make rootfs.img."
+        exit 1
+    fi
 else
     ${MKFS} ${MKFS_OPTS} -l ${IMG_SIZE} ${IMG_FILE} ${ROOTFS_DIR}
     if [ $? -ne 0 ]; then
-            echo "error: failed to  make rootfs.img."
-            exit 1
+        echo "error: failed to  make rootfs.img."
+        exit 1
      fi
 fi
 
