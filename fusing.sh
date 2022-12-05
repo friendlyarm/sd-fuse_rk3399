@@ -20,20 +20,30 @@ set -eu
 # ----------------------------------------------------------
 # Checking device for fusing
 
-if [ $# -eq 0 ]; then
+if [ $# -lt 2 ]; then
 	echo "Usage: $0 <DEVICE|RAWFILE> <OS>"
 	exit 0
-fi
-
-true ${RK_PARAMETER_TXT:=}
-if [ -z $RK_PARAMETER_TXT ]; then
-		echo "Error: pls set RK_PARAMETER_TXT."
-		exit 1
 fi
 
 if [ ! -e $1 ]; then
 	echo "Error: $1 does not exist."
 	exit 1
+fi
+
+if [ ! -d $2 ]; then
+    echo "Error: $2 does not exist."
+    exit 1
+fi
+
+true ${RK_PARAMETER_TXT:=}
+if [ -z $RK_PARAMETER_TXT ]; then
+	if [ -f $2/parameter.txt ]; then
+		RK_PARAMETER_TXT=$(dirname $0)/${2}/parameter.txt
+	fi
+fi
+if [ -z $RK_PARAMETER_TXT ]; then
+		echo "Error: pls set RK_PARAMETER_TXT."
+		exit 1
 fi
 
 case $1 in
