@@ -4,12 +4,12 @@ Create bootable SD card for NanoPC T4/NanoPi R4S/NanoPi M4/Som-RK3399/NanoPi NEO
 ***Note: Since RK3399 contains multiple different versions of kernel and uboot, please refer to the table below to switch this repo to the specified branch according to the OS***  
 | OS                                     | branch          | image directory name                  |
 | -------------------------------------- | --------------- | ------------------------------------- |
-| [ ]friendlywrt                         | kernel-5.10.y   | friendlywrt                           |
+| [ ]friendlywrt                         | kernel-5.15.y   | friendlywrt                           |
 | [*]buildroot                           | kernel-4.19     | buildroot                             |
 | [*]friendlywrt-kernel4                 | kernel-4.19     | friendlywrt-kernel4                   |
 | [*]friendlycore focal                  | kernel-4.19     | friendlycore-focal-arm64              |
 | [*]debian buster                       | kernel-4.19     | debian-buster-desktop-arm64           |
-| [ ]friendlycore lite focal (kernel5.x) | kernel-5.10.y   | friendlycore-lite-focal-kernel5-arm64 |
+| [ ]friendlycore lite focal (kernel5.x) | kernel-5.15.y   | friendlycore-lite-focal-kernel5-arm64 |
 | [*]friendlycore lite focal (kernel4.x) | kernel-4.19     | friendlycore-lite-focal-kernel4-arm64 |
 | [*]android10                           | kernel-4.19     | android10                             |
 | [*]android11                           | kernel-4.19     | android11                             |
