@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -eu
+set -eu
 
 # ----------------------------------------------------------
 # base setup
@@ -54,12 +54,24 @@ Args=( "$@" )
 # skip arg1,arg2,arg3
 for (( i=3; i<${#Args[@]}; i++ ));
 do
-    if [ "x${Args[$i]}" = x"autostart=yes" ]; then
-        AUTOSTART=yes
-    elif [ "x${Args[$i]}" = x"autostart=y" ]; then
-        AUTOSTART=yes
-    elif [[ ! -z $(echo ${Args[$i]} | grep "filename=") ]]; then
+	if [[ ! -z $(echo ${Args[$i]} | grep "autostart=" -i) ]]; then
+		YESORNO=$(echo ${Args[$i]:10} | tr '[:lower:]' '[:upper:]')
+		case ${YESORNO} in
+		YES|Y)
+			AUTOSTART=yes
+			;;
+		NO|N)
+			AUTOSTART=no
+			;;
+		*)
+			;;
+		esac
+	elif [[ ! -z $(echo ${Args[$i]} | grep "filename=") ]]; then
         RAW_FILE=${Args[$i]:9}
+    elif [[ ! -z $(echo ${Args[$i]} | grep "=") ]]; then
+		echo "Warning: unknow arg: ${Args[$i]}"
+    else
+        RAW_FILE=${Args[$i]}
     fi
 done
 
