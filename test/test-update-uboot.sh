@@ -8,7 +8,7 @@ UBOOT_BRANCH=nanopi4-v2014.10_oreo
 # hack for me
 PCNAME=`hostname`
 if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
-	HTTP_SERVER=192.168.1.9
+	HTTP_SERVER=127.0.0.1
 fi
 
 # clean
@@ -21,7 +21,7 @@ cd sd-fuse_rk3399
 if [ -f ../../friendlycore-arm64-images.tgz ]; then
 	tar xvzf ../../friendlycore-arm64-images.tgz
 else
-	wget http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlycore-arm64-images.tgz
+	wget --no-proxy http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlycore-arm64-images.tgz
 fi
 
 git clone ${UBOOT_URL} --depth 1 -b ${UBOOT_BRANCH} uboot-rk3399

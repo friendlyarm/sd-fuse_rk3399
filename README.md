@@ -1,186 +1,192 @@
-# sd-fuse_rk3399 for kernel-4.4.y
-Create bootable SD card for NanoPC T4/NanoPi R4S/NanoPi M4/Som-RK3399/NanoPi NEO4  
+
+# sd-fuse_rk3399
+## Introduction
+This repository is a bunch of scripts to build bootable SD card images for FriendlyElec RK3399 boards, the main features are as follows:
+
+* Create root ﬁlesystem image from a directory
+* Build bootable SD card image
+* Easy way to compile kernel、uboot and third-party driver
   
-***Note: Since RK3399 contains multiple different versions of kernel and uboot, please refer to the table below to switch this repo to the specified branch according to the OS***  
-| OS                                     | branch          | image directory name                  |
-| -------------------------------------- | --------------- | ------------------------------------- |
-| [ ]friendlywrt                         | kernel-5.15.y   | friendlywrt                           |
-| [ ]friendlywrt-kernel4                 | kernel-4.19     | friendlywrt-kernel4                   |
-| [ ]friendlycore focal                  | kernel-4.19     | friendlycore-focal-arm64              |
-| [ ]friendlycore lite focal (kernel5.x) | kernel-5.15.y   | friendlycore-lite-focal-kernel5-arm64 |
-| [ ]friendlycore lite focal (kernel4.x) | kernel-4.19     | friendlycore-lite-focal-kernel4-arm64 |
-| [ ]android10                           | kernel-4.19     | android10                             |
-| [*]friendlydesktop bionic              | master          | friendlydesktop-arm64                 |
-| [*]friendlycore bionic                 | master          | friendlycore-arm64                    |
-| [*]lubuntu xenial                      | master          | lubuntu                               |
-| [*]eflasher                            | master          | eflasher                              |
-| [-]android8                            | master          | android8                              |
-| [-]android7                            | master          | android7                              |
+*Read this in other languages: [简体中文](README_cn.md)*  
+  
+## Requirements
+* Recommended Host OS: Ubuntu 18.04 LTS (Bionic Beaver) 64-bit or Higher
+* It is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
+
+## Kernel Version Support
+The sd-fuse use multiple git branches to support each version of the kernel, the current branche supported kernel version is as follows:
+* 4.4.y   
+  
+For other kernel versions, please switch to the related git branch.
+## Target board OS Supported
+*Notes: The OS name is the same as the directory name, it is written in the script so it cannot be renamed.*
+
+* buildroot
+* debian-buster-desktop-arm64
+* debian-bullseye-desktop-arm64
+* ubuntu-jammy-desktop-arm64
+* ubuntu-jammy-minimal-arm64
+* friendlywrt22
+* friendlywrt22-docker
+* friendlywrt21
+* friendlywrt21-docker
 
   
-## How to find the /dev name of my SD Card
-Unplug all usb devices:
+To build an SD card image for debian-buster, for example like this:
 ```
-ls -1 /dev > ~/before.txt
+./mk-sd-image.sh debian-buster-desktop-arm64
 ```
-plug it in, then
+  
+## Where to download files
+The following files may be required to build SD card image:
+* kernel source code: In the directory "07_Source codes" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [Github](https://github.com/friendlyarm/linux), the branch name is sunxi-4.14.y
+* uboot source code: In the directory "07_Source codes" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [Github](https://github.com/friendlyarm/u-boot), the branch name is sunxi-v2017.x
+* pre-built partition image: In the directory "03_Partition image files" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [HTTP server](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher)
+* compressed root file system tar ball: In the directory "06_File systems" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [HTTP server](http://112.124.9.243/dvdfiles/rk3399/rootfs)
+  
+If the files are not prepared in advance, the script will automatically download the required files, but the speed may be slower due to the bandwidth of the http server.
+
+## Script Functions
+* fusing.sh: Flash the image to SD card
+* mk-sd-image.sh: Build SD card image
+* mk-emmc-image.sh: Build SD-to-eMMC image, used to install system to eMMC
+
+* build-rootfs-img.sh: Create root ﬁlesystem image(rootfs.img) from a directory
+* build-kernel.sh: Compile the kernel, or kernel headers
+* build-uboot.sh: Compile uboot
+
+## Usage
+### Build your own SD card image
+*Note: Here we use debian-buster system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), due to the bandwidth of the http server, we recommend downloading the file from the [NetDrive](https://download.friendlyelec.com/rk3399):
 ```
-ls -1 /dev > ~/after.txt
-diff ~/before.txt ~/after.txt
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b master sd-fuse_rk3399-kernel4.4
+cd sd-fuse_rk3399-kernel4.4
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/debian-buster-desktop-arm64-images.tgz
+tar xvzf debian-buster-desktop-arm64-images.tgz
+```
+After decompressing, you will get a directory named debian-buster-desktop-arm64, you can change the files in the directory as needed, for example, replace rootfs.img with your own modified version, or your own compiled kernel and uboot, finally, flash the image to the SD card by entering the following command (The below steps assume your SD card is device /dev/sdX):
+```
+sudo ./fusing.sh /dev/sdX debian-buster-desktop-arm64
+```
+Or, package it as an SD card image file:
+```
+./mk-sd-image.sh debian-buster-desktop-arm64
+```
+The following flashable image file will be generated, it is now ready to be used to boot the device into debian-buster:  
+```
+out/h3-sd-debian-buster-desktop-5.10-arm64-YYYYMMDD.img
 ```
 
-## Build friendlycore bootable SD card
+
+### Build your own SD-to-eMMC Image
+*Note: Here we use debian-buster system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), here you need to download the debian-buster and eflasher [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b master
-cd sd-fuse_rk3399
-sudo ./fusing.sh /dev/sdX friendlycore-arm64
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b master sd-fuse_rk3399-kernel4.4
+cd sd-fuse_rk3399-kernel4.4
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/debian-buster-desktop-arm64-images.tgz
+tar xvzf debian-buster-desktop-arm64-images.tgz
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/eflasher.tgz
+tar xvzf eflasher.tgz
 ```
-Notes:  
-fusing.sh will check the local directory for a directory with the same name as OS, if it does not exist fusing.sh will go to download it from network.  
-So you can download from the netdisk in advance, on netdisk, the images files are stored in a directory called images-for-eflasher, for example:
+Then use the following command to build the SD-to-eMMC image, the autostart=yes parameter means it will automatically enter the flash process when booting:
 ```
-cd sd-fuse_rk3399
-tar xvzf /path/to/NETDISK/images-for-eflasher/friendlycore-arm64-images.tgz
-sudo ./fusing.sh /dev/sdX friendlycore-arm64
+./mk-emmc-image.sh debian-buster-desktop-arm64 autostart=yes
+```
+The following flashable image file will be generated, ready to be used to boot the device into eflasher system and then flash debian-buster system to eMMC: 
+```
+out/h3-eflasher-debian-buster-desktop-5.10-arm64-YYYYMMDD.img
 ```
 
-## Build an sd card image
-First, download and unpack:
+### Build your own root filesystem image
+*Note: Here we use debian-buster system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b master
-cd sd-fuse_rk3399
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlycore-arm64-images.tgz
-tar xvzf friendlycore-arm64-images.tgz
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b master sd-fuse_rk3399-kernel4.4
+cd sd-fuse_rk3399-kernel4.4
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/debian-buster-desktop-arm64-images.tgz
+tar xvzf debian-buster-desktop-arm64-images.tgz
 ```
-Now,  Change something under the friendlycore-arm64 directory, 
-for example, replace the file you compiled, then build friendlycore-arm64 bootable SD card: 
+Download the compressed root file system tar ball and unzip it, the unzip command requires root privileges, so you need put sudo in front of the command:
 ```
-sudo ./fusing.sh /dev/sdX friendlycore-arm64
+wget http://112.124.9.243/dvdfiles/rk3399/rootfs/rootfs-debian-buster-desktop-arm64.tgz
+sudo tar xzf rootfs-debian-buster-desktop-arm64.tgz
 ```
-or build an sd card image:
+Change something:
 ```
-sudo ./mk-sd-image.sh friendlycore-arm64
+sudo sh -c 'echo hello > debian-buster-desktop-arm64/rootfs/root/welcome.txt'
 ```
-The following file will be generated:  
+Make rootfs to img:
 ```
-out/rk3399-sd-friendlycore-bionic-4.4-arm64-yyyymmdd.img
+sudo ./build-rootfs-img.sh debian-buster-desktop-arm64/rootfs debian-buster-desktop-arm64
 ```
-You can use dd to burn this file into an sd card:
+Use the new rootfs.img to build SD card image:
 ```
-dd if=out/rk3399-sd-friendlycore-bionic-4.4-arm64-20181112.img of=/dev/sdX bs=1M
+./mk-sd-image.sh debian-buster-desktop-arm64
 ```
-## Build an sdcard-to-emmc image (eflasher rom)
-Enable exFAT file system support on Ubuntu:
+Or build SD-to-eMMC image:
 ```
-sudo apt-get install exfat-fuse exfat-utils
+./mk-emmc-image.sh debian-buster-desktop-arm64
 ```
-Generate the eflasher raw image, and put friendlycore image files into eflasher:
+#### Tips
+
+* Using the debootstrap tool, you can customize the file system, pre-install packages, etc.
+
+
+### Compiling the Kernel
+*Note: Here we use debian-buster system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git
-cd sd-fuse_rk3399
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/emmc-flasher-images.tgz
-tar xzf emmc-flasher-images.tgz
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlycore-arm64-images.tgz
-tar xzf friendlycore-arm64-images.tgz
-sudo ./mk-emmc-image.sh friendlycore-arm64
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b master sd-fuse_rk3399-kernel4.4
+cd sd-fuse_rk3399-kernel4.4
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/debian-buster-desktop-arm64-images.tgz
+tar xvzf debian-buster-desktop-arm64-images.tgz
 ```
-The following file will be generated:  
+Download the kernel source code from github, using the environment variable KERNEL_SRC to specify the local source code directory:
 ```
-out/rk3399-eflasher-friendlycore-bionic-4.4-arm64-yyyymmdd.img
+export KERNEL_SRC=$PWD/kernel
+git clone https://github.com/friendlyarm/linux -b sunxi-4.14.y --depth 1 ${KERNEL_SRC}
 ```
-You can use dd to burn this file into an sd card:
+Customize the kernel configuration:
 ```
-dd if=out/rk3399-eflasher-friendlycore-bionic-4.4-arm64-20181112.img of=/dev/sdX bs=1M
+cd $KERNEL_SRC
+touch .scmversion
+make ARCH=arm sunxi_defconfig
+make ARCH=arm CROSS_COMPILE=arm-linux- menuconfig
+make ARCH=arm CROSS_COMPILE=arm-linux- savedefconfig
+cp defconfig ./arch/arm/configs/my_defconfig                  # Save the configuration as my_defconfig
+git add ./arch/arm/configs/my_defconfig
+cd -
+```
+Specify the configuration of the kernel using the KCFG environment variable (KERNEL_SRC specifies the source directory), and compile the kernel with your configuration:
+```
+export KERNEL_SRC=$PWD/kernel
+export KCFG=my_defconfig
+./build-kernel.sh debian-buster-desktop-arm64
 ```
 
-## Replace the file you compiled
+#### Compiling the kernel headers
+Set the environment variable MK_HEADERS_DEB to 1, which will compile the kernel headers:
+```
+MK_HEADERS_DEB=1 ./build-kernel.sh debian-buster-desktop-arm64
+```
+#### Other
+* Set the environment variable BUILD_THIRD_PARTY_DRIVER to 0 will skip the compilation of third-party driver modules
 
-### Install cross compiler and tools
-
-Install the package:
+### Compiling the u-boot
+*Note: Here we use debian-buster system as an example* 
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher)::
 ```
-sudo apt install liblz4-tool
-sudo apt install android-tools-fsutils
-sudo apt install swig
-sudo apt install python-dev python3-dev
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b master sd-fuse_rk3399-kernel4.4
+cd sd-fuse_rk3399-kernel4.4
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/debian-buster-desktop-arm64-images.tgz
+tar xvzf debian-buster-desktop-arm64-images.tgz
 ```
-Install Cross Compiler:
+Download the u-boot source code from github that matches the OS version, the environment variable UBOOT_SRC is used to specify the local source code directory:
 ```
-git clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1 friendlyelec-toolchain
-(cd friendlyelec-toolchain/gcc-x64 && cat toolchain-6.4-aarch64.tar.gz* | sudo tar xz -C /)
-
-```
-
-### Build U-boot and Kernel for Lubuntu, FriendlyCore and FriendlyDesktop
-Download image files:
-```
-cd sd-fuse_rk3399
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/lubuntu-desktop-images.tgz
-tar xzf lubuntu-desktop-images.tgz
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlycore-arm64-images.tgz
-tar xzf friendlycore-arm64-images.tgz
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlydesktop-arm64-images.tgz
-tar xzf friendlydesktop-arm64-images.tgz
-```
-Build kernel, the relevant image files in the images directory will be automatically updated, including the kernel modules in the file system:
-```
-cd sd-fuse_rk3399
-git clone https://github.com/friendlyarm/kernel-rockchip --depth 1 -b nanopi4-linux-v4.4.y out/kernel-rk3399
-# lubuntu
-KERNEL_SRC=$PWD/out/kernel-rk3399 ./build-kernel.sh lubuntu
-
-# friendlycore-arm64
-KERNEL_SRC=$PWD/out/kernel-rk3399 ./build-kernel.sh friendlycore-arm64
-
-# friendlydesktop-arm64
-KERNEL_SRC=$PWD/out/kernel-rk3399 ./build-kernel.sh friendlydesktop-arm64
-```
-Build uboot:
-```
-cd sd-fuse_rk3399
-git clone https://github.com/friendlyarm/uboot-rockchip --depth 1 -b nanopi4-v2014.10_oreo uboot-rk3399
-UBOOT_SRC=$PWD/uboot-rk3399 ./build-uboot.sh lubuntu
-UBOOT_SRC=$PWD/uboot-rk3399 ./build-uboot.sh friendlycore-arm64
-UBOOT_SRC=$PWD/uboot-rk3399 ./build-uboot.sh friendlydesktop-arm64
+export UBOOT_SRC=$PWD/uboot
+git clone https://github.com/friendlyarm/u-boot -b sunxi-v2017.x --depth 1 ${UBOOT_SRC}
+./build-uboot.sh debian-buster-desktop-arm64
 ```
 
-### Custom rootfs for Lubuntu, FriendlyCore and FriendlyDesktop
-#### Custom rootfs in the bootable SD card
-Use FriendlyCore as an example:
-```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git
-cd sd-fuse_rk3399
-
-wget http://112.124.9.243/dvdfiles/RK3399/rootfs/rootfs-friendlycore-arm64.tgz
-tar xzf rootfs-friendlycore-arm64.tgz
-```
-Now,  change something under rootfs directory, like this:
-```
-echo hello > friendlycore-arm64/rootfs/root/welcome.txt  
-```
-Remake rootfs.img:
-```
-./build-rootfs-img.sh friendlycore-arm64/rootfs friendlycore-arm64
-```
-Make sdboot image:
-```
-./mk-sd-image.sh friendlycore-arm64
-```
-or make sd-to-emmc image (eflasher rom):
-```
-./mk-emmc-image.sh friendlycore-arm64
-```
-
-### Build Android8
-```
-git clone https://gitlab.com/friendlyelec/rk3399-android-8.1 --depth 1 -b master
-cd rk3399-android-8.1
-./build-nanopc-t4.sh -F -M
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/android-oreo-images.tgz
-tar xzf android-oreo-images.tgz
-cp rockdev/Image-nanopc_t4/* android8
-```
-Copy the new image files to the exfat partition of the eflasher sd card:
-```
-cp -af android8 /mnt/exfat/
-```
