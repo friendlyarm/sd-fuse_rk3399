@@ -1,136 +1,188 @@
-# sd-fuse_rk3399 for kernel-5.15.y
-Create bootable SD card for NanoPC T4/NanoPi R4S/NanoPi M4/Som-RK3399/NanoPi NEO4  
+
+# sd-fuse_rk3399
+## Introduction
+This repository is a bunch of scripts to build bootable SD card images for FriendlyElec RK3399 boards, the main features are as follows:
+
+* Create root ﬁlesystem image from a directory
+* Build bootable SD card image
+* Easy way to compile kernel、uboot and third-party driver
   
-***Note: Since RK3399 contains multiple different versions of kernel and uboot, please refer to the table below to switch this repo to the specified branch according to the OS***  
-| OS                                     | branch          | image directory name                  |
-| -------------------------------------- | --------------- | ------------------------------------- |
-| [*]friendlywrt21                       | kernel-5.15.y   | friendlywrt21                         |
-| [*]friendlywrt21-docker                | kernel-5.15.y   | friendlywrt21-docker                  |
-| [*]friendlywrt22                       | kernel-5.15.y   | friendlywrt22                         |
-| [*]friendlywrt22-docker                | kernel-5.15.y   | friendlywrt22-docker                  |
-| [ ]friendlywrt-kernel4                 | kernel-4.19     | friendlywrt-kernel4                   |
-| [ ]friendlycore focal                  | kernel-4.19     | friendlycore-focal-arm64              |
-| [*]friendlycore lite focal (kernel5.x) | kernel-5.15.y   | friendlycore-lite-focal-kernel5-arm64 |
-| [ ]friendlycore lite focal (kernel4.x) | kernel-4.19     | friendlycore-lite-focal-kernel4-arm64 |
-| [ ]android10                           | kernel-4.19     | android10                             |
-| [ ]friendlydesktop bionic              | master          | friendlydesktop-arm64                 |
-| [ ]friendlycore bionic                 | master          | friendlycore-arm64                    |
-| [ ]lubuntu xenial                      | master          | lubuntu                               |
-| [ ]eflasher                            | master          | eflasher                              |
-| [ ]android8                            | master          | android8                              |
-| [ ]android7                            | master          | android7                              |
+*Read this in other languages: [简体中文](README_cn.md)*  
+  
+## Requirements
+* Recommended Host OS: Ubuntu 18.04 LTS (Bionic Beaver) 64-bit or Higher
+* It is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
+
+## Kernel Version Support
+The sd-fuse use multiple git branches to support each version of the kernel, the current branche supported kernel version is as follows:
+* 5.15.y   
+  
+For other kernel versions, please switch to the related git branch.
+## Target board OS Supported
+*Notes: The OS name is the same as the directory name, it is written in the script so it cannot be renamed.*
+
+* friendlywrt22
+* friendlywrt22-docker
+* friendlywrt21
+* friendlywrt21-docker
+* friendlycore-lite-focal-kernel5-arm64
 
   
-## How to find the /dev name of my SD Card
-Unplug all usb devices:
+To build an SD card image for friendlycore-lite-focal, for example like this:
 ```
-ls -1 /dev > ~/before.txt
+./mk-sd-image.sh friendlycore-lite-focal-kernel5-arm64
 ```
-plug it in, then
+  
+## Where to download files
+The following files may be required to build SD card image:
+* kernel source code: In the directory "07_Source codes" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [Github](https://github.com/friendlyarm/kernel-rockchip), the branch name is nanopi-r2-v5.15.y
+* uboot source code: In the directory "07_Source codes" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [Github](https://github.com/friendlyarm/uboot-rockchip), the branch name is nanopi4-v2017.09
+* pre-built partition image: In the directory "03_Partition image files" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [HTTP server](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher)
+* compressed root file system tar ball: In the directory "06_File systems" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [HTTP server](http://112.124.9.243/dvdfiles/rk3399/rootfs)
+  
+If the files are not prepared in advance, the script will automatically download the required files, but the speed may be slower due to the bandwidth of the http server.
+
+## Script Functions
+* fusing.sh: Flash the image to SD card
+* mk-sd-image.sh: Build SD card image
+* mk-emmc-image.sh: Build SD-to-eMMC image, used to install system to eMMC
+
+* build-rootfs-img.sh: Create root ﬁlesystem image(rootfs.img) from a directory
+* build-kernel.sh: Compile the kernel, or kernel headers
+* build-uboot.sh: Compile uboot
+
+## Usage
+### Build your own SD card image
+*Note: Here we use friendlycore-lite-focal system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), due to the bandwidth of the http server, we recommend downloading the file from the [NetDrive](https://download.friendlyelec.com/rk3399):
 ```
-ls -1 /dev > ~/after.txt
-diff ~/before.txt ~/after.txt
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+cd sd-fuse_rk3399-kernel5.15
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
+tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
+```
+After decompressing, you will get a directory named friendlycore-lite-focal-kernel5-arm64, you can change the files in the directory as needed, for example, replace rootfs.img with your own modified version, or your own compiled kernel and uboot, finally, flash the image to the SD card by entering the following command (The below steps assume your SD card is device /dev/sdX):
+```
+sudo ./fusing.sh /dev/sdX friendlycore-lite-focal-kernel5-arm64
+```
+Or, package it as an SD card image file:
+```
+./mk-sd-image.sh friendlycore-lite-focal-kernel5-arm64
+```
+The following flashable image file will be generated, it is now ready to be used to boot the device into friendlycore-lite-focal:  
+```
+out/rk3399-sd-friendlycore-lite-focal-5.15-arm64-YYYYMMDD.img
 ```
 
-## Build friendlywrt bootable SD card
+
+### Build your own SD-to-eMMC Image
+*Note: Here we use friendlycore-lite-focal system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), here you need to download the friendlycore-lite-focal and eflasher [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-5.15.y
-cd sd-fuse_rk3399
-sudo ./fusing.sh /dev/sdX friendlywrt22
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+cd sd-fuse_rk3399-kernel5.15
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
+tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/emmc-flasher-images.tgz
+tar xvzf emmc-flasher-images.tgz
 ```
-Notes:  
-fusing.sh will check the local directory for a directory with the same name as OS, if it does not exist fusing.sh will go to download it from network.  
-So you can download from the netdisk in advance, on netdisk, the images files are stored in a directory called images-for-eflasher, for example:
+Then use the following command to build the SD-to-eMMC image, the autostart=yes parameter means it will automatically enter the flash process when booting:
 ```
-cd sd-fuse_rk3399
-tar xvzf /path/to/NETDISK/images-for-eflasher/friendlywrt22-images.tgz
-sudo ./fusing.sh /dev/sdX friendlywrt22
+./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64 autostart=yes
+```
+The following flashable image file will be generated, ready to be used to boot the device into eflasher system and then flash friendlycore-lite-focal system to eMMC: 
+```
+out/rk3399-eflasher-friendlycore-lite-focal-5.15-arm64-YYYYMMDD.img
 ```
 
-## Build an sd card image
-First, download and unpack:
+### Build your own root filesystem image
+*Note: Here we use friendlycore-lite-focal system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-5.15.y
-cd sd-fuse_rk3399
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlywrt22-images.tgz
-tar xvzf friendlywrt22-images.tgz
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+cd sd-fuse_rk3399-kernel5.15
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
+tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
 ```
-Now,  Change something under the friendlywrt22 directory, 
-for example, replace the file you compiled, then build friendlywrt bootable SD card: 
+Download the compressed root file system tar ball and unzip it, the unzip command requires root privileges, so you need put sudo in front of the command:
 ```
-sudo ./fusing.sh /dev/sdX friendlywrt22
+wget http://112.124.9.243/dvdfiles/rk3399/rootfs/rootfs-friendlycore-lite-focal-arm64.tgz
+sudo tar xzf rootfs-friendlycore-lite-focal-arm64.tgz
 ```
-or build an sd card image:
+Change something:
 ```
-./mk-sd-image.sh friendlywrt22
+sudo sh -c 'echo hello > friendlycore-lite-focal-kernel5-arm64/rootfs/root/welcome.txt'
 ```
-The following file will be generated:  
+Make rootfs to img:
 ```
-out/rk3399-sd-friendlywrt-22.03-arm64-yyyymmdd.img
+sudo ./build-rootfs-img.sh friendlycore-lite-focal-kernel5-arm64/rootfs friendlycore-lite-focal-kernel5-arm64
 ```
-You can use dd to burn this file into an sd card:
+Use the new rootfs.img to build SD card image:
 ```
-dd if=out/rk3399-sd-friendlywrt-22.03-arm64-yyyymmdd.img of=/dev/sdX bs=1M
+./mk-sd-image.sh friendlycore-lite-focal-kernel5-arm64
 ```
-## Build an sdcard-to-emmc image (eflasher rom)
-Enable exFAT file system support on Ubuntu:
+Or build SD-to-eMMC image:
 ```
-sudo apt-get install exfat-fuse exfat-utils
+./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64
 ```
-Generate the eflasher raw image, and put friendlycore image files into eflasher:
+#### Tips
+
+* Using the debootstrap tool, you can customize the file system, pre-install packages, etc.
+
+
+### Compiling the Kernel
+*Note: Here we use friendlycore-lite-focal system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399.git -b kernel-5.15.y
-cd sd-fuse_rk3399
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/emmc-flasher-images.tgz
-tar xzf emmc-flasher-images.tgz
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlywrt-images.tgz
-tar xzf friendlywrt-images.tgz
-sudo ./mk-emmc-image.sh friendlywrt22
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+cd sd-fuse_rk3399-kernel5.15
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
+tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
 ```
-The following file will be generated:  
+Download the kernel source code from github, using the environment variable KERNEL_SRC to specify the local source code directory:
 ```
-out/rk3399-eflasher-friendlywrt-22.03-arm64-yyyymmdd.img
+export KERNEL_SRC=$PWD/kernel
+git clone https://github.com/friendlyarm/kernel-rockchip -b nanopi-r2-v5.15.y --depth 1 ${KERNEL_SRC}
 ```
-You can use dd to burn this file into an sd card:
+Customize the kernel configuration:
 ```
-dd if=out/rk3399-eflasher-friendlywrt-22.03-arm64-yyyymmdd.img of=/dev/sdX bs=1M
+cd $KERNEL_SRC
+touch .scmversion
+make ARCH=arm64 nanopi4_linux_defconfig
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- menuconfig
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- savedefconfig
+cp defconfig ./arch/arm64/configs/my_defconfig                  # Save the configuration as my_defconfig
+git add ./arch/arm64/configs/my_defconfig
+cd -
+```
+Specify the configuration of the kernel using the KCFG environment variable (KERNEL_SRC specifies the source directory), and compile the kernel with your configuration:
+```
+export KERNEL_SRC=$PWD/kernel
+export KCFG=my_defconfig
+./build-kernel.sh friendlycore-lite-focal-kernel5-arm64
 ```
 
-## Replace the file you compiled
+#### Compiling the kernel headers
+Set the environment variable MK_HEADERS_DEB to 1, which will compile the kernel headers:
+```
+MK_HEADERS_DEB=1 ./build-kernel.sh friendlycore-lite-focal-kernel5-arm64
+```
+#### Other
+* Set the environment variable BUILD_THIRD_PARTY_DRIVER to 0 will skip the compilation of third-party driver modules
 
-### Install cross compiler and tools
+### Compiling the u-boot
+*Note: Here we use friendlycore-lite-focal system as an example* 
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher)::
+```
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+cd sd-fuse_rk3399-kernel5.15
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
+tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
+```
+Download the u-boot source code from github that matches the OS version, the environment variable UBOOT_SRC is used to specify the local source code directory:
+```
+export UBOOT_SRC=$PWD/uboot
+git clone https://github.com/friendlyarm/uboot-rockchip -b nanopi4-v2017.09 --depth 1 ${UBOOT_SRC}
+./build-uboot.sh friendlycore-lite-focal-kernel5-arm64
+```
 
-Install the package:
-```
-apt install liblz4-tool android-tools-fsutils
-```
-Install Cross Compiler:
-```
-git clone https://github.com/friendlyarm/prebuilts.git
-sudo mkdir -p /opt/FriendlyARM/toolchain
-sudo tar xf prebuilts/gcc-x64/aarch64-cortexa53-linux-gnu-6.4.tar.xz -C /opt/FriendlyARM/toolchain/
-```
-
-### Build U-boot and Kernel for FriendlyWrt
-Download image files:
-```
-cd sd-fuse_rk3399
-wget http://112.124.9.243/dvdfiles/RK3399/images-for-eflasher/friendlywrt22-images.tgz
-tar xzf friendlywrt-images.tgz
-```
-Build kernel:
-```
-cd sd-fuse_rk3399
-git clone https://github.com/friendlyarm/kernel-rockchip --depth 1 -b nanopi-r2-v5.15.y out/kernel-rk3399
-KERNEL_SRC=$PWD/out/kernel-rk3399 ./build-kernel.sh friendlywrt22
-./mk-sd-image.sh friendlywrt22
-
-```
-Build uboot:
-```
-cd sd-fuse_rk3399
-git clone https://github.com/friendlyarm/uboot-rockchip --depth 1 -b nanopi4-v2017.09 uboot-rk3399
-UBOOT_SRC=$PWD/uboot-rk3399 ./build-uboot.sh friendlywrt22
-./mk-sd-image.sh friendlywrt22
-
-```
