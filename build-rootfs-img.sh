@@ -19,49 +19,48 @@ else
 fi
 
 TOP=$PWD
-true ${MKFS:="${TOP}/tools/make_ext4fs"}
+export MKE2FS_CONFIG="${TOP}/tools/mke2fs.conf"
+if [ ! -f ${MKE2FS_CONFIG} ]; then
+    echo "error: ${MKE2FS_CONFIG} not found."
+    exit 1
+fi
+true ${MKFS:="${TOP}/tools/mke2fs"}
 
 if [ ! -d ${ROOTFS_DIR} ]; then
     echo "path '${ROOTFS_DIR}' not found."
     exit 1
 fi
 
-MKFS_OPTS="-s -a root -L rootfs"
-if echo ${TARGET_OS} | grep friendlywrt -i >/dev/null; then
+MKFS_OPTS="-E android_sparse -t ext4 -L rootfs -M /root -b 4096"
+case ${TARGET_OS} in
+friendlywrt* | buildroot*)
     # set default uid/gid to 0
     MKFS_OPTS="-0 ${MKFS_OPTS}"
-fi
-
-if echo ${TARGET_OS} | grep buildroot -i >/dev/null; then
-    # set default uid/gid to 0
-    MKFS_OPTS="-0 ${MKFS_OPTS}"
-fi
+    ;;
+*)
+    ;;
+esac
 
 # clean device file
 (cd ${ROOTFS_DIR}/dev && find . ! -type d -exec rm {} \;)
-
-if [ ${IMG_SIZE} -eq 0 ]; then
+if [ ${IMG_SIZE} -le 0 ]; then
     # calc image size
-    ROOTFS_SIZE=$(((`du -s -B64M ${ROOTFS_DIR} | cut -f1` + 2) * 1024 * 1024 * 64))
+    IMG_SIZE=$(((`du -s -B64M ${ROOTFS_DIR} | cut -f1` + 2) * 1024 * 1024 * 64))
+    IMG_BLK=$((${IMG_SIZE} / 4096))
     INODE_SIZE=$((`find ${ROOTFS_DIR} | wc -l` + 128))
-
-    # make rootfs.img
-    ${MKFS} ${MKFS_OPTS} -l ${ROOTFS_SIZE} -i ${INODE_SIZE} ${IMG_FILE} ${ROOTFS_DIR}
-    if [ $? -ne 0 ]; then
-        echo "error: failed to  make rootfs.img."
-        exit 1
-    fi
+    # make fs
+    [ -f ${IMG_FILE} ] && rm -f ${IMG_FILE}
+    ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${ROOTFS_DIR} ${IMG_FILE} ${IMG_BLK}
 else
-    ${MKFS} ${MKFS_OPTS} -l ${IMG_SIZE} ${IMG_FILE} ${ROOTFS_DIR}
-    if [ $? -ne 0 ]; then
-        echo "error: failed to  make rootfs.img."
-        exit 1
-     fi
+    IMG_BLK=$((${IMG_SIZE} / 4096))
+    INODE_SIZE=$((`find ${ROOTFS_DIR} | wc -l` + 128))
+    [ -f ${IMG_FILE} ] && rm -f ${IMG_FILE}
+    ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${ROOTFS_DIR} ${IMG_FILE} ${IMG_BLK}
 fi
-
 if [ ${TARGET_OS} != "eflasher" ]; then
     ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
 fi
+
 echo "generating ${IMG_FILE} done."
 echo 0
 

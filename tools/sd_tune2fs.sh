@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
-# (http://www.friendlyarm.com)
+# Copyright (C) Guangzhou FriendlyElec Computer Tech. Co., Ltd.
+# (http://www.friendlyelec.com)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
