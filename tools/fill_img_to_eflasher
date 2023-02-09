@@ -34,16 +34,12 @@ OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
 }
 
 case ${TARGET_OS} in
-friendlycore-focal-arm64)
-        RAW_FILE=${SOC}-eflasher-friendlycore-focal-4.19-arm64-$(date +%Y%m%d).img ;;
-debian-*-desktop-arm64)
-        RAW_FILE=${SOC}-eflasher-debian-buster-desktop-4.19-arm64-$(date +%Y%m%d).img ;;
+buildroot*|friendlycore-focal-arm64|debian-*)
+        RAW_FILE=${SOC}-eflasher-${TARGET_OS%-*}-4.19-arm64-$(date +%Y%m%d).img ;;
 friendlycore-lite-focal-kernel4-arm64)
         RAW_FILE=${SOC}-eflasher-friendlycore-lite-focal-4.19-arm64-$(date +%Y%m%d).img ;;
 friendlywrt-kernel4)
         RAW_FILE=${SOC}-eflasher-friendlywrt-4.19-$(date +%Y%m%d).img ;;
-buildroot)
-        RAW_FILE=${SOC}-eflasher-buildroot-4.19-$(date +%Y%m%d).img ;;
 android*)
         RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
 *)
