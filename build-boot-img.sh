@@ -20,7 +20,7 @@ fi
 # Automatically re-run script under sudo if not root
 if [ $(id -u) -ne 0 ]; then
 	echo "Re-running script under sudo..."
- 	sudo "$0" "$@"
+ 	sudo --preserve-env "$0" "$@"
  	exit
 fi
 # 64M
