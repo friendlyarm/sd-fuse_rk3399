@@ -37,30 +37,35 @@ true ${TARGET_OS:=${1,,}}
 
 RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
 case ${TARGET_OS} in
-friendlycore-lite-focal-kernel5-arm64)
-	RAW_SIZE_MB=7800 ;;
-friendlywrt*)
-	RAW_SIZE_MB=1000 ;;
-eflasher)
-	RAW_SIZE_MB=7800
-	RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/partmap.txt
-	;;
-*)
-	echo "Error: Unsupported target OS: ${TARGET_OS}"
-	exit -1
-	;;
+	eflasher)
+		RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/partmap.txt
+		;;
 esac
+
+true ${RAW_SIZE_MB:=0}
+if [ $RAW_SIZE_MB -eq 0 ]; then
+	case ${TARGET_OS} in
+	friendlycore-lite-focal-kernel5-arm64)
+		RAW_SIZE_MB=7800 ;;
+	friendlywrt*)
+		RAW_SIZE_MB=1000 ;;
+	eflasher)
+		RAW_SIZE_MB=7800 ;;
+	*)
+		RAW_SIZE_MB=7800 ;;
+    esac
+fi
 
 if [ $# -eq 2 ]; then
 	RAW_FILE=$2
 else
 	case ${TARGET_OS} in
-    friendlycore-focal-arm64)
-      RAW_FILE=${SOC}-sd-friendlycore-focal-5.15-arm64-$(date +%Y%m%d).img
-	  ;; 
+	friendlycore-focal-arm64)
+		RAW_FILE=${SOC}-sd-friendlycore-focal-5.15-arm64-$(date +%Y%m%d).img
+		;; 
     friendlycore-lite-focal-kernel5-arm64)
-      RAW_FILE=${SOC}-sd-friendlycore-lite-focal-5.15-arm64-$(date +%Y%m%d).img
-	  ;; 
+		RAW_FILE=${SOC}-sd-friendlycore-lite-focal-5.15-arm64-$(date +%Y%m%d).img
+		;; 
 	friendlywrt22)
 		RAW_FILE=${SOC}-sd-friendlywrt-22.03-arm64-$(date +%Y%m%d).img
 		;;
@@ -148,7 +153,7 @@ if [ "x${TARGET_OS}" = "xeflasher" ]; then
 	# Automatically re-run script under sudo if not root
 	if [ $(id -u) -ne 0 ]; then
 		echo "Re-running script under sudo..."
-		sudo "$0" "$@"
+		sudo --preserve-env "$0" "$@"
 		exit
 	fi
 
