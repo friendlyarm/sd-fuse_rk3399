@@ -228,7 +228,7 @@ function build_kernel() {
     # build nft-fullcone
     (cd ${OUT} && {
         if [ ! -d nft-fullcone ]; then
-            git clone https://github.com/fullcone-nat-nftables/nft-fullcone -b master nft-fullcone
+            git clone https://github.com/friendlyarm/nft-fullcone -b master nft-fullcone
         fi
         (cd nft-fullcone/src/ && {
             make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} -C ${KERNEL_SRC} M=$(pwd)
@@ -279,7 +279,7 @@ function build_kernel() {
             find usr/src/linux-headers*/scripts/ \
                 -name "*.o" -o -name ".*.cmd" | xargs rm -rf
 
-            HEADERS_SCRIPT_DIR=${TOPPATH}/files/linux-headers-5.15-bin_arm64/scripts
+            HEADERS_SCRIPT_DIR=${TOPPATH}/files/linux-headers-5.10-bin_arm64/scripts
             if [ -d ${HEADERS_SCRIPT_DIR} ]; then
                 cp -avf ${HEADERS_SCRIPT_DIR}/* ./usr/src/linux-headers-*${KERNEL_VER}*/scripts/
                 if [ $? -ne 0 ]; then
