@@ -91,11 +91,12 @@ download_img eflasher
 # Automatically re-run script under sudo if not root
 if [ $(id -u) -ne 0 ]; then
 	echo "Re-running script under sudo..."
-	sudo "$0" "$@"
+	sudo --preserve-env "$0" "$@"
 	exit
 fi
 
-./mk-sd-image.sh eflasher && \
+true ${RAW_SIZE_MB:=0}
+RAW_SIZE_MB=${RAW_SIZE_MB} ./mk-sd-image.sh eflasher && \
 	./tools/fill_img_to_eflasher out/${SOC}-eflasher-$(date +%Y%m%d).img ${SOC} $@ && {
 		rm -f out/${SOC}-eflasher-$(date +%Y%m%d).img
 		mkdir -p out/images-for-eflasher
