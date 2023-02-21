@@ -116,15 +116,15 @@ if [ ! -d ${UBOOT_SRC}/../rkbin ]; then
     })
 fi
 
-if [ ! -d /opt/FriendlyARM/toolchain/6.4-aarch64 ]; then
-	echo "please install aarch64-gcc-6.4 first, using these commands: "
-	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1"
-	echo "\tcd prebuilts/gcc-x64"
-	echo "\tcat toolchain-6.4-aarch64.tar.gz* | sudo tar xz -C /"
+if [ ! -d /opt/FriendlyARM/toolchain/11.3-aarch64 ]; then
+	echo "please install aarch64-gcc-11.3 first, using these commands: "
+	echo "    git clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1"
+	echo "    cd prebuilts/gcc-x64"
+	echo "    sudo tar xvf toolchain-11.3-aarch64.tar.xz -C /"
 	exit 1
 fi
 
-export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
+export PATH=/opt/FriendlyARM/toolchain/11.3-aarch64/bin/:$PATH
 
 if ! [ -x "$(command -v simg2img)" ]; then
     sudo apt install android-tools-fsutils
