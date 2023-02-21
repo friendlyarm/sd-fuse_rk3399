@@ -33,7 +33,7 @@ KERNEL_BRANCH=nanopi4-v4.19.y
 ARCH=arm64
 KALL=nanopi4-images
 CROSS_COMPILE=aarch64-linux-gnu-
-export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
+export PATH=/opt/FriendlyARM/toolchain/11.3-aarch64/bin/:$PATH
 
 declare -a KERNEL_3RD_DRIVERS=("https://github.com/friendlyarm/rtl8821CU" "https://github.com/friendlyarm/rtl8822bu" "https://github.com/friendlyarm/rtl8812au")
 declare -a KERNEL_3RD_DRIVER_BRANCHES=("nanopi-r2" "nanopi-r2" "nanopi-r2")
@@ -160,11 +160,11 @@ if [ ! -d ${KERNEL_SRC} ]; then
 	git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}
 fi
 
-if [ ! -d /opt/FriendlyARM/toolchain/6.4-aarch64 ]; then
-	echo "please install aarch64-gcc-6.4 first, using these commands: "
-	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1"
-	echo "\tcd prebuilts/gcc-x64"
-	echo "\tcat toolchain-6.4-aarch64.tar.gz* | sudo tar xz -C /"
+if [ ! -d /opt/FriendlyARM/toolchain/11.3-aarch64 ]; then
+	echo "please install aarch64-gcc-11.3 first, using these commands: "
+	echo "    git clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1"
+	echo "    cd prebuilts/gcc-x64"
+	echo "    sudo tar xvf toolchain-11.3-aarch64.tar.xz -C /"
 	exit 1
 fi
 
@@ -184,7 +184,7 @@ fi
 
 function build_kernel() {
     cd ${KERNEL_SRC}
-    make distclean
+    [ -d .git ] && git clean -dxf
     touch .scmversion
     make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} ${KCFG}
     if [ $? -ne 0 ]; then
