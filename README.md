@@ -1,3 +1,4 @@
+
 # sd-fuse_rk3399
 ## Introduction
 This repository is a bunch of scripts to build bootable SD card images for FriendlyElec RK3399 boards, the main features are as follows:
@@ -23,7 +24,9 @@ For other kernel versions, please switch to the related git branch.
 * buildroot
 * friendlywrt21-kernel4
 * friendlycore-focal-arm64
-* debian-buster-desktop-arm64
+* debian-bullseye-desktop-arm64
+* debian-bullseye-minimal-arm64
+* debian-bullseye-core-arm64
 * friendlycore-lite-focal-kernel4-arm64
 * android10
 
@@ -56,7 +59,7 @@ If the files are not prepared in advance, the script will automatically download
 *Note: Here we use friendlycore-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), due to the bandwidth of the http server, we recommend downloading the file from the [NetDrive](https://download.friendlyelec.com/rk3399):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 sd-fuse_rk3399-kernel4.19
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
@@ -87,7 +90,7 @@ Disabling overlayfs is useful for exporting rootfs root filesystem.
 *Note: Here we use friendlycore-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), here you need to download the friendlycore-focal and eflasher [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 sd-fuse_rk3399-kernel4.19
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
@@ -107,7 +110,7 @@ out/rk3399-eflasher-friendlycore-focal-4.19-arm64-YYYYMMDD.img
 *Note: Here we use friendlycore-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 sd-fuse_rk3399-kernel4.19
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
@@ -144,7 +147,7 @@ Or build SD-to-eMMC image:
 *Note: Here we use friendlycore-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 sd-fuse_rk3399-kernel4.19
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
@@ -184,7 +187,7 @@ MK_HEADERS_DEB=1 ./build-kernel.sh friendlycore-focal-arm64
 *Note: Here we use friendlycore-focal system as an example* 
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher)::
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 sd-fuse_rk3399-kernel4.19
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz

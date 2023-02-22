@@ -24,7 +24,9 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 * buildroot
 * friendlywrt21-kernel4
 * friendlycore-focal-arm64
-* debian-buster-desktop-arm64
+* debian-bullseye-desktop-arm64
+* debian-bullseye-minimal-arm64
+* debian-bullseye-core-arm64
 * friendlycore-lite-focal-kernel4-arm64
 * android10
 
@@ -57,7 +59,7 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 *注: 这里以friendlycore-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压friendlycore-focal系统的[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), 由于http服务器带宽的关系, wget命令可能会比较慢, 推荐从网盘上下载同名的文件:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 sd-fuse_rk3399-kernel4.19
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
@@ -88,7 +90,7 @@ cp prebuilt/parameter-ext4.txt friendlycore-focal-arm64/parameter.txt
 *注: 这里以friendlycore-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), 这里需要下载friendlycore-focal和eflasher系统的文件:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 sd-fuse_rk3399-kernel4.19
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
@@ -108,7 +110,7 @@ out/rk3399-eflasher-friendlycore-focal-4.19-arm64-YYYYMMDD.img
 *注: 这里以friendlycore-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 sd-fuse_rk3399-kernel4.19
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
@@ -144,7 +146,7 @@ sudo ./build-rootfs-img.sh friendlycore-focal-arm64/rootfs friendlycore-focal-ar
 *注: 这里以friendlycore-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 sd-fuse_rk3399-kernel4.19
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
@@ -184,7 +186,7 @@ MK_HEADERS_DEB=1 ./build-kernel.sh friendlycore-focal-arm64
 *注: 这里以friendlycore-focal系统为例进行说明* 
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 sd-fuse_rk3399-kernel4.19
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
