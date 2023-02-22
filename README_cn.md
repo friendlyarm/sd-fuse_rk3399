@@ -56,7 +56,7 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 *注: 这里以friendlycore-lite-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压friendlycore-lite-focal系统的[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), 由于http服务器带宽的关系, wget命令可能会比较慢, 推荐从网盘上下载同名的文件:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y --single-branch sd-fuse_rk3399-kernel5.15
 cd sd-fuse_rk3399-kernel5.15
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
 tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
@@ -79,7 +79,7 @@ out/rk3399-sd-friendlycore-lite-focal-5.15-arm64-YYYYMMDD.img
 *注: 这里以friendlycore-lite-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), 这里需要下载friendlycore-lite-focal和eflasher系统的文件:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y --single-branch sd-fuse_rk3399-kernel5.15
 cd sd-fuse_rk3399-kernel5.15
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
 tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
@@ -99,7 +99,7 @@ out/rk3399-eflasher-friendlycore-lite-focal-5.15-arm64-YYYYMMDD.img
 *注: 这里以friendlycore-lite-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y --single-branch sd-fuse_rk3399-kernel5.15
 cd sd-fuse_rk3399-kernel5.15
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
 tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
@@ -133,7 +133,7 @@ sudo ./build-rootfs-img.sh friendlycore-lite-focal-kernel5-arm64/rootfs friendly
 *注: 这里以friendlycore-lite-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y --single-branch sd-fuse_rk3399-kernel5.15
 cd sd-fuse_rk3399-kernel5.15
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
 tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
@@ -173,7 +173,7 @@ MK_HEADERS_DEB=1 ./build-kernel.sh friendlycore-lite-focal-kernel5-arm64
 *注: 这里以friendlycore-lite-focal系统为例进行说明* 
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y --single-branch sd-fuse_rk3399-kernel5.15
 cd sd-fuse_rk3399-kernel5.15
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
 tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz

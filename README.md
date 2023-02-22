@@ -56,7 +56,7 @@ If the files are not prepared in advance, the script will automatically download
 *Note: Here we use friendlycore-lite-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), due to the bandwidth of the http server, we recommend downloading the file from the [NetDrive](https://download.friendlyelec.com/rk3399):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y --single-branch sd-fuse_rk3399-kernel5.15
 cd sd-fuse_rk3399-kernel5.15
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
 tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
@@ -79,7 +79,7 @@ out/rk3399-sd-friendlycore-lite-focal-5.15-arm64-YYYYMMDD.img
 *Note: Here we use friendlycore-lite-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), here you need to download the friendlycore-lite-focal and eflasher [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y --single-branch sd-fuse_rk3399-kernel5.15
 cd sd-fuse_rk3399-kernel5.15
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
 tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
@@ -99,7 +99,7 @@ out/rk3399-eflasher-friendlycore-lite-focal-5.15-arm64-YYYYMMDD.img
 *Note: Here we use friendlycore-lite-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y --single-branch sd-fuse_rk3399-kernel5.15
 cd sd-fuse_rk3399-kernel5.15
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
 tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
@@ -134,7 +134,7 @@ Or build SD-to-eMMC image:
 *Note: Here we use friendlycore-lite-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y --single-branch sd-fuse_rk3399-kernel5.15
 cd sd-fuse_rk3399-kernel5.15
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
 tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
@@ -174,7 +174,7 @@ MK_HEADERS_DEB=1 ./build-kernel.sh friendlycore-lite-focal-kernel5-arm64
 *Note: Here we use friendlycore-lite-focal system as an example* 
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher)::
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y sd-fuse_rk3399-kernel5.15
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-5.15.y --single-branch sd-fuse_rk3399-kernel5.15
 cd sd-fuse_rk3399-kernel5.15
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
 tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
