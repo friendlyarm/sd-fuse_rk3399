@@ -8,14 +8,18 @@ set -eu
 
 # Automatically re-run script under sudo if not root
 if [ $(id -u) -ne 0 ]; then
-        echo "Re-running script under sudo..."
-        sudo --preserve-env "$0" "$@"
-        exit
+    echo "Re-running script under sudo..."
+    sudo --preserve-env "$0" "$@"
+    exit
 fi
 
 TOP=$PWD
-true ${MKFS:="${TOP}/tools/make_ext4fs"}
-true ${MKFS:="${TOP}/tools/make_ext4fs"}
+export MKE2FS_CONFIG="${TOP}/tools/mke2fs.conf"
+if [ ! -f ${MKE2FS_CONFIG} ]; then
+    echo "error: ${MKE2FS_CONFIG} not found."
+    exit 1
+fi
+true ${MKFS:="${TOP}/tools/mke2fs"}
 
 true ${SOC:=rk3399}
 ARCH=arm64
@@ -52,6 +56,7 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
         echo "failed to mount ${TARGET_OS}/r.img."
         exit 1
     fi
+    rm -rf ${OUT}/rootfs_new/*
     cp -af ${OUT}/rootfs_mnt/* ${OUT}/rootfs_new/
     umount ${OUT}/rootfs_mnt
     rm -rf ${OUT}/rootfs_mnt
@@ -64,34 +69,37 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
     rm -rf ${OUT}/rootfs_new/lib/modules/*
     cp -af ${KMODULES_OUTDIR}/lib/modules/* ${OUT}/rootfs_new/lib/modules/
 
-    MKFS_OPTS="-s -a root -L rootfs"
-    if echo ${TARGET_OS} | grep friendlywrt -i >/dev/null; then
+    MKFS_OPTS="-E android_sparse -t ext4 -L rootfs -M /root -b 4096"
+    case ${TARGET_OS} in
+    friendlywrt* | buildroot*)
         # set default uid/gid to 0
         MKFS_OPTS="-0 ${MKFS_OPTS}"
-    fi
+        ;;
+    *)
+        ;;
+    esac
 
     # Make rootfs.img
     ROOTFS_DIR=${OUT}/rootfs_new
+
+    case ${TARGET_OS} in
+    friendlywrt*)
+        echo "prepare kernel modules for friendlywrt ..."
+        ${TOP}/tools/prepare_friendlywrt_kernelmodules.sh ${ROOTFS_DIR}
+        ;;
+    *)
+        ;;
+    esac
+
+    # clean device files
+    (cd ${ROOTFS_DIR}/dev && find . ! -type d -exec rm {} \;)
     # calc image size
-    ROOTFS_SIZE=`du -s -B 1 ${ROOTFS_DIR} | cut -f1`
-    # +1024m + 10% rootfs size
-    MAX_IMG_SIZE=$((${ROOTFS_SIZE} + 1024*1024*1024 + ${ROOTFS_SIZE}/10))
-    TMPFILE=`tempfile`
-    ${MKFS} -s -l ${MAX_IMG_SIZE} -a root -L rootfs /dev/null ${ROOTFS_DIR} > ${TMPFILE}
-    IMG_SIZE=`cat ${TMPFILE} | grep "Suggest size:" | cut -f2 -d ':' | awk '{gsub(/^\s+|\s+$/, "");print}'`
-    rm -f ${TMPFILE}
-
-    if [ ${ROOTFS_SIZE} -gt ${IMG_SIZE} ]; then
-            echo "IMG_SIZE less than ROOTFS_SIZE, why?"
-            exit 1
-    fi
-
+    IMG_SIZE=$(((`du -s -B64M ${ROOTFS_DIR} | cut -f1` + 2) * 1024 * 1024 * 64))
+    IMG_BLK=$((${IMG_SIZE} / 4096))
+    INODE_SIZE=$((`find ${ROOTFS_DIR} | wc -l` + 128))
     # make fs
-    ${MKFS} ${MKFS_OPTS} -l ${IMG_SIZE} ${TARGET_OS}/rootfs.img ${ROOTFS_DIR}
-    if [ $? -ne 0 ]; then
-            echo "error: failed to make rootfs.img."
-            exit 1
-    fi
+    [ -f ${TARGET_OS}/rootfs.img ] && rm -f ${TARGET_OS}/rootfs.img
+    ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${ROOTFS_DIR} ${TARGET_OS}/rootfs.img ${IMG_BLK}
 
     if [ ${TARGET_OS} != "eflasher" ]; then
         echo "IMG_SIZE=${IMG_SIZE}" > ${OUT}/${TARGET_OS}_rootfs-img.info
