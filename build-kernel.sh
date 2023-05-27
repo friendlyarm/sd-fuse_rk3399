@@ -243,6 +243,8 @@ function build_kernel() {
         fi
         (cd rtw88/ && {
             make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} -C ${KERNEL_SRC} M=$(pwd)
+            # Disable rtw88 usb support
+            rm -f rtw88_*.ko rtw_usb.ko
             cp *.ko ${KMODULES_OUTDIR}/lib/modules/${KERNEL_VER} -afv
         })
     })

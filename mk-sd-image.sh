@@ -82,7 +82,7 @@ else
 		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
 		;;
 	*)
-		RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-${TARGET_OS%-*}-5.15-arm64-$(date +%Y%m%d).img
 		;;
 	esac
 fi

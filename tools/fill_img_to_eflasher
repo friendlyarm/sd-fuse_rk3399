@@ -78,7 +78,6 @@ gen_eflasher_conf()
 {
     local AutoFlashOSName=
     if [ ${3} = "yes" ]; then
-		echo "eflasher autostart: ${2}"
         AutoFlashOSName=${2}
     fi
 	OSNamesMergeWithComma="friendlywr21,friendlywr21-docker,friendlywr22,friendlywr22-docker,friendlycore-lite-focal-kernel5-arm64"
