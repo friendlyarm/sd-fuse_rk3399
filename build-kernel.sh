@@ -240,6 +240,7 @@ function build_kernel() {
     (cd ${OUT} && {
         if [ ! -d rtw88 ]; then
             git clone https://github.com/lwfinger/rtw88 -b master rtw88
+            (cd rtw88 && git reset 4a9cece58e6ec7894544783ac84808ce61fb5d22 --hard)
         fi
         (cd rtw88/ && {
             make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} -C ${KERNEL_SRC} M=$(pwd)
