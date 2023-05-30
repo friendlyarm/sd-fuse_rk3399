@@ -74,6 +74,14 @@ The following flashable image file will be generated, it is now ready to be used
 out/rk3399-sd-friendlycore-lite-focal-5.15-arm64-YYYYMMDD.img
 ```
 
+#### Create an SD card image that does not use OverlayFS
+The following command will create an SD card image with OverlayFS disabled:
+```
+cp prebuilt/parameter-ext4.txt friendlycore-lite-focal-kernel5-arm64/parameter.txt
+./mk-sd-image.sh friendlycore-lite-focal-kernel5-arm64
+```
+Disabling overlayfs is useful for exporting root filesystem.
+
 
 ### Build your own SD-to-eMMC Image
 *Note: Here we use friendlycore-lite-focal system as an example*  
@@ -94,8 +102,19 @@ The following flashable image file will be generated, ready to be used to boot t
 ```
 out/rk3399-eflasher-friendlycore-lite-focal-5.15-arm64-YYYYMMDD.img
 ```
-
-### Build your own root filesystem image
+### Backup rootfs and create custom SD image (to burn your application into other boards)
+#### Backup rootfs
+Run the following commands on your target board. These commands will back up the entire root partition:
+```
+sudo passwd root
+su root
+cd /
+tar --warning=no-file-changed -cvpzf /rootfs.tar.gz \
+    --exclude=/rootfs.tar.gz --exclude=/var/lib/docker/runtimes \
+    --exclude=/etc/firstuser --exclude=/etc/friendlyelec-release \
+    --exclude=/usr/local/first_boot_flag --one-file-system /
+```
+#### Making a bootable SD card from a root filesystem
 *Note: Here we use friendlycore-lite-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
@@ -104,7 +123,7 @@ cd sd-fuse_rk3399-kernel5.15
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
 tar xvzf friendlycore-lite-focal-kernel5-arm64-images.tgz
 ```
-Download the compressed root file system tar ball and unzip it, the unzip command requires root privileges, so you need put sudo in front of the command:
+Unzip the rootfs.tar.gz exported in the previous section, or download the filesystem archive from the following URL and unzip it, the unzip command requires root privileges, so you need put sudo in front of the command:
 ```
 wget http://112.124.9.243/dvdfiles/rk3399/rootfs/rootfs-friendlycore-lite-focal-arm64.tgz
 sudo tar xzf rootfs-friendlycore-lite-focal-arm64.tgz
@@ -125,10 +144,6 @@ Or build SD-to-eMMC image:
 ```
 ./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64
 ```
-#### Tips
-
-* Using the debootstrap tool, you can customize the file system, pre-install packages, etc.
-
 
 ### Compiling the Kernel
 *Note: Here we use friendlycore-lite-focal system as an example*  
