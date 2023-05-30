@@ -83,7 +83,7 @@ out/rk3399-sd-friendlycore-focal-4.19-arm64-YYYYMMDD.img
 cp prebuilt/parameter-ext4.txt friendlycore-focal-arm64/parameter.txt
 ./mk-sd-image.sh friendlycore-focal-arm64
 ```
-使用此SD卡镜像制作SD启动卡, 运行系统并进行量产所需的设置后, 将SD卡插入到Linux电脑并挂载, 使用cp或rsync命令拷贝最后一个分区的文件和目录, 即可得到完整的可用于量产的rootfs根文件系统, 最后[参考此处的内容](#定制文件系统)制作成可量产的SD卡镜像或eMMC镜像。
+使用此SD卡镜像制作SD启动卡, 运行系统并进行量产所需的设置后, 将SD卡插入到Linux电脑并挂载, 使用cp或rsync命令拷贝最后一个分区的文件和目录, 即可得到完整的可用于量产的rootfs根文件系统, 最后[参考此处的内容](#从根文件系统制作一个可启动的SD卡)制作成可量产的SD卡镜像或eMMC镜像。
 
 
 ### 重新打包 SD-to-eMMC 卡刷固件
@@ -106,7 +106,19 @@ tar xvzf emmc-flasher-images.tgz
 out/rk3399-eflasher-friendlycore-focal-4.19-arm64-YYYYMMDD.img
 ```
 
-### 定制文件系统
+### 备份文件系统并创建SD映像(将系统及应用复制到另一块开发板)
+#### 备份根文件系统
+开发板上执行以下命令，备份整个文件系统（包括OS与数据)：  
+```
+sudo passwd root
+su root
+cd /
+tar --warning=no-file-changed -cvpzf /rootfs.tar.gz \
+    --exclude=/rootfs.tar.gz --exclude=/var/lib/docker/runtimes \
+    --exclude=/etc/firstuser --exclude=/etc/friendlyelec-release \
+    --exclude=/usr/local/first_boot_flag --one-file-system /
+```
+#### 从根文件系统制作一个可启动的SD卡
 *注: 这里以friendlycore-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
@@ -115,7 +127,7 @@ cd sd-fuse_rk3399-kernel4.19
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
 ```
-下载文件系统压缩包并解压, 需要使用root权限, 因此解压命令需要加上sudo:
+解压上一章节导出的rootfs.tar.gz，或者从以下网址下载文件系统压缩包并解压, 需要使用root权限, 因此解压命令需要加上sudo:
 ```
 wget http://112.124.9.243/dvdfiles/rk3399/rootfs/rootfs-friendlycore-focal-arm64.tgz
 sudo tar xzf rootfs-friendlycore-focal-arm64.tgz
@@ -136,11 +148,6 @@ sudo ./build-rootfs-img.sh friendlycore-focal-arm64/rootfs friendlycore-focal-ar
 ```
 ./mk-emmc-image.sh friendlycore-focal-arm64
 ```
-#### 文件系统Tips:
-
-* 要从一个SD卡中导出定制好的文件系统, 你需要提前[禁用OverlayFS](#创建一个不使用overlayfs的sd卡镜像)
-
-* 可利用debootstrap工具对文件系统进行定制, 预装软件包等
 
 ### 编译内核
 *注: 这里以friendlycore-focal系统为例进行说明*  
