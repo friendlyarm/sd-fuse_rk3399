@@ -97,7 +97,19 @@ tar xvzf emmc-flasher-images.tgz
 out/rk3399-eflasher-friendlydesktop-4.4-arm64-YYYYMMDD.img
 ```
 
-### 定制文件系统
+### 备份文件系统并创建SD映像(将系统及应用复制到另一块开发板)
+#### 备份根文件系统
+开发板上执行以下命令，备份整个文件系统（包括OS与数据)：  
+```
+sudo passwd root
+su root
+cd /
+tar --warning=no-file-changed -cvpzf /rootfs.tar.gz \
+    --exclude=/rootfs.tar.gz --exclude=/var/lib/docker/runtimes \
+    --exclude=/etc/firstuser --exclude=/etc/friendlyelec-release \
+    --exclude=/usr/local/first_boot_flag --one-file-system /
+```
+#### 从根文件系统制作一个可启动的SD卡
 *注: 这里以friendlydesktop系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
@@ -106,7 +118,7 @@ cd sd-fuse_rk3399-kernel4.4
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlydesktop-arm64-images.tgz
 tar xvzf friendlydesktop-arm64-images.tgz
 ```
-下载文件系统压缩包并解压, 需要使用root权限, 因此解压命令需要加上sudo:
+解压上一章节导出的rootfs.tar.gz，或者从以下网址下载文件系统压缩包并解压, 需要使用root权限, 因此解压命令需要加上sudo:
 ```
 wget http://112.124.9.243/dvdfiles/rk3399/rootfs/rootfs-friendlydesktop-arm64.tgz
 sudo tar xzf rootfs-friendlydesktop-arm64.tgz
@@ -127,9 +139,6 @@ sudo ./build-rootfs-img.sh friendlydesktop-arm64/rootfs friendlydesktop-arm64
 ```
 ./mk-emmc-image.sh friendlydesktop-arm64
 ```
-#### 文件系统Tips:
-
-* 可利用debootstrap工具对文件系统进行定制, 预装软件包等
 
 ### 编译内核
 *注: 这里以friendlydesktop系统为例进行说明*  
