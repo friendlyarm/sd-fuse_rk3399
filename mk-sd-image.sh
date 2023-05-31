@@ -48,7 +48,7 @@ true ${RAW_SIZE_MB:=0}
 if [ $RAW_SIZE_MB -eq 0 ]; then
 	case ${TARGET_OS} in
 	friendlywrt*)
-		RAW_SIZE_MB=1000 ;;
+		RAW_SIZE_MB=1500 ;;
 	buildroot*)
 		RAW_SIZE_MB=7800 ;;
 	debian-*)
