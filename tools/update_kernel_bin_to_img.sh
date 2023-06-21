@@ -94,7 +94,7 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
     # clean device files
     (cd ${ROOTFS_DIR}/dev && find . ! -type d -exec rm {} \;)
     # calc image size
-    IMG_SIZE=$(((`du -s -B64M ${ROOTFS_DIR} | cut -f1` + 2) * 1024 * 1024 * 64))
+    IMG_SIZE=$(((`du -s -B64M ${ROOTFS_DIR} | cut -f1` + 3) * 1024 * 1024 * 64))
     IMG_BLK=$((${IMG_SIZE} / 4096))
     INODE_SIZE=$((`find ${ROOTFS_DIR} | wc -l` + 128))
     # make fs
