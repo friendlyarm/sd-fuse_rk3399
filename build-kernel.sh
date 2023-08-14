@@ -33,7 +33,7 @@ KERNEL_BRANCH=nanopi5-v5.10.y_opt
 ARCH=arm64
 KALL=nanopi4-images
 CROSS_COMPILE=aarch64-linux-gnu-
-export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
+export PATH=/opt/FriendlyARM/toolchain/11.3-aarch64/bin/:$PATH
 
 declare -a KERNEL_3RD_DRIVERS=("https://github.com/friendlyarm/rtl8821CU" "https://github.com/friendlyarm/rtl8822bu" "https://github.com/friendlyarm/rtl8812au")
 declare -a KERNEL_3RD_DRIVER_BRANCHES=("nanopi-r2" "nanopi-r2" "nanopi-r2")
@@ -82,7 +82,7 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
 
 function usage() {
-       echo "Usage: $0 <debian-buster-desktop-arm64>"
+       echo "Usage: $0 <buildroot|debian-buster-desktop-arm64|debian-bullseye-desktop-arm64|debian-bullseye-minimal-arm64|debian-bullseye-core-arm64|friendlycore-focal-arm64|friendlywrt22|friendlywrt22-docker|friendlywrt21|friendlywrt21-docker|eflasher>"
        echo "# example:"
        echo "# clone kernel source from github:"
        echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
@@ -111,7 +111,7 @@ true ${TARGET_OS:=${1,,}}
 
 
 case ${TARGET_OS} in
-debian-buster-* )
+buildroot* | friendlycore-* | debian-* | ubuntu-* | friendlywrt* )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -133,8 +133,8 @@ download_img() {
 Warn: Image not found for ${1}
 ----------------
 you may download it from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
-the image files are stored in a directory called images-for-eflasher, for example:
-    tar xvzf /path/to/NETDISK/images-for-eflasher/${ROMFILE}
+the image files are stored in a directory called "03_Partition image files", for example:
+    tar xvzf /path/to/NetDrive/03_Partition\ image\ files/${ROMFILE}
 ----------------
 Do you want to download it now via http? (Y/N):
 EOF
@@ -160,11 +160,11 @@ if [ ! -d ${KERNEL_SRC} ]; then
 	git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}
 fi
 
-if [ ! -d /opt/FriendlyARM/toolchain/6.4-aarch64 ]; then
-	echo "please install aarch64-gcc-6.4 first, using these commands: "
-	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1"
-	echo "\tcd prebuilts/gcc-x64"
-	echo "\tcat toolchain-6.4-aarch64.tar.gz* | sudo tar xz -C /"
+if [ ! -d /opt/FriendlyARM/toolchain/11.3-aarch64 ]; then
+	echo "please install aarch64-gcc-11.3 first, using these commands: "
+	echo "    git clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1"
+	echo "    cd prebuilts/gcc-x64"
+	echo "    sudo tar xvf toolchain-11.3-aarch64.tar.xz -C /"
 	exit 1
 fi
 
@@ -184,7 +184,7 @@ fi
 
 function build_kernel() {
     cd ${KERNEL_SRC}
-    git clean -dxf
+    [ -d .git ] && git clean -dxf
     touch .scmversion
     make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} ${KCFG}
     if [ $? -ne 0 ]; then

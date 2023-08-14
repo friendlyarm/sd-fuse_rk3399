@@ -1,8 +1,8 @@
 #!/bin/bash
 set -eu
 
-# Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
-# (http://www.friendlyarm.com)
+# Copyright (C) Guangzhou FriendlyElec Computer Tech. Co., Ltd.
+# (http://www.friendlyelec.com)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -62,7 +62,7 @@ fi
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-debian-buster-* )
+buildroot* | friendlycore-* | debian-* | friendlywrt* | eflasher )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -85,8 +85,8 @@ download_img() {
 Warn: Image not found for "${1}"
 ----------------
 you may download it from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
-the image files are stored in a directory called images-for-eflasher, for example:
-    tar xvzf /path/to/NETDISK/images-for-eflasher/${ROMFILE}
+the image files are stored in a directory called "03_Partition image files", for example:
+    tar xvzf /path/to/NetDrive/03_Partition\ image\ files/${ROMFILE}
 ----------------
 Do you want to download it now via http? (Y/N):
 EOF
@@ -117,15 +117,15 @@ if [ ! -d ${UBOOT_SRC}/../rkbin ]; then
     })
 fi
 
-if [ ! -d /opt/FriendlyARM/toolchain/6.4-aarch64 ]; then
-	echo "please install aarch64-gcc-6.4 first, using these commands: "
-	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1"
-	echo "\tcd prebuilts/gcc-x64"
-	echo "\tcat toolchain-6.4-aarch64.tar.gz* | sudo tar xz -C /"
+if [ ! -d /opt/FriendlyARM/toolchain/11.3-aarch64 ]; then
+	echo "please install aarch64-gcc-11.3 first, using these commands: "
+	echo "    git clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1"
+	echo "    cd prebuilts/gcc-x64"
+	echo "    sudo tar xvf toolchain-11.3-aarch64.tar.xz -C /"
 	exit 1
 fi
 
-export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
+export PATH=/opt/FriendlyARM/toolchain/11.3-aarch64/bin/:$PATH
 
 if ! [ -x "$(command -v simg2img)" ]; then
     sudo apt install android-tools-fsutils

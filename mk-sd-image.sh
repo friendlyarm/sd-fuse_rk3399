@@ -39,31 +39,46 @@ true ${TARGET_OS:=${1,,}}
 
 RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
 case ${TARGET_OS} in
-debian-buster-desktop-arm64)
-    RAW_SIZE_MB=7800 ;;
-eflasher)
-	RAW_SIZE_MB=7800
-	RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/partmap.txt
-	;;
-*)
-	echo "Error: Unsupported target OS: ${TARGET_OS}"
-
-	exit -1
-	;;
+	eflasher)
+		RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/partmap.txt
+		;;
 esac
 
+true ${RAW_SIZE_MB:=0}
+if [ $RAW_SIZE_MB -eq 0 ]; then
+	case ${TARGET_OS} in
+	friendlywrt*)
+		RAW_SIZE_MB=1500 ;;
+	buildroot*)
+		RAW_SIZE_MB=7800 ;;
+	debian-*)
+		RAW_SIZE_MB=7800 ;;
+	ubuntu-*)
+		RAW_SIZE_MB=7800 ;;
+	friendlycore-*)
+		RAW_SIZE_MB=7800 ;;
+	eflasher)
+		RAW_SIZE_MB=7800 ;;
+	*)
+		RAW_SIZE_MB=7800 ;;
+	esac
+fi
+	 
 if [ $# -eq 2 ]; then
 	RAW_FILE=$2
 else
 	case ${TARGET_OS} in
-    debian-buster-desktop-arm64)
-        RAW_FILE=${SOC}-sd-debian-buster-desktop-5.10-arm64-$(date +%Y%m%d).img
+	buildroot*|debian-*|ubuntu-*|friendlycore-*)
+		RAW_FILE=${SOC}-sd-${TARGET_OS%-*}-5.10-arm64-$(date +%Y%m%d).img
+		;;
+	friendlywrt*)
+		RAW_FILE=${SOC}-sd-friendlywrt-5.10-arm64-$(date +%Y%m%d).img
 		;;
 	eflasher)
 		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
-        ;;
+		;;
 	*)
-		RAW_FILE=${SOC}-${TARGET_OS}-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-${TARGET_OS}-$(date +%Y%m%d).img
 		;;
 	esac
 fi
@@ -77,8 +92,8 @@ if [ ! -f "${RK_PARAMETER_TXT}" ]; then
 Warn: Image not found for ${1}
 ----------------
 you may download it from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
-the image files are stored in a directory called images-for-eflasher, for example:
-    tar xvzf /path/to/NETDISK/images-for-eflasher/${ROMFILE}
+the image files are stored in a directory called "03_Partition image files", for example:
+    tar xvzf /path/to/NetDrive/03_Partition\ image\ files/${ROMFILE}
 ----------------
 Do you want to download it now via http? (Y/N):
 EOF
@@ -134,7 +149,7 @@ if [ "x${TARGET_OS}" = "xeflasher" ]; then
 	# Automatically re-run script under sudo if not root
 	if [ $(id -u) -ne 0 ]; then
 		echo "Re-running script under sudo..."
-		sudo "$0" "$@"
+		sudo --preserve-env "$0" "$@"
 		exit
 	fi
 
@@ -192,3 +207,4 @@ echo "---------------------------------"
 echo "RAW image successfully created (`date +%T`)."
 ls -l ${RAW_FILE}
 echo "Tip: You can compress it to save disk space."
+

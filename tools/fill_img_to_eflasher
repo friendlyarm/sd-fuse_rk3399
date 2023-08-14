@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -eu
+set -eu
 
 # ----------------------------------------------------------
 # base setup
@@ -34,9 +34,16 @@ OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
 }
 
 case ${TARGET_OS} in
-
-debian-buster-desktop-arm64)
-        RAW_FILE=${SOC}-eflasher-debian-buster-desktop-5.10-arm64-$(date +%Y%m%d).img ;;
+buildroot*|debian-*|friendlycore-*)
+	RAW_FILE=${SOC}-eflasher-${TARGET_OS%-*}-5.10-arm64-$(date +%Y%m%d).img ;;
+friendlywrt22)
+	RAW_FILE=${SOC}-eflasher-friendlywrt-22.03-$(date +%Y%m%d).img ;;
+friendlywrt22-docker)
+	RAW_FILE=${SOC}-eflasher-friendlywrt-22.03-docker-$(date +%Y%m%d).img ;;
+friendlywrt21)
+	RAW_FILE=${SOC}-eflasher-friendlywrt-21.02-$(date +%Y%m%d).img ;;
+friendlywrt21-docker)
+	RAW_FILE=${SOC}-eflasher-friendlywrt-21.02-docker-$(date +%Y%m%d).img ;;
 *)
         RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
 esac
@@ -45,12 +52,24 @@ Args=( "$@" )
 # skip arg1,arg2,arg3
 for (( i=3; i<${#Args[@]}; i++ ));
 do
-    if [ "x${Args[$i]}" = x"autostart=yes" ]; then
-        AUTOSTART=yes
-    elif [ "x${Args[$i]}" = x"autostart=y" ]; then
-        AUTOSTART=yes
-    elif [[ ! -z $(echo ${Args[$i]} | grep "filename=") ]]; then
+	if [[ ! -z $(echo ${Args[$i]} | grep "autostart=" -i) ]]; then
+		YESORNO=$(echo ${Args[$i]:10} | tr '[:lower:]' '[:upper:]')
+		case ${YESORNO} in
+		YES|Y)
+			AUTOSTART=yes
+			;;
+		NO|N)
+			AUTOSTART=no
+			;;
+		*)
+			;;
+		esac
+	elif [[ ! -z $(echo ${Args[$i]} | grep "filename=") ]]; then
         RAW_FILE=${Args[$i]:9}
+    elif [[ ! -z $(echo ${Args[$i]} | grep "=") ]]; then
+		echo "Warning: unknow arg: ${Args[$i]}"
+    else
+        RAW_FILE=${Args[$i]}
     fi
 done
 
@@ -60,8 +79,8 @@ gen_eflasher_conf()
     if [ ${3} = "yes" ]; then
         AutoFlashOSName=${2}
     fi
-    OSNamesMergeWithComma="debian-buster-desktop-arm64"
-    cat > ${1}/eflasher.conf <<EOL
+	OSNamesMergeWithComma="buildroot,friendlywr21,friendlywr22,debian-buster-desktop-arm64,debian-bullseye-core-arm64,debian-bullseye-minimal-arm64,debian-bullseye-desktop-arm64,friendlycore-focal-arm64"
+	cat > ${1}/eflasher.conf <<EOL
 ; This is the eFlasher configuration file.
 ; See http://wiki.friendlyarm.com/wiki/index.php/EFlasher for detailed information.
 
