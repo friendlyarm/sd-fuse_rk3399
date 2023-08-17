@@ -53,6 +53,8 @@ if [ $RAW_SIZE_MB -eq 0 ]; then
 		RAW_SIZE_MB=7800 ;;
 	debian-*)
 		RAW_SIZE_MB=7800 ;;
+	ubuntu-*)
+		RAW_SIZE_MB=7800 ;;
 	friendlycore-*)
 		RAW_SIZE_MB=7800 ;;
 	android*)
@@ -68,15 +70,12 @@ if [ $# -eq 2 ]; then
 	RAW_FILE=$2
 else
 	case ${TARGET_OS} in
+	buildroot*|debian-*|ubuntu-*|friendlycore-*)
+		RAW_FILE=${SOC}-sd-${TARGET_OS%-*}-4.19-arm64-$(date +%Y%m%d).img
+		;;
 	friendlywrt*)
 		RAW_FILE=${SOC}-sd-friendlywrt-4.19-arm64-$(date +%Y%m%d).img
 		;;
-	buildroot*|friendlycore-focal-arm64|debian-*)
-		RAW_FILE=${SOC}-sd-${TARGET_OS%-*}-4.19-arm64-$(date +%Y%m%d).img
-		;;
-    friendlycore-lite-focal-kernel4-arm64)
-        RAW_FILE=${SOC}-sd-friendlycore-lite-focal-4.19-arm64-$(date +%Y%m%d).img
-        ;;
 	android*)
         RAW_FILE=${SOC}-sd-${TARGET_OS}-$(date +%Y%m%d).img
         ;;
@@ -84,7 +83,7 @@ else
 		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
 		;;
 	*)
-		RAW_FILE=${SOC}-${TARGET_OS}-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-${TARGET_OS}-$(date +%Y%m%d).img
 		;;
 	esac
 fi

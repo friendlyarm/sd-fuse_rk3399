@@ -6,7 +6,7 @@ friendlywrt-kernel4)
         ROMFILE=friendlywrt-kernel4-images.tgz;;
 buildroot)
         ROMFILE=buildroot-images.tgz;;
-debian-*|friendlycore-focal-arm64|friendlycore-lite-focal-kernel4-arm64)
+debian-*|ubuntu-*|friendlycore-focal-arm64|friendlycore-lite-focal-kernel4-arm64)
         ROMFILE=${TARGET_OS%-*}-arm64-images.tgz;;
 android10)
         ROMFILE=android-10-images.tgz;;

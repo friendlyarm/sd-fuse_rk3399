@@ -111,7 +111,7 @@ true ${TARGET_OS:=${1,,}}
 
 
 case ${TARGET_OS} in
-buildroot*|debian-*|android10|android11|friendlycore-*|friendlywrt* )
+buildroot* | debian-* | ubuntu-* | android10 | android11 | friendlycore-* | friendlywrt* )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
