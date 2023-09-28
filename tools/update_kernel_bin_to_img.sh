@@ -23,7 +23,6 @@ true ${MKFS:="${TOP}/tools/mke2fs"}
 
 true ${SOC:=rk3399}
 ARCH=arm64
-KCFG=nanopi4_linux_defconfig
 KIMG=kernel.img
 KDTB=resource.img
 CROSS_COMPILE=aarch64-linux-gnu-
@@ -115,8 +114,15 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
     ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${ROOTFS_DIR} ${TARGET_OS}/rootfs.img ${IMG_BLK}
 
     if [ ${TARGET_OS} != "eflasher" ]; then
-        echo "IMG_SIZE=${IMG_SIZE}" > ${OUT}/${TARGET_OS}_rootfs-img.info
-        ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
+        case ${TARGET_OS} in
+        openmediavault-*)
+            # disable overlayfs for openmediavault
+            cp ${TOP}/prebuilt/parameter-ext4.txt ${TOP}/${TARGET_OS}/parameter.txt
+            ;;
+        *)
+            ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
+            ;;
+        esac
     fi
 else 
     echo "not found ${TARGET_OS}/rootfs.img"

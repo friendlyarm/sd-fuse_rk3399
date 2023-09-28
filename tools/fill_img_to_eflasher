@@ -34,8 +34,10 @@ OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
 }
 
 case ${TARGET_OS} in
-friendlycore-lite-focal-kernel5-arm64)
-        RAW_FILE=${SOC}-eflasher-friendlycore-lite-focal-5.15-arm64-$(date +%Y%m%d).img ;;
+friendlycore-lite-focal-kernel6-arm64)
+        RAW_FILE=${SOC}-eflasher-friendlycore-lite-focal-6.1-arm64-$(date +%Y%m%d).img ;;
+openmediavault-arm64)
+        RAW_FILE=${SOC}-eflasher-openmediavault-6.1-arm64-$(date +%Y%m%d).img ;;
 friendlywrt22)
         RAW_FILE=${SOC}-eflasher-friendlywrt-22.03-$(date +%Y%m%d).img ;;
 friendlywrt22-docker)
@@ -80,7 +82,7 @@ gen_eflasher_conf()
     if [ ${3} = "yes" ]; then
         AutoFlashOSName=${2}
     fi
-	OSNamesMergeWithComma="friendlywr21,friendlywr21-docker,friendlywr22,friendlywr22-docker,friendlycore-lite-focal-kernel5-arm64"
+	OSNamesMergeWithComma="friendlywr21,friendlywr21-docker,friendlywr22,friendlywr22-docker,friendlycore-lite-focal-kernel6-arm64,openmediavault-arm64"
 	cat > ${1}/eflasher.conf <<EOL
 ; This is the eFlasher configuration file.
 ; See http://wiki.friendlyarm.com/wiki/index.php/EFlasher for detailed information.

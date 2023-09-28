@@ -38,17 +38,17 @@ echo "uboot src: ${UBOOT_SRC}"
 # apt-get install swig python-dev python3-dev
 
 function usage() {
-       echo "Usage: $0 <friendlycore-lite-focal-kernel5-arm64|friendlywrt22|friendlywrt22-docker|friendlywrt21|friendlywrt21-docker>"
+       echo "Usage: $0 <friendlycore-lite-focal-kernel6-arm64|openmediavault-arm64|friendlywrt22|friendlywrt22-docker|friendlywrt21|friendlywrt21-docker>"
        echo "# example:"
        echo "# clone uboot source from github:"
        echo "    git clone ${UBOOT_REPO} --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}"
        echo "# or clone your local repo:"
        echo "    git clone git@192.168.1.2:/path/to/uboot.git --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}"
        echo "# then"
-       echo "    ./build-uboot.sh friendlycore-lite-focal-kernel5-arm64 "
-       echo "    ./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64 "
+       echo "    ./build-uboot.sh friendlycore-lite-focal-kernel6-arm64 "
+       echo "    ./mk-emmc-image.sh friendlycore-lite-focal-kernel6-arm64 "
        echo "# also can do:"
-       echo "	UBOOT_SRC=~/myuboot ./build-uboot.sh friendlycore-lite-focal-kernel5-arm64"
+       echo "	UBOOT_SRC=~/myuboot ./build-uboot.sh friendlycore-lite-focal-kernel6-arm64"
        exit 0
 }
 

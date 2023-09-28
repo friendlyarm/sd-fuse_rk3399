@@ -5,7 +5,7 @@ if [ $# -lt 2 ]; then
 	echo "Usage: $0 <rootfs dir> <img dir> "
     echo "example:"
     echo "    tar xvzf NETDISK/RK3399/rootfs/rootfs-friendlycore-lite-focal-arm64.tgz"
-    echo "    ./build-rootfs-img.sh friendlycore/rootfs friendlycore-lite-focal-kernel5-arm64"
+    echo "    ./build-rootfs-img.sh friendlycore/rootfs friendlycore-lite-focal-kernel6-arm64"
 	exit 0
 fi
 
@@ -60,8 +60,17 @@ else
 fi
 
 if [ ${TARGET_OS} != "eflasher" ]; then
-    ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
+    case ${TARGET_OS} in
+    openmediavault-*)
+        # disable overlayfs for openmediavault
+        cp ${TOP}/prebuilt/parameter-ext4.txt ${TOP}/${TARGET_OS}/parameter.txt
+        ;;
+    *)
+        ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
+        ;;
+    esac
 fi
+
 echo "generating ${IMG_FILE} done."
 echo 0
 

@@ -27,9 +27,17 @@ true ${KERNEL_LOGO:=}
 true ${MK_HEADERS_DEB:=0}
 true ${BUILD_THIRD_PARTY_DRIVER:=1}
 true ${KCFG:=nanopi4_linux_defconfig}
+true ${TARGET_OS:=${1,,}}
 
 KERNEL_REPO=https://github.com/friendlyarm/kernel-rockchip
-KERNEL_BRANCH=nanopi-r2-v5.15.y
+KERNEL_BRANCH=nanopi-r2-v6.1.y
+case ${TARGET_OS} in
+friendlywrt*)
+	KERNEL_BRANCH=nanopi-r2-v6.1.y-opp1
+	;;
+*)
+	;;
+esac
 ARCH=arm64
 CROSS_COMPILE=aarch64-linux-gnu-
 export PATH=/opt/FriendlyARM/toolchain/11.3-aarch64/bin/:$PATH
@@ -81,19 +89,19 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
 
 function usage() {
-       echo "Usage: $0 <friendlycore-lite-focal-kernel5-arm64|friendlywrt22|friendlywrt22-docker|friendlywrt21|friendlywrt21-docker>"
+       echo "Usage: $0 <friendlycore-lite-focal-kernel6-arm64|openmediavault-arm64|friendlywrt22|friendlywrt22-docker|friendlywrt21|friendlywrt21-docker>"
        echo "# example:"
        echo "# clone kernel source from github:"
        echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# or clone your local repo:"
        echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# then"
-       echo "    ./build-kernel.sh friendlycore-lite-focal-kernel5-arm64"
-       echo "    ./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64"
+       echo "    ./build-kernel.sh friendlycore-lite-focal-kernel6-arm64"
+       echo "    ./mk-emmc-image.sh friendlycore-lite-focal-kernel6-arm64"
        echo "# also can do:"
-       echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore-lite-focal-kernel5-arm64"
+       echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore-lite-focal-kernel6-arm64"
        echo "# other options, build kernel-headers, enable/disable 3rd drivers:"
-       echo "    MK_HEADERS_DEB=1 BUILD_THIRD_PARTY_DRIVER=0 ./build-kernel.sh friendlycore-lite-focal-kernel5-arm64"
+       echo "    MK_HEADERS_DEB=1 BUILD_THIRD_PARTY_DRIVER=0 ./build-kernel.sh friendlycore-lite-focal-kernel6-arm64"
        exit 0
 }
 
@@ -103,11 +111,9 @@ fi
 
 # ----------------------------------------------------------
 # Get target OS
-true ${TARGET_OS:=${1,,}}
-
 
 case ${TARGET_OS} in
-friendlycore-lite-focal-kernel5-arm64 | friendlywrt* )
+friendlycore-lite-focal-kernel6-arm64 | friendlywrt* | openmediavault-*)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -286,7 +292,7 @@ function build_kernel() {
             if [ -d ${HEADERS_SCRIPT_DIR} ]; then
                 cp -avf ${HEADERS_SCRIPT_DIR}/* ./usr/src/linux-headers-*${KERNEL_VER}*/scripts/
                 if [ $? -ne 0 ]; then
-                    echo "failed to copy bin file to /usr/src/linux-headers-5.15.y."
+                    echo "failed to copy bin file to /usr/src/linux-headers-6.1.y."
                     exit 1
                 fi
             else

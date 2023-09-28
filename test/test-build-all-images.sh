@@ -18,8 +18,11 @@ git clone ../../.git -b kernel-5.15.y sd-fuse_rk3399
 cd sd-fuse_rk3399
 
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel5-arm64-images.tgz
-tar xzf friendlycore-lite-focal-kernel5-arm64-images.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel6-arm64-images.tgz
+tar xzf friendlycore-lite-focal-kernel6-arm64-images.tgz
+
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/openmediavault-arm64-images.tgz
+tar xzf openmediavault-arm64-images.tgz
 
 wget --no-proxy http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlywrt-images.tgz
 tar xzf friendlywrt-images.tgz
@@ -28,8 +31,11 @@ wget --no-proxy http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/emmc-f
 tar xzf emmc-flasher-images.tgz
 
 
-./mk-sd-image.sh friendlycore-lite-focal-kernel5-arm64
-./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64
+./mk-sd-image.sh friendlycore-lite-focal-kernel6-arm64
+./mk-emmc-image.sh friendlycore-lite-focal-kernel6-arm64
+
+./mk-sd-image.sh openmediavault-arm64
+./mk-emmc-image.sh openmediavault-arm64
 
 ./mk-sd-image.sh friendlywrt22
 ./mk-emmc-image.sh friendlywrt22
@@ -44,6 +50,6 @@ tar xzf emmc-flasher-images.tgz
 ./mk-emmc-image.sh friendlywrt21-docker
 
 
-./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64 filename=friendlycore-lite-focal-auto-eflasher.img autostart=yes
+./mk-emmc-image.sh friendlycore-lite-focal-kernel6-arm64 filename=friendlycore-lite-focal-auto-eflasher.img autostart=yes
 
 echo "done."
