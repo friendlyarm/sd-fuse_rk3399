@@ -24,8 +24,11 @@ tar xzf friendlycore-lite-focal-kernel6-arm64-images.tgz
 wget --no-proxy http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/openmediavault-arm64-images.tgz
 tar xzf openmediavault-arm64-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlywrt-images.tgz
-tar xzf friendlywrt-images.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlywrt23-images.tgz
+tar xzf friendlywrt23-images.tgz
+
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlywrt21-images.tgz
+tar xzf friendlywrt21-images.tgz
 
 wget --no-proxy http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
@@ -37,17 +40,11 @@ tar xzf emmc-flasher-images.tgz
 ./mk-sd-image.sh openmediavault-arm64
 ./mk-emmc-image.sh openmediavault-arm64
 
-./mk-sd-image.sh friendlywrt22
-./mk-emmc-image.sh friendlywrt22
-
-./mk-sd-image.sh friendlywrt22-docker
-./mk-emmc-image.sh friendlywrt22-docker
+./mk-sd-image.sh friendlywrt23
+./mk-emmc-image.sh friendlywrt23
 
 ./mk-sd-image.sh friendlywrt21
 ./mk-emmc-image.sh friendlywrt21
-
-./mk-sd-image.sh friendlywrt21-docker
-./mk-emmc-image.sh friendlywrt21-docker
 
 
 ./mk-emmc-image.sh friendlycore-lite-focal-kernel6-arm64 filename=friendlycore-lite-focal-auto-eflasher.img autostart=yes

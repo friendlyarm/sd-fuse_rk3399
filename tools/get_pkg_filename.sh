@@ -2,6 +2,10 @@
 
 TARGET_OS=$1
 case ${TARGET_OS} in
+friendlywrt23)
+        ROMFILE=friendlywrt23-images.tgz;;
+friendlywrt23-docker)
+        ROMFILE=friendlywrt23-docker-images.tgz;;
 friendlywrt22)
         ROMFILE=friendlywrt22-images.tgz;;
 friendlywrt22-docker)

@@ -38,6 +38,10 @@ friendlycore-lite-focal-kernel6-arm64)
         RAW_FILE=${SOC}-eflasher-friendlycore-lite-focal-6.1-arm64-$(date +%Y%m%d).img ;;
 openmediavault-arm64)
         RAW_FILE=${SOC}-eflasher-openmediavault-6.1-arm64-$(date +%Y%m%d).img ;;
+friendlywrt23)
+        RAW_FILE=${SOC}-eflasher-friendlywrt-23.05-$(date +%Y%m%d).img ;;
+friendlywrt23-docker)
+        RAW_FILE=${SOC}-eflasher-friendlywrt-23.05-docker-$(date +%Y%m%d).img ;;
 friendlywrt22)
         RAW_FILE=${SOC}-eflasher-friendlywrt-22.03-$(date +%Y%m%d).img ;;
 friendlywrt22-docker)
