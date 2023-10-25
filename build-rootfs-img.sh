@@ -41,8 +41,49 @@ friendlywrt* | buildroot*)
     ;;
 esac
 
-# clean device file
-(cd ${ROOTFS_DIR}/dev && find . ! -type d -exec rm {} \;)
+clean_rootfs() {
+    (cd $1 && {
+        # remove machine-id, the macaddress will be gen via it
+        [ -f etc/machine-id ] && > etc/machine-id
+        [ -f var/lib/dbus/machine-id ] && {
+            rm -f var/lib/dbus/machine-id
+            ln -s /etc/machine-id var/lib/dbus/machine-id
+        }
+        rm -f etc/friendlyelec-release
+        rm -f root/running-state-file
+        rm -f etc/firstuse
+        rm -f var/lib/dpkg/lock
+        rm -f var/lib/dpkg/lock-frontend
+        rm -f var/cache/apt/archives/lock
+        rm -f var/cache/apt/archives/*.deb
+        cat /dev/null > etc/udev/rules.d/70-persistent-net.rules
+        [ -d ./tmp ] && find ./tmp -exec rm -rf {} +
+        mkdir -p ./tmp
+        chmod 1777 ./tmp
+        if [ -d ./var/lib/apt/lists ]; then
+            PERM=`grep "^_apt" ./etc/passwd | cut -d':' -f3`
+            if [ -e ./var/lib/apt/lists ]; then
+                [ -z ${PERM} ] || chown -R ${PERM}.0 ./var/lib/apt/lists
+            fi
+            if [ -e ./var/cache/apt/archives/partial ]; then
+                [ -z ${PERM} ] || chown -R ${PERM}.0 ./var/cache/apt/archives/partial
+            fi
+        fi
+        find var/log -type f -delete
+        find var/tmp -type f -delete
+        find -name .bash_history -type f -exec cp /dev/null {} \;
+        [ -e var/lib/systemd ] && touch var/lib/systemd/clock
+        [ -e var/lib/private/systemd/timesync ] && touch var/lib/private/systemd/timesync/clock
+        if [ -d var/lib/NetworkManager/ ]; then
+            rm -fr var/lib/NetworkManager/dhclient*
+            rm -fr var/lib/NetworkManager/secret_key
+            rm -fr var/lib/NetworkManager/timestamps
+        fi
+        (cd dev && find . ! -type d -exec rm {} \;)
+    })
+}
+clean_rootfs ${ROOTFS_DIR}
+
 if [ ${IMG_SIZE} -le 0 ]; then
     # calc image size
     IMG_SIZE=$(((`du -s -B64M ${ROOTFS_DIR} | cut -f1` + 3) * 1024 * 1024 * 64))
