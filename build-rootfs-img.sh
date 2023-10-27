@@ -56,7 +56,7 @@ clean_rootfs() {
         rm -f var/lib/dpkg/lock-frontend
         rm -f var/cache/apt/archives/lock
         rm -f var/cache/apt/archives/*.deb
-        cat /dev/null > etc/udev/rules.d/70-persistent-net.rules
+        [ -f etc/udev/rules.d/70-persistent-net.rules ] && cat /dev/null > etc/udev/rules.d/70-persistent-net.rules
         [ -d ./tmp ] && find ./tmp -exec rm -rf {} +
         mkdir -p ./tmp
         chmod 1777 ./tmp
@@ -69,8 +69,8 @@ clean_rootfs() {
                 [ -z ${PERM} ] || chown -R ${PERM}.0 ./var/cache/apt/archives/partial
             fi
         fi
-        find var/log -type f -delete
-        find var/tmp -type f -delete
+        [ -d var/log ] && find var/log -type f -delete
+        [ -d var/tmp ] && find var/tmp -type f -delete
         find -name .bash_history -type f -exec cp /dev/null {} \;
         [ -e var/lib/systemd ] && touch var/lib/systemd/clock
         [ -e var/lib/private/systemd/timesync ] && touch var/lib/private/systemd/timesync/clock
