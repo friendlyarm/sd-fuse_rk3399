@@ -26,8 +26,7 @@ For other kernel versions, please switch to the related git branch.
 * friendlycore-focal-arm64
 * debian-bullseye-desktop-arm64
 * debian-bullseye-minimal-arm64
-* debian-bullseye-core-arm64
-* friendlycore-lite-focal-kernel4-arm64
+* ubuntu-focal-desktop-arm64
 * android10
 
   
