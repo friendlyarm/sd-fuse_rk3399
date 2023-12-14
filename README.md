@@ -26,7 +26,7 @@ For other kernel versions, please switch to the related git branch.
 * friendlywrt23-docker
 * friendlywrt21
 * friendlywrt21-docker
-* debian-bullseye-core-arm64
+* debian-bookworm-core-arm64
 * friendlycore-lite-focal-arm64
 * openmediavault-arm64
 

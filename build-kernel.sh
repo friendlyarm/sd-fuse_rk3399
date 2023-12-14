@@ -104,19 +104,19 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
 
 function usage() {
-       echo "Usage: $0 <friendlycore-lite-focal-kernel6-arm64|openmediavault-arm64|friendlywrt23|friendlywrt23-docker|friendlywrt21|friendlywrt21-docker>"
+       echo "Usage: $0 <friendlycore-lite-focal-arm64|openmediavault-arm64|friendlywrt23|friendlywrt23-docker|friendlywrt21|friendlywrt21-docker>"
        echo "# example:"
        echo "# clone kernel source from github:"
        echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# or clone your local repo:"
        echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
        echo "# then"
-       echo "    ./build-kernel.sh friendlycore-lite-focal-kernel6-arm64"
-       echo "    ./mk-emmc-image.sh friendlycore-lite-focal-kernel6-arm64"
+       echo "    ./build-kernel.sh friendlycore-lite-focal-arm64"
+       echo "    ./mk-emmc-image.sh friendlycore-lite-focal-arm64"
        echo "# also can do:"
-       echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore-lite-focal-kernel6-arm64"
+       echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh friendlycore-lite-focal-arm64"
        echo "# other options, build kernel-headers, enable/disable 3rd drivers:"
-       echo "    MK_HEADERS_DEB=1 BUILD_THIRD_PARTY_DRIVER=0 ./build-kernel.sh friendlycore-lite-focal-kernel6-arm64"
+       echo "    MK_HEADERS_DEB=1 BUILD_THIRD_PARTY_DRIVER=0 ./build-kernel.sh friendlycore-lite-focal-arm64"
        exit 0
 }
 
@@ -128,7 +128,7 @@ fi
 # Get target OS
 
 case ${TARGET_OS} in
-friendlycore-lite-focal-kernel6-arm64 | friendlywrt* | openmediavault-*)
+friendlycore-lite* | friendlywrt* | openmediavault-* | debian-*-core*)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

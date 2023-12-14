@@ -5,7 +5,7 @@ if [ $# -lt 2 ]; then
 	echo "Usage: $0 <rootfs dir> <img dir> "
     echo "example:"
     echo "    tar xvzf NETDISK/RK3399/rootfs/rootfs-friendlycore-lite-focal-arm64.tgz"
-    echo "    ./build-rootfs-img.sh friendlycore/rootfs friendlycore-lite-focal-kernel6-arm64"
+    echo "    ./build-rootfs-img.sh friendlycore/rootfs friendlycore-lite-focal-arm64"
 	exit 0
 fi
 

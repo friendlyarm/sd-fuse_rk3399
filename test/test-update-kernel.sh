@@ -20,11 +20,11 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_rk3399
 cd sd-fuse_rk3399
-if [ -f ../../friendlycore-lite-focal-kernel6-arm64-images.tgz ]; then
-	tar xvzf ../../friendlycore-lite-focal-kernel6-arm64-images.tgz
+if [ -f ../../friendlycore-lite-focal-arm64-images.tgz ]; then
+	tar xvzf ../../friendlycore-lite-focal-arm64-images.tgz
 else
-	wget --no-proxy http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlycore-lite-focal-kernel6-arm64-images.tgz
-    tar xvzf friendlycore-lite-focal-kernel6-arm64-images.tgz
+	wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/friendlycore-lite-focal-arm64-images.tgz
+    tar xvzf friendlycore-lite-focal-arm64-images.tgz
 fi
 
 if [ -f ../../kernel-rk3399.tgz ]; then
@@ -33,6 +33,6 @@ else
 	git clone ${KERNEL_URL} --depth 1 -b ${KERNEL_BRANCH} kernel-rk3399
 fi
 
-KERNEL_SRC=$PWD/kernel-rk3399 ./build-kernel.sh friendlycore-lite-focal-kernel6-arm64
-cp prebuilt/dtbo.img friendlycore-lite-focal-kernel6-arm64
-./mk-sd-image.sh friendlycore-lite-focal-kernel6-arm64
+KERNEL_SRC=$PWD/kernel-rk3399 ./build-kernel.sh friendlycore-lite-focal-arm64
+cp prebuilt/dtbo.img friendlycore-lite-focal-arm64
+./mk-sd-image.sh friendlycore-lite-focal-arm64
