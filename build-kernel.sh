@@ -36,21 +36,27 @@ CROSS_COMPILE=aarch64-linux-gnu-
 export PATH=/opt/FriendlyARM/toolchain/11.3-aarch64/bin/:$PATH
 
 declare -a KERNEL_3RD_DRIVERS=()
-KERNEL_3RD_DRIVERS+=("https://github.com/friendlyarm/rtl8821CU")
-KERNEL_3RD_DRIVERS+=("https://github.com/friendlyarm/rtl8822bu")
-KERNEL_3RD_DRIVERS+=("https://github.com/friendlyarm/rtl8822cs")
-KERNEL_3RD_DRIVERS+=("https://github.com/friendlyarm/rtl8812au")
-
 declare -a KERNEL_3RD_DRIVER_BRANCHES=()
-KERNEL_3RD_DRIVER_BRANCHES+=("nanopi-r2")
-KERNEL_3RD_DRIVER_BRANCHES+=("nanopi-r2")
-KERNEL_3RD_DRIVER_BRANCHES+=("nanopi-r2")
-KERNEL_3RD_DRIVER_BRANCHES+=("nanopi-r2")
-
 declare -a KERNEL_3RD_DRIVER_NAME=()
+
+KERNEL_3RD_DRIVERS+=("https://github.com/friendlyarm/rtl8821CU")
+KERNEL_3RD_DRIVER_BRANCHES+=("nanopi-r2")
 KERNEL_3RD_DRIVER_NAME+=("rtl8821CU")
+
+KERNEL_3RD_DRIVERS+=("https://github.com/friendlyarm/rtl8822bu")
+KERNEL_3RD_DRIVER_BRANCHES+=("nanopi-r2")
 KERNEL_3RD_DRIVER_NAME+=("rtl8822bu")
+
+KERNEL_3RD_DRIVERS+=("https://github.com/friendlyarm/rtl8822cs")
+KERNEL_3RD_DRIVER_BRANCHES+=("nanopi-r2")
 KERNEL_3RD_DRIVER_NAME+=("rtl8822cs")
+
+KERNEL_3RD_DRIVERS+=("https://github.com/friendlyarm/rtl8822ce")
+KERNEL_3RD_DRIVER_BRANCHES+=("nanopi-r2")
+KERNEL_3RD_DRIVER_NAME+=("rtl8822ce")
+
+KERNEL_3RD_DRIVERS+=("https://github.com/friendlyarm/rtl8812au")
+KERNEL_3RD_DRIVER_BRANCHES+=("nanopi-r2")
 KERNEL_3RD_DRIVER_NAME+=("rtl8812au")
 
 build_external_module() {
