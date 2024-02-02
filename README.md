@@ -10,8 +10,9 @@ This repository is a bunch of scripts to build bootable SD card images for Frien
 *Read this in other languages: [简体中文](README_cn.md)*  
   
 ## Requirements
-* Recommended Host OS: Ubuntu 18.04 LTS (Bionic Beaver) 64-bit or Higher
+* Recommended Host OS: Ubuntu 20.04 LTS (Bionic Beaver) 64-bit or Higher
 * It is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
+* Docker container: https://github.com/friendlyarm/docker-cross-compiler-novnc
 
 ## Kernel Version Support
 The sd-fuse use multiple git branches to support each version of the kernel, the current branche supported kernel version is as follows:
@@ -144,7 +145,11 @@ Or build SD-to-eMMC image:
 ```
 ./mk-emmc-image.sh friendlycore-lite-focal-arm64
 ```
-
+If the image file is too large to be packaged, you can use an environment variable to reassign the image size, for example:
+```
+RAW_SIZE_MB=16000 ./mk-sd-image.sh friendlycore-lite-focal-arm64
+RAW_SIZE_MB=16000 ./mk-emmc-image.sh friendlycore-lite-focal-arm64
+```
 ### Compiling the Kernel
 *Note: Here we use friendlycore-lite-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
