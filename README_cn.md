@@ -11,8 +11,9 @@ sd-fuse 提供一些工具和脚本, 用于制作SD卡固件, 具体用途如下
   
 ## 运行环境
 * 在电脑主机端使用
-* 推荐的操作系统: Ubuntu 18.04及以上64位操作系统
+* 推荐的操作系统: Ubuntu 20.04及以上64位操作系统
 * 推荐运行此脚本初始化开发环境: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
+* Docker容器: https://github.com/friendlyarm/docker-cross-compiler-novnc
 
 ## 支持的内核版本
 sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的内核版本为:
@@ -96,7 +97,6 @@ tar xvzf emmc-flasher-images.tgz
 ```
 out/rk3399-eflasher-friendlydesktop-4.4-arm64-YYYYMMDD.img
 ```
-
 ### 备份文件系统并创建SD映像(将系统及应用复制到另一块开发板)
 #### 备份根文件系统
 开发板上执行以下命令，备份整个文件系统（包括OS与数据)：  
@@ -139,7 +139,11 @@ sudo ./build-rootfs-img.sh friendlydesktop-arm64/rootfs friendlydesktop-arm64
 ```
 ./mk-emmc-image.sh friendlydesktop-arm64
 ```
-
+如果文件过大导致无法打包，可以使用环境变量重新指定固件大小，比如指定为16g:
+```
+RAW_SIZE_MB=16000 ./mk-sd-image.sh friendlydesktop-arm64
+RAW_SIZE_MB=16000 ./mk-emmc-image.sh friendlydesktop-arm64
+```
 ### 编译内核
 *注: 这里以friendlydesktop系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
