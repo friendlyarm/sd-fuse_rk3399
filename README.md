@@ -26,7 +26,7 @@ For other kernel versions, please switch to the related git branch.
 * friendlywrt23-docker
 * friendlywrt21
 * friendlywrt21-docker
-* debian-bookworm-core-arm64
+* debian-bullseye-core-arm64
 * friendlycore-lite-focal-arm64
 * openmediavault-arm64
 
@@ -147,7 +147,11 @@ Or build SD-to-eMMC image:
 ```
 ./mk-emmc-image.sh friendlycore-lite-focal-arm64
 ```
-
+If the image file is too large to be packaged, you can use an environment variable to reassign the image size, for example:
+```
+RAW_SIZE_MB=16000 ./mk-sd-image.sh friendlycore-lite-focal-arm64
+RAW_SIZE_MB=16000 ./mk-emmc-image.sh friendlycore-lite-focal-arm64
+```
 ### Compiling the Kernel
 *Note: Here we use friendlycore-lite-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):

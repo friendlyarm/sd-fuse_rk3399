@@ -26,7 +26,7 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 * friendlywrt23-docker
 * friendlywrt21
 * friendlywrt21-docker
-* debian-bookworm-core-arm64
+* debian-bullseye-core-arm64
 * friendlycore-lite-focal-arm64
 * openmediavault-arm64
 
@@ -105,7 +105,6 @@ tar xvzf emmc-flasher-images.tgz
 ```
 out/rk3399-eflasher-friendlycore-lite-focal-6.1-arm64-YYYYMMDD.img
 ```
-
 ### 备份文件系统并创建SD映像(将系统及应用复制到另一块开发板)
 #### 备份根文件系统
 开发板上执行以下命令，备份整个文件系统（包括OS与数据)：  
@@ -148,7 +147,11 @@ sudo ./build-rootfs-img.sh friendlycore-lite-focal-arm64/rootfs friendlycore-lit
 ```
 ./mk-emmc-image.sh friendlycore-lite-focal-arm64
 ```
-
+如果文件过大导致无法打包，可以使用环境变量重新指定固件大小，比如指定为16g:
+```
+RAW_SIZE_MB=16000 ./mk-sd-image.sh friendlycore-lite-focal-arm64
+RAW_SIZE_MB=16000 ./mk-emmc-image.sh friendlycore-lite-focal-arm64
+```
 ### 编译内核
 *注: 这里以friendlycore-lite-focal系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
