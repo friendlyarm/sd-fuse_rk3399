@@ -43,6 +43,13 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 	
 	mkdir -p ${OUT}/kernel-dtbs
 	rm -rf ${OUT}/kernel-dtbs/*
+
+	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev01.dtb
+	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4-v2.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev21.dtb
+	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4b.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev22.dtb
+	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-neo4.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev04.dtb
+	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-som.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev06.dtb
+	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-som-v2.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev07.dtb
 	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev09.dtb
 	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev0a.dtb
 	cp -f arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4se.dtb ${OUT}/kernel-dtbs/rk3399-nanopi4-rev0b.dtb
