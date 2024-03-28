@@ -118,10 +118,15 @@ cd sd-fuse_rk3399-kernel4.4
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlydesktop-arm64-images.tgz
 tar xvzf friendlydesktop-arm64-images.tgz
 ```
-Unzip the rootfs.tar.gz exported in the previous section, or download the filesystem archive from the following URL and unzip it, the unzip command requires root privileges, so you need put sudo in front of the command:
+Extract the rootfs.tar.gz exported in the previous section, the tar command requires root privileges, so you need put sudo in front of the command:
+```
+mkdir friendlydesktop-arm64/rootfs
+sudo tar xvzfp rootfs.tar.gz -C friendlydesktop-arm64/rootfs --numeric-owner --same-owner
+```
+or download the filesystem archive from the following URL and extract it:
 ```
 wget http://112.124.9.243/dvdfiles/rk3399/rootfs/rootfs-friendlydesktop-arm64.tgz
-sudo tar xzf rootfs-friendlydesktop-arm64.tgz
+sudo tar xvzfp rootfs-friendlydesktop-arm64.tgz --numeric-owner --same-owner
 ```
 Change something:
 ```

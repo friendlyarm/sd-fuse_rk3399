@@ -118,10 +118,15 @@ cd sd-fuse_rk3399-kernel4.4
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlydesktop-arm64-images.tgz
 tar xvzf friendlydesktop-arm64-images.tgz
 ```
-解压上一章节导出的rootfs.tar.gz，或者从以下网址下载文件系统压缩包并解压, 需要使用root权限, 因此解压命令需要加上sudo:
+解压上一章节中从开发板上导出的rootfs.tar.gz, 需要使用root权限, 因此解压命令需要加上sudo:
+```
+mkdir friendlydesktop-arm64/rootfs
+sudo tar xvzfp rootfs.tar.gz -C friendlydesktop-arm64/rootfs --numeric-owner --same-owner
+```
+或者从以下网址下载文件系统压缩包并解压:
 ```
 wget http://112.124.9.243/dvdfiles/rk3399/rootfs/rootfs-friendlydesktop-arm64.tgz
-sudo tar xzf rootfs-friendlydesktop-arm64.tgz
+sudo tar xvzfp rootfs-friendlydesktop-arm64.tgz --numeric-owner --same-owner
 ```
 可以根据需要, 对文件系统目录进行更改, 例如:
 ```
