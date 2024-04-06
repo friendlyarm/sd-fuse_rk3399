@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
 # (http://www.friendlyarm.com)
@@ -69,7 +70,7 @@ fi
 # ----------------------------------------------------------
 # Get target OS
 
-true ${TARGET_OS:=${2,,}}
+true ${TARGET_OS:=$(echo ${2,,}|sed 's/\///g')}
 
 RKPARAM=$(dirname $0)/${TARGET_OS}/parameter.txt
 RKPARAM2=$(dirname $0)/${TARGET_OS}/param4sd.txt
@@ -122,12 +123,9 @@ if [ $(id -u) -ne 0 ]; then
 	exit
 fi
 
-# ----------------------------------------------------------
-# Get host machine
-ARCH=
+HOST_ARCH=
 if uname -mpi | grep aarch64 >/dev/null; then
-#	EMMC=.emmc
-	ARCH=aarch64/
+    HOST_ARCH="aarch64/"
 fi
 
 # ----------------------------------------------------------
@@ -163,7 +161,7 @@ echo ""
 # ----------------------------------------------------------
 # partition card & fusing filesystem
 
-true ${SD_UPDATE:=$(dirname $0)/tools/sd_update}
+true ${SD_UPDATE:=./tools/${HOST_ARCH}sd_update}
 
 [[ -z $2 && ! -f "${RKPARAM}" ]] && exit 0
 
@@ -213,9 +211,11 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-if [ -z ${ARCH} ]; then
-	partprobe /dev/${DEV_NAME} -s 2>/dev/null
+if ! command -v partprobe &>/dev/null; then
+	sudo apt-get install parted
 fi
+partprobe /dev/${DEV_NAME} -s 2>/dev/null
+
 if [ $? -ne 0 ]; then
 	echo "Warning: Re-reading the partition table failed"
 

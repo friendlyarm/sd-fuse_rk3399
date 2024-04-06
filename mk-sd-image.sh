@@ -26,11 +26,14 @@ if [ $# -eq 0 ]; then
     usage
 fi
 
+. tools/util.sh
+check_and_install_package
+
 # ----------------------------------------------------------
 # Get platform, target OS
 
 true ${SOC:=rk3399}
-true ${TARGET_OS:=${1,,}}
+true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
 friendlycore-arm64 | friendlydesktop-arm64 | buildroot | lubuntu | eflasher)
@@ -132,8 +135,15 @@ fi
 # Setup loop device
 
 LOOP_DEVICE=$(losetup -f)
-
 echo "Using device: ${LOOP_DEVICE}"
+for i in `seq 3`; do
+	if [ -b ${LOOP_DEVICE} ]; then
+		break
+	else
+		echo "Waitting ${LOOP_DEVICE}"
+		sleep 1
+	fi
+done
 
 if losetup ${LOOP_DEVICE} ${RAW_FILE}; then
 	USE_KPARTX=1

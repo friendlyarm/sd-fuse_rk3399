@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
 # (http://www.friendlyarm.com)
@@ -24,7 +25,7 @@ BASE_URL=http://112.124.9.243/dvdfiles
 OPT_URL=http://wiki.friendlyarm.com/download/
 BOARD=RK3399/images-for-eflasher
 
-TARGET_OS=${1,,}
+TARGET_OS=$(echo ${1,,}|sed 's/\///g')
 ROMFILE=`./tools/get_pkg_filename.sh ${TARGET_OS}`
 if [ -z ${ROMFILE} ]; then
 	echo "Usage: $0 <friendlycore-arm64|friendlydesktop-arm64|buildroot|lubuntu|android7|android8|eflasher>"
@@ -101,4 +102,3 @@ if [ -f ${ROMFILE} ]; then
 	XOPTS="-C ${TARGET_OS} --strip-components=1"
 	FA_DoExec tar xzvf ${ROMFILE} ${XOPTS} || exit 1
 fi
-

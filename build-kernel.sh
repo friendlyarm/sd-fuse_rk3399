@@ -18,12 +18,12 @@ set -eu
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
-
 true ${SOC:=rk3399}
 true ${DISABLE_MKIMG:=0}
 true ${LOGO:=}
 true ${KERNEL_LOGO:=}
 true ${MK_HEADERS_DEB:=0}
+true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 KERNEL_REPO=https://github.com/friendlyarm/kernel-rockchip
 KERNEL_BRANCH=nanopi4-linux-v4.4.y
@@ -33,7 +33,17 @@ KCFG=nanopi4_linux_defconfig
 KIMG=kernel.img
 KDTB=resource.img
 KALL=nanopi4-images
-CROSS_COMPILE=aarch64-linux-gnu-
+case "$(uname -mpi)" in
+x86_64*)
+    CROSS_COMPILE=aarch64-linux-gnu-
+    ;;
+aarch64*)
+    CROSS_COMPILE=
+    ;;
+*)
+    echo "Error: Cannot build arm64 arch on $(uname -mpi) host."
+    ;;
+esac
 
 # 
 # kernel logo:
@@ -51,7 +61,8 @@ if [ ! -d $OUT ]; then
 	exit 1
 fi
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
-true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
+true ${kernel_src:=${OUT}/kernel-${SOC}}
+true ${KERNEL_SRC:=${kernel_src}}
 
 function usage() {
        echo "Usage: $0 <friendlycore-arm64|friendlydesktop-arm64|buildroot|lubuntu|android7|android8|eflasher>"
@@ -77,10 +88,12 @@ if [ $# -ne 1 ]; then
     usage
 fi
 
-# ----------------------------------------------------------
-# Get target OS
-true ${TARGET_OS:=${1,,}}
-
+. ${TOPPATH}/tools/util.sh
+check_and_install_toolchain
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+check_and_install_package
 
 case ${TARGET_OS} in
 friendlycore-arm64 | friendlydesktop-arm64 | buildroot | android7 | android8 | lubuntu | eflasher)
@@ -128,14 +141,6 @@ if [ ! -d ${KERNEL_SRC} ]; then
 	git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}
 fi
 
-if [ ! -d /opt/FriendlyARM/toolchain/6.4-aarch64 ]; then
-	echo "please install aarch64-gcc-6.4 first, using these commands: "
-	echo "\tgit clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1"
-	echo "\tcd prebuilts/gcc-x64"
-	echo "\tcat toolchain-6.4-aarch64.tar.gz* | sudo tar xz -C /"
-	exit 1
-fi
-
 if [ -f "${LOGO}" ]; then
 	cp -f ${LOGO} ${KERNEL_SRC}/logo.bmp
 	echo "using ${LOGO} as logo."
@@ -149,8 +154,6 @@ if [ -f "${KERNEL_LOGO}" ]; then
 else
         echo "using official kernel logo."
 fi
-
-export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin/:$PATH
 
 cd ${KERNEL_SRC}
 make distclean
@@ -188,7 +191,6 @@ KERNEL_VER=`make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} kernelrelease`
 rm -rf ${KMODULES_OUTDIR}/lib/modules/${KERNEL_VER}/kernel/drivers/gpu/arm/mali400/
 [ ! -f "${KMODULES_OUTDIR}/lib/modules/${KERNEL_VER}/modules.dep" ] && depmod -b ${KMODULES_OUTDIR} -E Module.symvers -F System.map -w ${KERNEL_VER}
 (cd ${KMODULES_OUTDIR} && find . -name \*.ko | xargs ${CROSS_COMPILE}strip --strip-unneeded)
-
 
 if [ ! -d ${KMODULES_OUTDIR}/lib ]; then
 	echo "not found kernel modules."
@@ -244,15 +246,10 @@ if [ x"$DISABLE_MKIMG" = x"1" ]; then
 fi
 
 echo "building kernel ok."
-if ! [ -x "$(command -v simg2img)" ]; then
-    sudo apt update
-    sudo apt install android-tools-fsutils
-fi
 
 cd ${TOPPATH}
 download_img ${TARGET_OS}
 ./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TARGET_OS} ${TOPPATH}/prebuilt
-
 
 if [ $? -eq 0 ]; then
     echo "updating kernel ok."

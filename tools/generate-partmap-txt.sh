@@ -27,10 +27,9 @@ set -eu
 
 SOC=rk3399
 IMG_SIZE=$1
-TARGET_OS=$2
+TARGET_OS=$(echo ${2,,}|sed 's/\///g')
 
 TOP=$PWD
-
 function get_root_address_in_partmap()
 {
     declare -a platfroms=("s5p4418" "s5p6818" "rk3399" "h3")

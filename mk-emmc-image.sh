@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
 # (http://www.friendlyarm.com)
@@ -30,11 +31,14 @@ if [ $# -eq 0 ]; then
     usage
 fi
 
+. tools/util.sh
+check_and_install_package
+
 # ----------------------------------------------------------
 # Get platform, target OS
 
 true ${SOC:=rk3399}
-true ${TARGET_OS:=${1,,}}
+true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
 friendlycore-arm64 | friendlydesktop-arm64 | buildroot | android7 | android8 | lubuntu)
@@ -95,6 +99,4 @@ RAW_SIZE_MB=${RAW_SIZE_MB} ./mk-sd-image.sh eflasher && \
 		mkdir -p out/images-for-eflasher
 		tar czf out/images-for-eflasher/${TARGET_OS}-images.tgz ${TARGET_OS}
 		echo "all done."
-	}
-
-
+}
