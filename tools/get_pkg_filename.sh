@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TARGET_OS=$1
+TARGET_OS=$(echo ${1,,}|sed 's/\///g')
 case ${TARGET_OS} in
 friendlywrt23)
         ROMFILE=friendlywrt23-images.tgz;;

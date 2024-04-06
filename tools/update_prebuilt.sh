@@ -12,12 +12,17 @@ cp -f $2/misc.img $1/
 cp -f $2/dtbo.img $1/
 
 TOP=$PWD
+HOST_ARCH=
+if uname -mpi | grep aarch64 >/dev/null; then
+    HOST_ARCH="aarch64/"
+fi
+
 export MKE2FS_CONFIG="${TOP}/tools/mke2fs.conf"
 if [ ! -f ${MKE2FS_CONFIG} ]; then
     echo "error: ${MKE2FS_CONFIG} not found."
     exit 1
 fi
-true ${MKFS:="${TOP}/tools/mke2fs"}
+true ${MKFS:="${TOP}/tools/${HOST_ARCH}mke2fs"}
 
 RET=0
 if [ ! -f $1/userdata.img ]; then
