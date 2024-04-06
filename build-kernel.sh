@@ -27,13 +27,23 @@ true ${KERNEL_LOGO:=}
 true ${MK_HEADERS_DEB:=0}
 true ${BUILD_THIRD_PARTY_DRIVER:=1}
 true ${KCFG:=nanopi4_linux_defconfig}
+true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 KERNEL_REPO=https://github.com/friendlyarm/kernel-rockchip
 KERNEL_BRANCH=nanopi4-v4.19.y
 ARCH=arm64
 KALL=nanopi4-images
-CROSS_COMPILE=aarch64-linux-gnu-
-export PATH=/opt/FriendlyARM/toolchain/11.3-aarch64/bin/:$PATH
+case "$(uname -mpi)" in
+x86_64*)
+    CROSS_COMPILE=aarch64-linux-gnu-
+    ;;
+aarch64*)
+    CROSS_COMPILE=
+    ;;
+*)
+    echo "Error: Cannot build arm64 arch on $(uname -mpi) host."
+    ;;
+esac
 
 declare -a KERNEL_3RD_DRIVERS=()
 declare -a KERNEL_3RD_DRIVER_BRANCHES=()
@@ -100,7 +110,8 @@ if [ ! -d $OUT ]; then
 	exit 1
 fi
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
-true ${KERNEL_SRC:=${OUT}/kernel-${SOC}}
+true ${kernel_src:=${OUT}/kernel-${SOC}}
+true ${KERNEL_SRC:=${kernel_src}}
 
 function usage() {
        echo "Usage: $0 <android10|android11|buildroot|friendlycore-focal-arm64|debian-buster-desktop-arm64|debian-bullseye-desktop-arm64|friendlycore-lite-focal-kernel4-arm64|friendlywrt-kernel4>"
@@ -126,10 +137,12 @@ if [ $# -ne 1 ]; then
     usage
 fi
 
-# ----------------------------------------------------------
-# Get target OS
-true ${TARGET_OS:=${1,,}}
-
+. ${TOPPATH}/tools/util.sh
+check_and_install_toolchain
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+check_and_install_package
 
 case ${TARGET_OS} in
 buildroot* | debian-* | ubuntu-* | android10 | android11 | friendlycore-* | friendlywrt* )
@@ -179,14 +192,6 @@ EOF
 
 if [ ! -d ${KERNEL_SRC} ]; then
 	git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}
-fi
-
-if [ ! -d /opt/FriendlyARM/toolchain/11.3-aarch64 ]; then
-	echo "please install aarch64-gcc-11.3 first, using these commands: "
-	echo "    git clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1"
-	echo "    cd prebuilts/gcc-x64"
-	echo "    sudo tar xvf toolchain-11.3-aarch64.tar.xz -C /"
-	exit 1
 fi
 
 if [ -f "${LOGO}" ]; then
@@ -323,10 +328,6 @@ fi
 
 if [ $DISABLE_MKIMG -eq 1 ]; then
     exit 0
-fi
-if ! [ -x "$(command -v simg2img)" ]; then
-    sudo apt update
-    sudo apt install android-tools-fsutils
 fi
 
 cd ${TOPPATH}

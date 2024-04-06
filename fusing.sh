@@ -96,6 +96,11 @@ if [ -b $1 -a $(id -u) -ne 0 ]; then
 	exit
 fi
 
+HOST_ARCH=
+if uname -mpi | grep aarch64 >/dev/null; then
+    HOST_ARCH="aarch64/"
+fi
+
 # ----------------------------------------------------------
 # Fusing idbloader, bootloader, trust to card
 true ${BOOT_DIR:=./prebuilt}
@@ -124,7 +129,7 @@ echo ""
 
 # ----------------------------------------------------------
 # partition card & fusing filesystem
-true ${SD_UPDATE:=$(dirname $0)/tools/sd_update}
+true ${SD_UPDATE:=./tools/${HOST_ARCH}sd_update}
 
 [[ -z $2 && ! -f "${RK_PARAMETER_TXT}" ]] && {
 	echo "Not found ${RK_PARAMETER_TXT}"
@@ -137,8 +142,11 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
+if ! command -v partprobe &>/dev/null; then
+	sudo apt-get install parted
+fi
+
 partprobe /dev/${DEV_NAME} -s 2>/dev/null
 
 echo "---------------------------------"
 echo "All done."
-

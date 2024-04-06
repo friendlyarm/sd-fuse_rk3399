@@ -28,3 +28,92 @@ function has_built_kernel_modules() {
 	fi
 }
 
+function check_and_install_package() {
+	local PACKAGES=
+	if ! command -v mkfs.exfat &>/dev/null; then
+		if [ -f /etc/os-release ]; then
+			. /etc/os-release
+			case "$VERSION_CODENAME" in
+			jammy|bookworm|bullseye)
+					PACKAGES="exfatprogs ${PACKAGES}"
+					;;
+			*)
+					PACKAGES="exfat-fuse exfat-utils ${PACKAGES}"
+					;;
+			esac
+		fi
+
+	fi
+	if ! [ -x "$(command -v simg2img)" ]; then
+		if [ -f /etc/os-release ]; then
+			. /etc/os-release
+			case "$VERSION_CODENAME" in
+			focal|jammy|bookworm|bullseye)
+					PACKAGES="android-sdk-libsparse-utils ${PACKAGES}"
+					# PACKAGES="android-sdk-ext4-utils ${PACKAGES}"
+					;;
+			*)
+					PACKAGES="android-tools-fsutils ${PACKAGES}"
+					;;
+			esac
+		fi
+	fi
+	if ! [ -x "$(command -v swig)" ]; then
+		PACKAGES="swig ${PACKAGES}"
+	fi
+	if ! [ -x "$(command -v git)" ]; then
+		PACKAGES="git ${PACKAGES}"
+	fi
+	if ! [ -x "$(command -v wget)" ]; then
+		PACKAGES="wget ${PACKAGES}"
+	fi
+	if ! [ -x "$(command -v rsync)" ]; then
+		PACKAGES="rsync ${PACKAGES}"
+	fi
+	if ! command -v partprobe &>/dev/null; then
+		PACKAGES="parted ${PACKAGES}"
+	fi
+	if ! command -v sfdisk &>/dev/null; then
+		PACKAGES="fdisk ${PACKAGES}"
+	fi
+	if ! command -v resize2fs &>/dev/null; then
+		PACKAGES="e2fsprogs ${PACKAGES}"
+	fi
+	if [ ! -z "${PACKAGES}" ]; then
+		sudo apt install ${PACKAGES}
+	fi
+}
+
+function check_and_install_toolchain() {
+	case "$(uname -mpi)" in
+	x86_64*)
+		if [ ! -d /opt/FriendlyARM/toolchain/11.3-aarch64 ]; then
+			echo "please install aarch64-gcc-11.3 first, using following commands: "
+			echo "    git clone https://github.com/friendlyarm/prebuilts.git -b master --depth 1"
+			echo "    cd prebuilts/gcc-x64"
+			echo "    sudo tar xvf toolchain-11.3-aarch64.tar.xz -C /"
+			exit 1
+		fi
+		export PATH=/opt/FriendlyARM/toolchain/11.3-aarch64/bin/:$PATH
+		return 0
+		;;
+	aarch64*)
+		local PACKAGES=
+		local requirements=("build-essential" "make" "device-tree-compiler" "bc" "cpio" "lz4" \
+			"flex" "bison" "libncurses-dev" "libssl-dev" "libelf-dev")
+		for pkg in ${requirements[@]}; do
+			if ! dpkg -s $pkg > /dev/null 2>&1; then
+				PACKAGES="$pkg ${PACKAGES}"
+			fi
+		done
+		if [ ! -z "${PACKAGES}" ]; then
+			sudo apt install ${PACKAGES}
+		fi
+		return 0
+		;;
+	*)
+		echo "Error: Cannot build arm64 arch on $(uname -mpi) host."
+		;;
+	esac
+	return 1
+}

@@ -9,7 +9,7 @@ TOPPATH=$PWD
 
 EFLASHER_RAW_IMG=$1
 SOC=$2
-TARGET_OS=$3
+TARGET_OS=$(echo ${3,,}|sed 's/\///g')
 
 OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
 
@@ -45,6 +45,7 @@ android*)
 *)
         RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
 esac
+
 AUTOSTART=no
 Args=( "$@" )
 # skip arg1,arg2,arg3
@@ -114,6 +115,14 @@ FULLIMG=out/${RAW_FILE}
 # ----------------------------------------------------------
 cp ${EFLASHER_RAW_IMG} ${FULLIMG}
 DEV=`losetup -f`
+for i in `seq 3`; do
+    if [ -b ${DEV} ]; then
+        break
+    else
+        echo "Waitting ${DEV}"
+        sleep 1
+    fi
+done
 MNT=/tmp/media_exfat
 rm -rf ${MNT}
 if [ $? -eq 0 ]; then
@@ -124,7 +133,9 @@ else
 fi
 # ----------------------------------------------------------
 losetup ${DEV} ${FULLIMG}
+sleep 1
 partprobe ${DEV}
+sleep 1
 mkdir -p ${MNT}
 mount -t exfat ${DEV}p1 ${MNT}
 gen_eflasher_conf ${MNT} ${TARGET_OS} ${AUTOSTART}

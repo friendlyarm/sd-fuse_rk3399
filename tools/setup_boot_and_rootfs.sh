@@ -17,8 +17,7 @@ KERNEL_DIR=$2
 BOOT_DIR=$3
 ROOTFS_DIR=$4
 PREBUILT=$5
-TARGET_OS=$6
-
+TARGET_OS=$(echo ${6,,}|sed 's/\///g')
 
 # kernel bin
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
