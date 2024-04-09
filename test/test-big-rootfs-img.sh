@@ -4,10 +4,7 @@ set -eux
 HTTP_SERVER=112.124.9.243
 
 # hack for me
-PCNAME=`hostname`
-if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
-       HTTP_SERVER=127.0.0.1
-fi
+[ -f /etc/friendlyarm ] && source /etc/friendlyarm $(basename $(builtin cd ..; pwd))
 
 # clean
 mkdir -p tmp

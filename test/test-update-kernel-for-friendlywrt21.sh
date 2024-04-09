@@ -6,12 +6,7 @@ KERNEL_URL=https://github.com/friendlyarm/kernel-rockchip
 KERNEL_BRANCH=nanopi4-v4.19.y
 
 # hack for me
-PCNAME=`hostname`
-if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
-	HTTP_SERVER=127.0.0.1
-	KERNEL_URL=git@192.168.1.5:/devel/kernel/linux.git
-	KERNEL_BRANCH=nanopi4-v4.19.y
-fi
+[ -f /etc/friendlyarm ] && source /etc/friendlyarm $(basename $(builtin cd ..; pwd))
 
 # clean
 mkdir -p tmp
@@ -33,5 +28,12 @@ else
 	git clone ${KERNEL_URL} --depth 1 -b ${KERNEL_BRANCH} kernel-rk3399-4.19
 fi
 
-BUILD_THIRD_PARTY_DRIVER=0 KERNEL_SRC=$PWD/kernel-rk3399-4.19 ./build-kernel.sh friendlywrt21-kernel4
+wget http://${HTTP_SERVER}/sd-fuse/kernel-3rd-drivers.tgz
+if [ -f kernel-3rd-drivers.tgz ]; then
+    pushd out
+    tar xzf ../kernel-3rd-drivers.tgz
+    popd
+fi
+
+KERNEL_SRC=$PWD/kernel-rk3399-4.19 ./build-kernel.sh friendlywrt21-kernel4
 sudo ./mk-sd-image.sh friendlywrt21-kernel4
