@@ -4,10 +4,7 @@ set -eu
 HTTP_SERVER=112.124.9.243
 
 # hack for me
-PCNAME=`hostname`
-if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
-       HTTP_SERVER=127.0.0.1
-fi
+[ -f /etc/friendlyarm ] && source /etc/friendlyarm $(basename $(builtin cd ..; pwd))
 
 # clean
 mkdir -p tmp
@@ -16,7 +13,6 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git -b kernel-5.15.y sd-fuse_rk3399
 cd sd-fuse_rk3399
-
 
 wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/friendlycore-lite-focal-arm64-images.tgz
 tar xzf friendlycore-lite-focal-arm64-images.tgz
@@ -45,7 +41,6 @@ tar xzf emmc-flasher-images.tgz
 
 ./mk-sd-image.sh friendlywrt21
 ./mk-emmc-image.sh friendlywrt21
-
 
 ./mk-emmc-image.sh friendlycore-lite-focal-arm64 filename=friendlycore-lite-focal-auto-eflasher.img autostart=yes
 
