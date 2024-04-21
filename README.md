@@ -10,8 +10,9 @@ This repository is a bunch of scripts to build bootable SD card images for Frien
 *Read this in other languages: [简体中文](README_cn.md)*  
   
 ## Requirements
+* Supports x86_64 and aarch64 platforms
 * Recommended Host OS: Ubuntu 20.04 LTS (Bionic Beaver) 64-bit or Higher
-* It is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
+* For x86_64 user, it is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
 * Docker container: https://github.com/friendlyarm/docker-cross-compiler-novnc
 
 ## Kernel Version Support
@@ -129,12 +130,12 @@ tar xvzf friendlycore-lite-focal-arm64-images.tgz
 Extract the rootfs.tar.gz exported in the previous section, the tar command requires root privileges, so you need put sudo in front of the command:
 ```
 mkdir friendlycore-lite-focal-arm64/rootfs
-sudo tar xvzfp rootfs.tar.gz -C friendlycore-lite-focal-arm64/rootfs --numeric-owner --same-owner
+./tools/extract-rootfs-tar.sh rootfs.tar.gz friendlycore-lite-focal-arm64/rootfs
 ```
 or download the filesystem archive from the following URL and extract it:
 ```
 wget http://112.124.9.243/dvdfiles/rk3399/rootfs/rootfs-friendlycore-lite-focal-arm64.tgz
-sudo tar xvzfp rootfs-friendlycore-lite-focal-arm64.tgz --numeric-owner --same-owner
+./tools/extract-rootfs-tar.sh rootfs-friendlycore-lite-focal-arm64.tgz
 ```
 Change something:
 ```
