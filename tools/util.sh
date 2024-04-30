@@ -34,7 +34,7 @@ function check_and_install_package() {
 		if [ -f /etc/os-release ]; then
 			. /etc/os-release
 			case "$VERSION_CODENAME" in
-			jammy|bookworm|bullseye)
+			noble|jammy|bookworm|bullseye)
 					PACKAGES="exfatprogs ${PACKAGES}"
 					;;
 			*)
@@ -48,7 +48,7 @@ function check_and_install_package() {
 		if [ -f /etc/os-release ]; then
 			. /etc/os-release
 			case "$VERSION_CODENAME" in
-			focal|jammy|bookworm|bullseye)
+			focal|jammy|noble|bookworm|bullseye)
 					PACKAGES="android-sdk-libsparse-utils ${PACKAGES}"
 					# PACKAGES="android-sdk-ext4-utils ${PACKAGES}"
 					;;
@@ -85,6 +85,18 @@ function check_and_install_package() {
 }
 
 function check_and_install_toolchain() {
+	local PACKAGES=
+	local requirements=("build-essential" "make" "device-tree-compiler" "bc" "cpio" "lz4" \
+		"flex" "bison" "libncurses-dev" "libssl-dev" "libelf-dev")
+	for pkg in ${requirements[@]}; do
+		if ! dpkg -s $pkg > /dev/null 2>&1; then
+			PACKAGES="$pkg ${PACKAGES}"
+		fi
+	done
+	if [ ! -z "${PACKAGES}" ]; then
+		sudo apt install ${PACKAGES}
+	fi
+
 	case "$(uname -mpi)" in
 	x86_64*)
 		if [ ! -d /opt/FriendlyARM/toolchain/11.3-aarch64 ]; then
@@ -98,17 +110,6 @@ function check_and_install_toolchain() {
 		return 0
 		;;
 	aarch64*)
-		local PACKAGES=
-		local requirements=("build-essential" "make" "device-tree-compiler" "bc" "cpio" "lz4" \
-			"flex" "bison" "libncurses-dev" "libssl-dev" "libelf-dev")
-		for pkg in ${requirements[@]}; do
-			if ! dpkg -s $pkg > /dev/null 2>&1; then
-				PACKAGES="$pkg ${PACKAGES}"
-			fi
-		done
-		if [ ! -z "${PACKAGES}" ]; then
-			sudo apt install ${PACKAGES}
-		fi
 		return 0
 		;;
 	*)
