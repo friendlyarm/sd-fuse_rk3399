@@ -85,11 +85,11 @@ build_external_module() {
             git clone ${DRIVER_REPO} -b ${DRIVER_BRANCHE} ${DRIVER_NAME}
         else
             (cd ${DRIVER_NAME} && {
-                make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} KSRC=${KERNEL_SRC} CONFIG_VENDOR_FRIENDLYARM=y clean
+                make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} KSRC=${KERNEL_SRC} CONFIG_VENDOR_FRIENDLYARM=y CONFIG_WERROR=n clean
             })
         fi
         (cd ${DRIVER_NAME} && {
-            make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} KSRC=${KERNEL_SRC} CONFIG_VENDOR_FRIENDLYARM=y -j$(nproc)
+            make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} KSRC=${KERNEL_SRC} CONFIG_VENDOR_FRIENDLYARM=y CONFIG_WERROR=n -j$(nproc)
             if [ $? -ne 0 ]; then
                 echo "failed to build 3rd kernel modules: ${DRIVER_NAME}"
                 exit 1
