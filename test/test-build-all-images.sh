@@ -4,10 +4,7 @@ set -eu
 HTTP_SERVER=112.124.9.243
 
 # hack for me
-PCNAME=`hostname`
-if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
-       HTTP_SERVER=127.0.0.1
-fi
+[ -f /etc/friendlyarm ] && source /etc/friendlyarm $(basename $(builtin cd ..; pwd))
 
 # clean
 mkdir -p tmp
@@ -42,7 +39,6 @@ tar xzf emmc-flasher-images.tgz
 
 ./mk-sd-image.sh friendlywrt21-docker
 ./mk-emmc-image.sh friendlywrt21-docker
-
 
 ./mk-emmc-image.sh friendlycore-lite-focal-kernel5-arm64 filename=friendlycore-lite-focal-auto-eflasher.img autostart=yes
 

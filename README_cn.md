@@ -10,9 +10,9 @@ sd-fuse 提供一些工具和脚本, 用于制作SD卡固件, 具体用途如下
 *其他语言版本: [English](README.md)*  
   
 ## 运行环境
-* 在电脑主机端使用
+* 支持 x86_64 和 aarch64 平台
 * 推荐的操作系统: Ubuntu 20.04及以上64位操作系统
-* 推荐运行此脚本初始化开发环境: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
+* 针对x86_64用户，推荐运行此脚本初始化开发环境: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
 * Docker容器: https://github.com/friendlyarm/docker-cross-compiler-novnc
 
 ## 支持的内核版本
@@ -127,12 +127,12 @@ tar xvzf friendlycore-lite-focal-arm64-images.tgz
 解压上一章节中从开发板上导出的rootfs.tar.gz, 需要使用root权限, 因此解压命令需要加上sudo:
 ```
 mkdir friendlycore-lite-focal-arm64/rootfs
-sudo tar xvzfp rootfs.tar.gz -C friendlycore-lite-focal-arm64/rootfs --numeric-owner --same-owner
+./tools/extract-rootfs-tar.sh rootfs.tar.gz friendlycore-lite-focal-arm64/rootfs
 ```
 或者从以下网址下载文件系统压缩包并解压:
 ```
 wget http://112.124.9.243/dvdfiles/rk3399/rootfs/rootfs-friendlycore-lite-focal-arm64.tgz
-sudo tar xvzfp rootfs-friendlycore-lite-focal-arm64.tgz --numeric-owner --same-owner
+./tools/extract-rootfs-tar.sh rootfs-friendlycore-lite-focal-arm64.tgz
 ```
 可以根据需要, 对文件系统目录进行更改, 例如:
 ```
