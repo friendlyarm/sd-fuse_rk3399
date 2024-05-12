@@ -6,12 +6,7 @@ KERNEL_URL=https://github.com/friendlyarm/kernel-rockchip
 KERNEL_BRANCH=nanopi5-v5.10.y_opt
 
 # hack for me
-PCNAME=`hostname`
-if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
-	HTTP_SERVER=192.168.1.9
-	KERNEL_URL=git@192.168.1.5:/devel/kernel/linux.git
-	KERNEL_BRANCH=nanopi5-v5.10.y_opt
-fi
+[ -f /etc/friendlyarm ] && source /etc/friendlyarm $(basename $(builtin cd ..; pwd))
 
 # clean
 mkdir -p tmp
