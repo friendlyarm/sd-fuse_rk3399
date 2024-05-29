@@ -11,7 +11,7 @@ This repository is a bunch of scripts to build bootable SD card images for Frien
   
 ## Requirements
 * Supports x86_64 and aarch64 platforms
-* Recommended Host OS: Ubuntu 20.04 LTS (Bionic Beaver) 64-bit or Higher
+* Recommended Host OS: Ubuntu 20.04 LTS (Focal Fossa) 64-bit or Higher. Note: Build will fail on Ubuntu Bionic since package lz4 is required
 * For x86_64 user, it is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
 * Docker container: https://github.com/friendlyarm/docker-cross-compiler-novnc
 
