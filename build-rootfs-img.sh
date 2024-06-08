@@ -98,6 +98,8 @@ clean_rootfs() {
 }
 clean_rootfs ${ROOTFS_DIR}
 
+RET=0
+MKFS_PID=
 if [ ${IMG_SIZE} -le 0 ]; then
     # calc image size
     IMG_SIZE=$(((`du -s -B64M ${ROOTFS_DIR} | cut -f1` + 3) * 1024 * 1024 * 64))
@@ -105,12 +107,31 @@ if [ ${IMG_SIZE} -le 0 ]; then
     INODE_SIZE=$((`find ${ROOTFS_DIR} | wc -l` + 128))
     # make fs
     [ -f ${IMG_FILE} ] && rm -f ${IMG_FILE}
-    ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${ROOTFS_DIR} ${IMG_FILE} ${IMG_BLK}
+    set +e
+    ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${ROOTFS_DIR} ${IMG_FILE} ${IMG_BLK} &
+    MKFS_PID=$!
+    wait $MKFS_PID
+    RET=$?
+    set -e
 else
     IMG_BLK=$((${IMG_SIZE} / 4096))
     INODE_SIZE=$((`find ${ROOTFS_DIR} | wc -l` + 128))
     [ -f ${IMG_FILE} ] && rm -f ${IMG_FILE}
-    ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${ROOTFS_DIR} ${IMG_FILE} ${IMG_BLK}
+    set +e
+    ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${ROOTFS_DIR} ${IMG_FILE} ${IMG_BLK} &
+    MKFS_PID=$!
+    wait $MKFS_PID
+    RET=$?
+    set -e
+fi
+if [ $RET -ne 0 ]; then
+    oom_log=$(dmesg | tail -n 50 | grep -i 'killed process')
+    if echo "$oom_log" | grep -q "Killed process ${MKFS_PID}"; then
+        echo "Error: failed to generate rootfs.img, mke2fs was killed by oom-killer, please ensure that there is sufficient system memory to execute this program."
+    else
+        echo "Error: failed to generate rootfs.img, mke2fs failed with exit code ${RET}"
+    fi
+    exit $RET
 fi
 
 if [ ${TARGET_OS} != "eflasher" ]; then
