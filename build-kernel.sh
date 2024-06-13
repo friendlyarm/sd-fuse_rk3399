@@ -25,6 +25,7 @@ true ${DISABLE_BUILDKERNEL:=0}
 true ${LOGO:=}
 true ${KERNEL_LOGO:=}
 true ${MK_HEADERS_DEB:=0}
+true ${SKIP_DISTCLEAN:=0}
 true ${BUILD_THIRD_PARTY_DRIVER:=1}
 true ${KCFG:=nanopi4_linux_defconfig}
 true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
@@ -211,7 +212,9 @@ fi
 
 function build_kernel() {
     cd ${KERNEL_SRC}
-    make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} distclean
+    if [ ${SKIP_DISTCLEAN} -ne 1 ]; then
+        make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} distclean
+    fi
     touch .scmversion
     make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} ${KCFG}
     if [ $? -ne 0 ]; then
