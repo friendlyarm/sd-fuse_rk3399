@@ -136,7 +136,7 @@ if ! [ -x "$(command -v swig)" ]; then
 fi
 
 # get include path for this python version
-# INCLUDE_PY=$(python -c "from distutils import sysconfig as s; print s.get_config_vars()['INCLUDEPY']")
+# INCLUDE_PY=$(python -c "import sysconfig as s; print(s.get_config_vars()['INCLUDEPY'])")
 # if [ ! -f "${INCLUDE_PY}/Python.h" ]; then
 #     sudo apt install python-dev python3-dev
 # fi  
