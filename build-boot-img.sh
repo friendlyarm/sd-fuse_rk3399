@@ -3,8 +3,8 @@
 if [ $# -lt 2 ]; then
 	echo "Usage: $0 <boot dir> <img filename>"
     echo "example:"
-    echo "    tar xvzf NETDISK/RK3399/rootfs/rootfs-friendlycore-lite-noble-arm64-20190603.tgz"
-    echo "    ./build-boot-img.sh friendlycore-lite-noble-arm64/boot friendlycore-lite-noble-arm64/boot.img"
+    echo "    tar xvzf NETDISK/RK3399/rootfs/rootfs-ubuntu-noble-core-arm64-20190603.tgz"
+    echo "    ./build-boot-img.sh ubuntu-noble-core-arm64/boot ubuntu-noble-core-arm64/boot.img"
     exit 1
 fi
 TOPPATH=$PWD

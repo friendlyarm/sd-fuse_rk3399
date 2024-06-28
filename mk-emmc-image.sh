@@ -19,7 +19,7 @@ set -eu
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <friendlywrt23|friendlywrt23-docker|friendlywrt22|friendlywrt22-docker|friendlywrt21|friendlywrt21-docker|friendlycore-lite-noble-arm64|openmediavault-arm64> [img filename] [options]"
+       echo "Usage: $0 <friendlywrt23|friendlywrt23-docker|friendlywrt22|friendlywrt22-docker|friendlywrt21|friendlywrt21-docker|ubuntu-noble-core-arm64|openmediavault-arm64> [img filename] [options]"
        echo "    examples:"
        echo "        ./mk-emmc-image.sh friendlywrt23 filename=myimg-emmc.img autostart=yes"
        echo "        ./mk-emmc-image.sh friendlywrt23 autostart=yes"
@@ -41,7 +41,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
-friendlycore-lite* | friendlywrt* | openmediavault-* | debian-*-core*)
+friendlycore-lite* | ubuntu-*-core* | friendlywrt* | openmediavault-* | debian-*-core*)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

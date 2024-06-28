@@ -34,17 +34,17 @@ true ${uboot_src:=${OUT}/uboot-${SOC}}
 true ${UBOOT_SRC:=${uboot_src}}
 
 function usage() {
-       echo "Usage: $0 <friendlycore-lite-noble-arm64|openmediavault-arm64|friendlywrt23|friendlywrt23-docker|friendlywrt22|friendlywrt22-docker|friendlywrt21|friendlywrt21-docker>"
+       echo "Usage: $0 <ubuntu-noble-core-arm64|openmediavault-arm64|friendlywrt23|friendlywrt23-docker|friendlywrt22|friendlywrt22-docker|friendlywrt21|friendlywrt21-docker>"
        echo "# example:"
        echo "# clone uboot source from github:"
        echo "    git clone ${UBOOT_REPO} --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}"
        echo "# or clone your local repo:"
        echo "    git clone git@192.168.1.2:/path/to/uboot.git --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}"
        echo "# then"
-       echo "    ./build-uboot.sh friendlycore-lite-noble-arm64 "
-       echo "    ./mk-emmc-image.sh friendlycore-lite-noble-arm64 "
+       echo "    ./build-uboot.sh ubuntu-noble-core-arm64 "
+       echo "    ./mk-emmc-image.sh ubuntu-noble-core-arm64 "
        echo "# also can do:"
-       echo "	UBOOT_SRC=~/myuboot ./build-uboot.sh friendlycore-lite-noble-arm64"
+       echo "	UBOOT_SRC=~/myuboot ./build-uboot.sh ubuntu-noble-core-arm64"
        exit 0
 }
 
@@ -84,7 +84,7 @@ fi
 true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
-friendlycore-lite* | friendlywrt* | openmediavault-* | debian-*-core*)
+friendlycore-lite* | ubuntu-*-core* | friendlywrt* | openmediavault-* | debian-*-core*)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
