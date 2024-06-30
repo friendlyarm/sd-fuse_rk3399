@@ -27,14 +27,12 @@ For other kernel versions, please switch to the related git branch.
 * friendlywrt23-docker
 * friendlywrt21
 * friendlywrt21-docker
-* debian-bullseye-core-arm64
-* ubuntu-noble-core-arm64
 * openmediavault-arm64
 
   
-To build an SD card image for ubuntu-noble-core, for example like this:
+To build an SD card image for openmediavault, for example like this:
 ```
-./mk-sd-image.sh ubuntu-noble-core-arm64
+./mk-sd-image.sh openmediavault-arm64
 ```
   
 ## Where to download files
@@ -57,54 +55,54 @@ If the files are not prepared in advance, the script will automatically download
 
 ## Usage
 ### Build your own SD card image
-*Note: Here we use ubuntu-noble-core system as an example*  
+*Note: Here we use openmediavault system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), due to the bandwidth of the http server, we recommend downloading the file from the [NetDrive](https://download.friendlyelec.com/rk3399):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.1.y --single-branch sd-fuse_rk3399-kernel6.1
 cd sd-fuse_rk3399-kernel6.1
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/ubuntu-noble-core-arm64-images.tgz
-tar xvzf ubuntu-noble-core-arm64-images.tgz
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/openmediavault-arm64-images.tgz
+tar xvzf openmediavault-arm64-images.tgz
 ```
-After decompressing, you will get a directory named ubuntu-noble-core-arm64, you can change the files in the directory as needed, for example, replace rootfs.img with your own modified version, or your own compiled kernel and uboot, finally, flash the image to the SD card by entering the following command (The below steps assume your SD card is device /dev/sdX):
+After decompressing, you will get a directory named openmediavault-arm64, you can change the files in the directory as needed, for example, replace rootfs.img with your own modified version, or your own compiled kernel and uboot, finally, flash the image to the SD card by entering the following command (The below steps assume your SD card is device /dev/sdX):
 ```
-sudo ./fusing.sh /dev/sdX ubuntu-noble-core-arm64
+sudo ./fusing.sh /dev/sdX openmediavault-arm64
 ```
 Or, package it as an SD card image file:
 ```
-./mk-sd-image.sh ubuntu-noble-core-arm64
+./mk-sd-image.sh openmediavault-arm64
 ```
-The following flashable image file will be generated, it is now ready to be used to boot the device into ubuntu-noble-core:  
+The following flashable image file will be generated, it is now ready to be used to boot the device into openmediavault:  
 ```
-out/rk3399-sd-ubuntu-noble-core-6.1-arm64-YYYYMMDD.img
+out/rk3399-sd-openmediavault-6.1-arm64-YYYYMMDD.img
 ```
 
 #### Create an SD card image that does not use OverlayFS
 The following command will create an SD card image with OverlayFS disabled:
 ```
-cp prebuilt/parameter-ext4.txt ubuntu-noble-core-arm64/parameter.txt
-./mk-sd-image.sh ubuntu-noble-core-arm64
+cp prebuilt/parameter-ext4.txt openmediavault-arm64/parameter.txt
+./mk-sd-image.sh openmediavault-arm64
 ```
 Disabling overlayfs is useful for exporting root filesystem.
 
 
 ### Build your own SD-to-eMMC Image
-*Note: Here we use ubuntu-noble-core system as an example*  
-Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), here you need to download the ubuntu-noble-core and eflasher [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
+*Note: Here we use openmediavault system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), here you need to download the openmediavault and eflasher [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.1.y --single-branch sd-fuse_rk3399-kernel6.1
 cd sd-fuse_rk3399-kernel6.1
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/ubuntu-noble-core-arm64-images.tgz
-tar xvzf ubuntu-noble-core-arm64-images.tgz
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/openmediavault-arm64-images.tgz
+tar xvzf openmediavault-arm64-images.tgz
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/emmc-flasher-images.tgz
 tar xvzf emmc-flasher-images.tgz
 ```
 Then use the following command to build the SD-to-eMMC image, the autostart=yes parameter means it will automatically enter the flash process when booting:
 ```
-./mk-emmc-image.sh ubuntu-noble-core-arm64 autostart=yes
+./mk-emmc-image.sh openmediavault-arm64 autostart=yes
 ```
-The following flashable image file will be generated, ready to be used to boot the device into eflasher system and then flash ubuntu-noble-core system to eMMC: 
+The following flashable image file will be generated, ready to be used to boot the device into eflasher system and then flash openmediavault system to eMMC: 
 ```
-out/rk3399-eflasher-ubuntu-noble-core-6.1-arm64-YYYYMMDD.img
+out/rk3399-eflasher-openmediavault-6.1-arm64-YYYYMMDD.img
 ```
 ### Backup rootfs and create custom SD image (to burn your application into other boards)
 #### Backup rootfs
@@ -119,49 +117,49 @@ tar --warning=no-file-changed -cvpzf /rootfs.tar.gz \
     --exclude=/usr/local/first_boot_flag --one-file-system /
 ```
 #### Making a bootable SD card from a root filesystem
-*Note: Here we use ubuntu-noble-core system as an example*  
+*Note: Here we use openmediavault system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.1.y --single-branch sd-fuse_rk3399-kernel6.1
 cd sd-fuse_rk3399-kernel6.1
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/ubuntu-noble-core-arm64-images.tgz
-tar xvzf ubuntu-noble-core-arm64-images.tgz
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/openmediavault-arm64-images.tgz
+tar xvzf openmediavault-arm64-images.tgz
 ```
 Extract the rootfs.tar.gz exported in the previous section, the tar command requires root privileges, so you need put sudo in front of the command:
 ```
-mkdir ubuntu-noble-core-arm64/rootfs
-./tools/extract-rootfs-tar.sh rootfs.tar.gz ubuntu-noble-core-arm64/rootfs
+mkdir openmediavault-arm64/rootfs
+./tools/extract-rootfs-tar.sh rootfs.tar.gz openmediavault-arm64/rootfs
 ```
 or download the filesystem archive from the following URL and extract it:
 ```
-wget http://112.124.9.243/dvdfiles/rk3399/rootfs/rootfs-ubuntu-noble-core-arm64.tgz
-./tools/extract-rootfs-tar.sh rootfs-ubuntu-noble-core-arm64.tgz
+wget http://112.124.9.243/dvdfiles/rk3399/rootfs/rootfs-openmediavault-arm64.tgz
+./tools/extract-rootfs-tar.sh rootfs-openmediavault-arm64.tgz
 ```
 Make rootfs to img:
 ```
-sudo ./build-rootfs-img.sh ubuntu-noble-core-arm64/rootfs ubuntu-noble-core-arm64
+sudo ./build-rootfs-img.sh openmediavault-arm64/rootfs openmediavault-arm64
 ```
 Use the new rootfs.img to build SD card image:
 ```
-./mk-sd-image.sh ubuntu-noble-core-arm64
+./mk-sd-image.sh openmediavault-arm64
 ```
 Or build SD-to-eMMC image:
 ```
-./mk-emmc-image.sh ubuntu-noble-core-arm64 autostart=yes
+./mk-emmc-image.sh openmediavault-arm64 autostart=yes
 ```
 If the image path is too big to pack, you can use the RAW_SIZE_MB environment variable to set a new image size. for example, you can set it to 16GB:
 ```
-RAW_SIZE_MB=16000 ./mk-sd-image.sh ubuntu-noble-core-arm64
-RAW_SIZE_MB=16000 ./mk-emmc-image.sh ubuntu-noble-core-arm64
+RAW_SIZE_MB=16000 ./mk-sd-image.sh openmediavault-arm64
+RAW_SIZE_MB=16000 ./mk-emmc-image.sh openmediavault-arm64
 ```
 ### Compiling the Kernel
-*Note: Here we use ubuntu-noble-core system as an example*  
+*Note: Here we use openmediavault system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.1.y --single-branch sd-fuse_rk3399-kernel6.1
 cd sd-fuse_rk3399-kernel6.1
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/ubuntu-noble-core-arm64-images.tgz
-tar xvzf ubuntu-noble-core-arm64-images.tgz
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/openmediavault-arm64-images.tgz
+tar xvzf openmediavault-arm64-images.tgz
 ```
 Download the kernel source code from github:
 ```
@@ -180,13 +178,13 @@ cd -
 ```
 To compile the kernel, use the environment variables KERNEL_SRC and KCFG to set the source code folder and the defconfig file:
 ```
-KERNEL_SRC=kernel KCFG=my_defconfig ./build-kernel.sh ubuntu-noble-core-arm64
+KERNEL_SRC=kernel KCFG=my_defconfig ./build-kernel.sh openmediavault-arm64
 ```
 
 #### Compiling the kernel headers only
 Set the environment variable MK_HEADERS_DEB to 1, which will compile the kernel headers:
 ```
-MK_HEADERS_DEB=1 ./build-kernel.sh ubuntu-noble-core-arm64
+MK_HEADERS_DEB=1 ./build-kernel.sh openmediavault-arm64
 ```
 #### Environment Variables
 * KERNEL_SRC is used to specify the local kernel source code dir.
@@ -195,17 +193,17 @@ MK_HEADERS_DEB=1 ./build-kernel.sh ubuntu-noble-core-arm64
 * Set SKIP_DISTCLEAN to 1 to skip running distclean before compiling
 
 ### Compiling the u-boot
-*Note: Here we use ubuntu-noble-core system as an example* 
+*Note: Here we use openmediavault system as an example* 
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher)::
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.1.y --single-branch sd-fuse_rk3399-kernel6.1
 cd sd-fuse_rk3399-kernel6.1
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/ubuntu-noble-core-arm64-images.tgz
-tar xvzf ubuntu-noble-core-arm64-images.tgz
+wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/openmediavault-arm64-images.tgz
+tar xvzf openmediavault-arm64-images.tgz
 ```
 Download the u-boot source code from github that matches the OS version, the environment variable UBOOT_SRC is used to specify the local source code directory:
 ```
 git clone https://github.com/friendlyarm/uboot-rockchip -b nanopi4-v2017.09 --depth 1 uboot
-UBOOT_SRC=uboot ./build-uboot.sh ubuntu-noble-core-arm64
+UBOOT_SRC=uboot ./build-uboot.sh openmediavault-arm64
 ```
 
