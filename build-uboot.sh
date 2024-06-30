@@ -85,7 +85,7 @@ fi
 true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
-friendlycore-* | debian-* | friendlywrt* | buildroot* )
+friendlycore-* | debian-* | ubuntu-* | friendlywrt* | buildroot* )
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
