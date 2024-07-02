@@ -15,7 +15,7 @@ OUT=${PWD}/out
 UBOOT_DIR=$1
 KERNEL_DIR=$2
 BOOT_DIR=$3
-ROOTFS_DIR=$4
+ROOTFS_DIR=$(readlink -f $4)
 PREBUILT=$5
 TARGET_OS=$(echo ${6,,}|sed 's/\///g')
 
@@ -58,17 +58,8 @@ rm -rf ${ROOTFS_DIR}/lib/modules/*
 })
 
 # firmware
-if [ ! -d ${ROOTFS_DIR}/system/etc/firmware ]; then
-	tar xzf ${PREBUILT}/firmware/system.tgz -C ${ROOTFS_DIR}/
-	(cd  ${ROOTFS_DIR}/etc/ && {
-		if [ ! -e firmware ]; then
-			ln -s /system/etc/firmware .
-		fi
-	})
-fi
-
-if [ ! -d ${ROOTFS_DIR}/lib/firmware/rockchip ]; then
-	tar xzf ${PREBUILT}/firmware/lib.tgz -C ${ROOTFS_DIR}/
-fi
+(cd ${PREBUILT}/firmware && {
+	./install.sh ${ROOTFS_DIR}
+})
 
 exit 0
