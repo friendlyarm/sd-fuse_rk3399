@@ -1,8 +1,8 @@
 #!/bin/bash
 set -eu
 
-# Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
-# (http://www.friendlyarm.com)
+# Copyright (C) Guangzhou FriendlyElec Computer Tech. Co., Ltd.
+# (http://www.friendlyelec.com)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -33,9 +33,8 @@ fi
 true ${uboot_src:=${OUT}/uboot-${SOC}}
 true ${UBOOT_SRC:=${uboot_src}}
 
-source tools/global.sh
 function usage() {
-       echo "Usage: $0 <${SUPPORTED_OS}>"
+       echo "Usage: $0 <img dir>"
        echo "# example:"
        echo "# clone uboot source from github:"
        echo "    git clone ${UBOOT_REPO} --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}"
@@ -68,12 +67,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 check_and_install_package
-if ! [ -x "$(command -v python2)" ]; then
-    sudo apt install python2
-fi
-if ! [ -x "$(command -v python)" ]; then
-    (cd /usr/bin/ && sudo ln -s python2 python)
-fi
+
 # get include path for this python version
 INCLUDE_PY=$(python -c "import sysconfig as s; print(s.get_config_vars()['INCLUDEPY'])")
 if [ ! -f "${INCLUDE_PY}/Python.h" ]; then
@@ -94,18 +88,12 @@ esac
 
 download_img() {
     local RKPARAM=$(dirname $0)/${1}/parameter.txt
-    case ${1} in
-    eflasher)
-        RKPARAM=$(dirname $0)/${1}/partmap.txt
-        ;;
-    esac
-
     if [ -f "${RKPARAM}" ]; then
         echo ""
     else
 	ROMFILE=`./tools/get_pkg_filename.sh ${1}`
         cat << EOF
-Warn: Image not found for "${1}"
+Warn: Image not found for ${1}
 ----------------
 you may download it from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
 the image files are stored in a directory called "03_Partition image files", for example:

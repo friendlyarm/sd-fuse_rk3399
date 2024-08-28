@@ -112,24 +112,24 @@ if [ ! -d $OUT ]; then
 fi
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 true ${kernel_src:=out/kernel-${SOC}}
-true ${KERNEL_SRC:=$(readlink -f ${kernel_src})}
+kernel_src=$(readlink -f ${kernel_src})
+true ${KERNEL_SRC:=${kernel_src}}
+KERNEL_SRC=$(readlink -f ${KERNEL_SRC})
 
 function usage() {
-       echo "Usage: $0 <android10|android11|buildroot|friendlycore-focal-arm64|debian-buster-desktop-arm64|debian-bullseye-desktop-arm64|friendlycore-lite-focal-kernel4-arm64|friendlywrt-kernel4>"
+       echo "Usage: $0 <img dir>"
        echo "# example:"
        echo "# clone kernel source from github:"
        echo "    git clone ${KERNEL_REPO} --depth 1 -b ${KERNEL_BRANCH} ${kernel_src}"
-       echo "# or clone your local repo:"
-       echo "    git clone git@192.168.1.2:/path/to/linux.git --depth 1 -b ${KERNEL_BRANCH} ${KERNEL_SRC}"
-       echo "# then"
+       echo "# custom kernel logo:"
        echo "    convert files/logo.jpg -type truecolor /tmp/logo.bmp"
        echo "    convert files/logo.jpg -type truecolor /tmp/logo_kernel.bmp"
        echo "    LOGO=/tmp/logo.bmp KERNEL_LOGO=/tmp/logo_kernel.bmp ./build-kernel.sh eflasher"
        echo "    LOGO=/tmp/logo.bmp KERNEL_LOGO=/tmp/logo_kernel.bmp ./build-kernel.sh debian-buster-desktop-arm64"
        echo "    ./mk-emmc-image.sh debian-buster-desktop-arm64"
-       echo "# also can do:"
-       echo "    KERNEL_SRC=~/mykernel ./build-kernel.sh debian-buster-desktop-arm64"
-       echo "# other options, build kernel-headers, enable/disable 3rd drivers:"
+       echo "# specify the local source:"
+       echo "    KERNEL_SRC=/path/to/kernel ./build-kernel.sh debian-buster-desktop-arm64"
+       echo "# build kernel-headers, enable/disable 3rd drivers:"
        echo "    MK_HEADERS_DEB=1 BUILD_THIRD_PARTY_DRIVER=0 ./build-kernel.sh debian-buster-desktop-arm64"
        exit 0
 }
@@ -145,6 +145,7 @@ if [ $? -ne 0 ]; then
 fi
 check_and_install_package
 
+
 case ${TARGET_OS} in
 buildroot* | debian-* | ubuntu-* | android10 | android11 | friendlycore-* | friendlywrt* )
         ;;
@@ -155,11 +156,6 @@ esac
 
 download_img() {
     local RKPARAM=$(dirname $0)/${1}/parameter.txt
-    case ${1} in
-    eflasher)
-        RKPARAM=$(dirname $0)/${1}/partmap.txt
-        ;;
-    esac
     if [ -f "${RKPARAM}" ]; then
 	    echo "${1} found."
     else

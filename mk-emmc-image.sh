@@ -18,9 +18,8 @@ set -eu
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
-source tools/global.sh
 function usage() {
-       echo "Usage: $0 <${SUPPORTED_OS}> [img filename] [options]"
+       echo "Usage: $0 <img dir> [img filename] [options]"
        echo "    examples:"
        echo "        ./mk-emmc-image.sh debian-buster-desktop-arm64 filename=myimg-emmc.img autostart=yes"
        echo "        ./mk-emmc-image.sh debian-buster-desktop-arm64 autostart=yes"
@@ -51,12 +50,6 @@ esac
 
 download_img() {
     local RKPARAM=$(dirname $0)/${1}/parameter.txt
-    case ${1} in
-    eflasher)
-        RKPARAM=$(dirname $0)/${1}/partmap.txt
-        ;;
-    esac
-
     if [ -f "${RKPARAM}" ]; then
         echo ""
     else

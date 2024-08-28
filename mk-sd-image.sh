@@ -1,8 +1,8 @@
 #!/bin/bash
 set -eu
 
-# Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
-# (http://www.friendlyarm.com)
+# Copyright (C) Guangzhou FriendlyElec Computer Tech. Co., Ltd.
+# (http://www.friendlyelec.com)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -17,10 +17,8 @@ set -eu
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
-
-source tools/global.sh
 function usage() {
-       echo "Usage: $0 <${SUPPORTED_OS}|eflasher>"
+       echo "Usage: $0 <img dir>"
        exit 0
 }
 
@@ -41,12 +39,6 @@ true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 # Create zero file
 
 RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
-case ${TARGET_OS} in
-	eflasher)
-		RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/partmap.txt
-		;;
-esac
-
 true ${RAW_SIZE_MB:=0}
 if [ $RAW_SIZE_MB -eq 0 ]; then
 	case ${TARGET_OS} in

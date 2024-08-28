@@ -20,6 +20,7 @@
 rootfs*
 kernel*
 .vscode
+linux-kernel-*
 
 #
 # Top-level generic files
@@ -29,9 +30,10 @@ kernel*
 /vendor
 /friendlywrt*
 /debian*
+/ubuntu-*
 /android*
-/ubuntu*
 /friendlycore*
+/openmediavault-*
 /friendlydesktop*
 /eflasher
 /buildroot
