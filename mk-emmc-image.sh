@@ -19,7 +19,7 @@ set -eu
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <friendlycore-arm64|friendlydesktop-arm64|buildroot|lubuntu|android7|android8>"
+       echo "Usage: $0 <img dir>"
        echo "    examples:"
        echo "        ./mk-emmc-image.sh friendlycore-arm64 filename=myimg-emmc.img autostart=yes"
        echo "        ./mk-emmc-image.sh friendlycore-arm64 autostart=yes"

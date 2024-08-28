@@ -18,7 +18,7 @@ set -eu
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 function usage() {
-       echo "Usage: $0 <friendlycore-arm64|friendlydesktop-arm64|buildroot|lubuntu|eflasher>"
+       echo "Usage: $0 <img dir>"
        exit 0
 }
 
@@ -35,6 +35,13 @@ check_and_install_package
 true ${SOC:=rk3399}
 true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
+RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/partmap.txt
+case ${TARGET_OS} in
+	eflasher)
+		RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
+		;;
+esac
+
 case ${TARGET_OS} in
 friendlycore-arm64 | friendlydesktop-arm64 | buildroot | lubuntu | eflasher)
 	;;
@@ -43,21 +50,7 @@ friendlycore-arm64 | friendlydesktop-arm64 | buildroot | lubuntu | eflasher)
 	exit 0
 esac
 
-
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-	echo "Re-running script under sudo..."
-	sudo --preserve-env "$0" "$@"
-	exit
-fi
-
-
-
-# ----------------------------------------------------------
-# Create zero file
-
 CODENAME=bionic
-
 true ${RAW_SIZE_MB:=0}
 if [ $RAW_SIZE_MB -eq 0 ]; then
     case ${TARGET_OS} in
@@ -131,9 +124,20 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
+# Automatically re-run script under sudo if not root
+if [ $(id -u) -ne 0 ]; then
+	echo "Re-running script under sudo..."
+	sudo --preserve-env "$0" "$@"
+	exit
+fi
+
+# ----------------------------------------------------------
+# Fusing all
+
+true ${SD_FUSING:=$(dirname $0)/fusing.sh}
+
 # ----------------------------------------------------------
 # Setup loop device
-
 LOOP_DEVICE=$(losetup -f)
 echo "Using device: ${LOOP_DEVICE}"
 for i in `seq 3`; do
@@ -155,29 +159,23 @@ else
 	exit 1
 fi
 
-# ----------------------------------------------------------
-# Fusing all
-
-true ${SD_FUSING:=$(dirname $0)/fusing.sh}
-
 ${SD_FUSING} ${LOOP_DEVICE} ${TARGET_OS}
 RET=$?
-
-if [ "x${TARGET_OS}" = "xeflasher" ]; then
-	mkfs.exfat ${LOOP_DEVICE}p1 -n FriendlyARM
-fi
-
-# cleanup
-losetup -d ${LOOP_DEVICE}
-
 if [ ${RET} -ne 0 ]; then
+	losetup -d ${LOOP_DEVICE}
 	echo "Error: ${RAW_FILE}: Fusing image failed, cleanup"
 	rm -f ${RAW_FILE}
 	exit 1
 fi
 
+if [ "x${TARGET_OS}" = "xeflasher" ]; then
+	sudo mkfs.exfat ${LOOP_DEVICE}p1 -n FriendlyARM
+fi
+
+# cleanup
+losetup -d ${LOOP_DEVICE}
+
 echo "---------------------------------"
 echo "RAW image successfully created (`date +%T`)."
 ls -l ${RAW_FILE}
 echo "Tip: You can compress it to save disk space."
-

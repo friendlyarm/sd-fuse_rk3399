@@ -28,7 +28,7 @@ BOARD=RK3399/images-for-eflasher
 TARGET_OS=$(echo ${1,,}|sed 's/\///g')
 ROMFILE=`./tools/get_pkg_filename.sh ${TARGET_OS}`
 if [ -z ${ROMFILE} ]; then
-	echo "Usage: $0 <friendlycore-arm64|friendlydesktop-arm64|buildroot|lubuntu|android7|android8|eflasher>"
+	echo "Usage: $0 <img dir>"
 	exit 1
 fi
 

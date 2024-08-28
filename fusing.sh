@@ -1,8 +1,8 @@
 #!/bin/bash
 set -eu
 
-# Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
-# (http://www.friendlyarm.com)
+# Copyright (C) Guangzhou FriendlyElec Computer Tech. Co., Ltd.
+# (http://www.friendlyelec.com)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,19 +20,32 @@ set -eu
 # ----------------------------------------------------------
 # Checking device for fusing
 
-if [ $# -eq 0 ]; then
-	echo "Usage: $0 DEVICE <friendlycore-arm64|friendlydesktop-arm64|buildroot|lubuntu|android7|android8|eflasher>"
+if [ $# -lt 2 ]; then
+	echo "Usage: $0 <DEVICE|RAWFILE> <OS>"
 	exit 0
+fi
+
+if [ ! -e $1 ]; then
+	echo "Error: $1 does not exist."
+	exit 1
+fi
+
+if [ ! -d $2 ]; then
+    echo "Error: $2 does not exist."
+    exit 1
 fi
 
 case $1 in
 /dev/sd[a-z] | /dev/loop[0-9]* | /dev/mmcblk[0-9]*)
-	if [ ! -e $1 ]; then
-		echo "Error: $1 does not exist."
-		exit 1
-	fi
 	DEV_NAME=`basename $1`
-	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size` ;;&
+	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size`
+   ;;
+*)
+	echo "Error: Unsupported SD reader ($1)"
+	exit 0
+esac
+
+case $1 in
 /dev/sd[a-z])
 	DEV_PART=${DEV_NAME}1
 	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
@@ -69,20 +82,10 @@ fi
 
 # ----------------------------------------------------------
 # Get target OS
-
 true ${TARGET_OS:=$(echo ${2,,}|sed 's/\///g')}
 
 RKPARAM=$(dirname $0)/${TARGET_OS}/parameter.txt
 RKPARAM2=$(dirname $0)/${TARGET_OS}/param4sd.txt
-case ${2,,} in
-friendlycore-arm64 | friendlydesktop-arm64 | buildroot | android7 | android8 | lubuntu)
-	;;
-eflasher)
-	[ -f ./${TARGET_OS}/idbloader.img ] && touch ${RKPARAM} ;;
-*)
-	echo "Error: Unsupported target OS: ${TARGET_OS}"
-	exit -1;;
-esac
 
 if [ -f "${RKPARAM}" -o -f "${RKPARAM2}" ]; then
         echo ""
@@ -117,7 +120,7 @@ EOF
 fi
 
 # Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
+if [ -b $1 -a $(id -u) -ne 0 ]; then
 	echo "Re-running script under sudo..."
 	sudo --preserve-env "$0" "$@"
 	exit
@@ -163,7 +166,10 @@ echo ""
 
 true ${SD_UPDATE:=./tools/${HOST_ARCH}sd_update}
 
-[[ -z $2 && ! -f "${RKPARAM}" ]] && exit 0
+[[ -z $2 && ! -f "${RKPARAM}" ]] && {
+	echo "Not found ${RKPARAM}"
+	exit 1
+}
 
 echo "---------------------------------"
 echo "${TARGET_OS^} filesystem fusing"
@@ -178,34 +184,37 @@ PARAM4SD=$(dirname $0)/${TARGET_OS}/param4sd.txt
 #     emmc boot: need parameter.txt, do not need partmap.txt
 #     sdraw: all need parameter.txt and partmap.txt
 
-if [ ! -f "${PARTMAP}" ]; then
-	if [ -d ${TARGET_OS}/sd-boot ]; then
-      		(cd ${TARGET_OS}/sd-boot && { \
-               		cp partmap.txt ../; \
-       		})
-       fi	
-fi
+if [ x"${TARGET_OS}" != x"eflasher" ]; then
+	if [ ! -f "${PARTMAP}" ]; then
+		if [ -d ${TARGET_OS}/sd-boot ]; then
+				(cd ${TARGET_OS}/sd-boot && { \
+					cp partmap.txt ../; \
+				})
+		fi	
+	fi
+	if [ ! -f "${PARAM4SD}" ]; then
+		if [ -d ${TARGET_OS}/sd-boot ]; then
+			(cd ${TARGET_OS}/sd-boot && { \
+				cp param4sd.txt ../; \
+			})
+		fi
+	fi
 
-if [ ! -f "${PARAM4SD}" ]; then
-	if [ -d ${TARGET_OS}/sd-boot ]; then
-	       (cd ${TARGET_OS}/sd-boot && { \
-        	       cp param4sd.txt ../; \
-	       })
-       fi
-fi
+	if [ ! -f "${PARTMAP}" ]; then
+			echo "File not found: ${PARTMAP}, please download the latest version of the image files from http://dl.friendlyarm.com/nanopct4"
+			exit 1
+	fi
 
-if [ ! -f "${PARTMAP}" ]; then
-		echo "File not found: ${PARTMAP}, please download the latest version of the image files from http://dl.friendlyarm.com/nanopct4"
-		exit 1
+	if [ ! -f "${PARAM4SD}" ]; then
+			echo "File not found: ${PARAM4SD}, please download the latest version of the image files from http://dl.friendlyarm.com/nanopct4"
+			exit 1
+	fi
+	# write kernel 4.4 images
+	${SD_UPDATE} -d /dev/${DEV_NAME} -p ${PARTMAP}
+else
+	# write kernel 4.19 image
+	${SD_UPDATE} -d /dev/${DEV_NAME} -p ${RKPARAM}
 fi
-
-if [ ! -f "${PARAM4SD}" ]; then
-		echo "File not found: ${PARAM4SD}, please download the latest version of the image files from http://dl.friendlyarm.com/nanopct4"
-		exit 1
-fi
-
-# write ext4 image
-${SD_UPDATE} -d /dev/${DEV_NAME} -p ${PARTMAP}
 if [ $? -ne 0 ]; then
 	echo "Error: filesystem fusing failed, Stop."
 	exit 1

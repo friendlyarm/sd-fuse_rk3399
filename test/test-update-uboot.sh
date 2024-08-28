@@ -18,7 +18,7 @@ cd sd-fuse_rk3399
 if [ -f ../../friendlycore-arm64-images.tgz ]; then
 	tar xvzf ../../friendlycore-arm64-images.tgz
 else
-	wget --no-proxy http://${HTTP_SERVER}/dvdfiles/rk3399/images-for-eflasher/friendlycore-arm64-images.tgz
+	wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/friendlycore-arm64-images.tgz
 fi
 
 git clone ${UBOOT_URL} --depth 1 -b ${UBOOT_BRANCH} uboot-rk3399
