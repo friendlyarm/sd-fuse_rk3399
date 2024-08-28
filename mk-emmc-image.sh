@@ -41,7 +41,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
-friendlycore-lite* | ubuntu-*-core* | friendlywrt* | openmediavault-* | debian-*-core*)
+friendlycore* | ubuntu-*-core-arm64 | debian-*-core-arm64 | openmediavault-* | friendlywrt*)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -50,12 +50,6 @@ esac
 
 download_img() {
     local RKPARAM=$(dirname $0)/${1}/parameter.txt
-    case ${1} in
-    eflasher)
-        RKPARAM=$(dirname $0)/${1}/partmap.txt
-        ;;
-    esac
-
     if [ -f "${RKPARAM}" ]; then
         echo ""
     else

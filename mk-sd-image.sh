@@ -39,12 +39,6 @@ true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 # Create zero file
 
 RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
-case ${TARGET_OS} in
-	eflasher)
-		RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/partmap.txt
-		;;
-esac
-
 true ${RAW_SIZE_MB:=0}
 if [ $RAW_SIZE_MB -eq 0 ]; then
 	case ${TARGET_OS} in

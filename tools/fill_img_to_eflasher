@@ -49,7 +49,7 @@ friendlywrt21)
 friendlywrt21-docker)
         RAW_FILE=${SOC}-eflasher-friendlywrt-21.02-docker-$(date +%Y%m%d).img ;;
 *)
-        RAW_FILE=${SOC}-eflasher-${TARGET_OS}-$(date +%Y%m%d).img ;;
+        RAW_FILE=${SOC}-eflasher-${TARGET_OS%-*}-6.1-arm64-$(date +%Y%m%d).img ;;
 esac
 
 AUTOSTART=no

@@ -67,12 +67,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 check_and_install_package
-if ! [ -x "$(command -v python2)" ]; then
-    sudo apt install python2
-fi
-if ! [ -x "$(command -v python)" ]; then
-    (cd /usr/bin/ && sudo ln -s python2 python)
-fi
+
 # get include path for this python version
 INCLUDE_PY=$(python -c "import sysconfig as s; print(s.get_config_vars()['INCLUDEPY'])")
 if [ ! -f "${INCLUDE_PY}/Python.h" ]; then
@@ -84,7 +79,7 @@ fi
 true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
-friendlycore-lite* | ubuntu-*-core* | friendlywrt* | openmediavault-* | debian-*-core*)
+friendlycore* | ubuntu-*-core-arm64 | debian-*-core-arm64 | openmediavault-* | friendlywrt* | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
@@ -93,12 +88,6 @@ esac
 
 download_img() {
     local RKPARAM=$(dirname $0)/${1}/parameter.txt
-    case ${1} in
-    eflasher)
-        RKPARAM=$(dirname $0)/${1}/partmap.txt
-        ;;
-    esac
-
     if [ -f "${RKPARAM}" ]; then
         echo ""
     else
