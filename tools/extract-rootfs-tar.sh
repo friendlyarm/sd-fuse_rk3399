@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -ne 1 ] && [ $# -ne 2 ]; then
-    echo "Usage: $0 <FILE> [DIR]"
+    echo "Usage: $0 <rootfs archive file> [target dir]"
     exit 1
 fi
 if [ $# -eq 1 ]; then

@@ -11,7 +11,7 @@ mkdir -p tmp
 sudo rm -rf tmp/*
 
 cd tmp
-git clone ../../.git -b kernel-5.15.y sd-fuse_rk3399
+git clone ../../.git sd-fuse_rk3399
 cd sd-fuse_rk3399
 
 wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/ubuntu-noble-core-arm64-images.tgz

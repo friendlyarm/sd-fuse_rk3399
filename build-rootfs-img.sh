@@ -2,13 +2,14 @@
 set -eu
 
 if [ $# -lt 2 ]; then
-	echo "Usage: $0 <rootfs dir> <img dir> "
+	echo "Usage: $0 <rootfs dir> <img dir>"
     echo "example:"
-    echo "    tar xvzf NETDISK/RK3399/rootfs/rootfs-debian-bookworm-core-arm64.tgz"
-    echo "    ./build-rootfs-img.sh debian-bookworm-core-arm64/rootfs debian-bookworm-core-arm64"
+    echo "    ./tools/extract-rootfs-tar.sh rootfs-ubuntu-focal-desktop-arm64.tgz"
+    echo "    ./build-rootfs-img.sh ubuntu-focal-desktop-arm64/rootfs ubuntu-focal-desktop-arm64"
 	exit 0
 fi
 
+TOP=$PWD
 ROOTFS_DIR=$1
 TARGET_OS=$(echo ${2,,}|sed 's/\///g')
 IMG_FILE=$TARGET_OS/rootfs.img
@@ -16,6 +17,12 @@ if [ $# -eq 3 ]; then
 	IMG_SIZE=$3
 else
 	IMG_SIZE=0
+fi
+true ${FS_TYPE:=ext4}
+
+if [ ! -d ${ROOTFS_DIR} ]; then
+    echo "path '${ROOTFS_DIR}' not found."
+    exit 1
 fi
 
 # ----------------------------------------------------------
@@ -25,19 +32,6 @@ if uname -mpi | grep aarch64 >/dev/null; then
     HOST_ARCH="aarch64/"
 fi
 
-TOP=$PWD
-export MKE2FS_CONFIG="${TOP}/tools/mke2fs.conf"
-if [ ! -f ${MKE2FS_CONFIG} ]; then
-    echo "error: ${MKE2FS_CONFIG} not found."
-    exit 1
-fi
-true ${MKFS:="${TOP}/tools/${HOST_ARCH}mke2fs"}
-
-if [ ! -d ${ROOTFS_DIR} ]; then
-    echo "path '${ROOTFS_DIR}' not found."
-    exit 1
-fi
-
 # Automatically re-run script under sudo if not root
 if [ $(id -u) -ne 0 ]; then
     echo "Re-running script under sudo..."
@@ -45,16 +39,7 @@ if [ $(id -u) -ne 0 ]; then
     exit
 fi
 
-MKFS_OPTS="-E android_sparse -t ext4 -L rootfs -M /root -b 4096"
-case ${TARGET_OS} in
-friendlywrt* | buildroot*)
-    # set default uid/gid to 0
-    MKFS_OPTS="-0 ${MKFS_OPTS}"
-    ;;
-*)
-    ;;
-esac
-
+# Clean up temporary files
 clean_rootfs() {
     (cd $1 && {
         # remove machine-id, the macaddress will be gen via it
@@ -63,14 +48,17 @@ clean_rootfs() {
             rm -f var/lib/dbus/machine-id
             ln -s /etc/machine-id var/lib/dbus/machine-id
         }
+        rm -f etc/pointercal
+        rm -f etc/fs.resized
         rm -f etc/friendlyelec-release
         rm -f root/running-state-file
         rm -f etc/firstuse
+        rm -f var/cache/apt/archives/lock
         rm -f var/lib/dpkg/lock
         rm -f var/lib/dpkg/lock-frontend
-        rm -f var/cache/apt/archives/lock
         rm -f var/cache/apt/archives/*.deb
         [ -f etc/udev/rules.d/70-persistent-net.rules ] && cat /dev/null > etc/udev/rules.d/70-persistent-net.rules
+        rm -rf var/log/journal/*
         [ -d ./tmp ] && find ./tmp -exec rm -rf {} +
         mkdir -p ./tmp
         chmod 1777 ./tmp
@@ -98,52 +86,125 @@ clean_rootfs() {
 }
 clean_rootfs ${ROOTFS_DIR}
 
-RET=0
-MKFS_PID=
-if [ ${IMG_SIZE} -le 0 ]; then
-    # calc image size
-    IMG_SIZE=$(((`du -s -B64M ${ROOTFS_DIR} | cut -f1` + 3) * 1024 * 1024 * 64))
-    IMG_BLK=$((${IMG_SIZE} / 4096))
-    INODE_SIZE=$((`find ${ROOTFS_DIR} | wc -l` + 128))
-    # make fs
-    [ -f ${IMG_FILE} ] && rm -f ${IMG_FILE}
-    set +e
-    ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${ROOTFS_DIR} ${IMG_FILE} ${IMG_BLK} &
-    MKFS_PID=$!
-    wait $MKFS_PID
-    RET=$?
-    set -e
-else
-    IMG_BLK=$((${IMG_SIZE} / 4096))
-    INODE_SIZE=$((`find ${ROOTFS_DIR} | wc -l` + 128))
-    [ -f ${IMG_FILE} ] && rm -f ${IMG_FILE}
-    set +e
-    ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${ROOTFS_DIR} ${IMG_FILE} ${IMG_BLK} &
-    MKFS_PID=$!
-    wait $MKFS_PID
-    RET=$?
-    set -e
-fi
-if [ $RET -ne 0 ]; then
-    oom_log=$(dmesg | tail -n 50 | grep -i 'killed process')
-    if echo "$oom_log" | grep -q "Killed process ${MKFS_PID}"; then
-        echo "Error: failed to generate rootfs.img, mke2fs was killed by oom-killer, please ensure that there is sufficient system memory to execute this program."
-    else
-        echo "Error: failed to generate rootfs.img, mke2fs failed with exit code ${RET}"
-    fi
-    exit $RET
-fi
+make_ext4_img() {
+    local RET=0
+    local MKFS_PID=
+    local MKFS="${TOP}/tools/${HOST_ARCH}mke2fs"
+    local MKFS_OPTS="-E android_sparse -t ext4 -L rootfs -M /root -b 4096"
 
-if [ ${TARGET_OS} != "eflasher" ]; then
     case ${TARGET_OS} in
-    openmediavault-*)
-        # disable overlayfs for openmediavault
-        cp ${TOP}/prebuilt/parameter-ext4.txt ${TOP}/${TARGET_OS}/parameter.txt
+    friendlywrt* | buildroot*)
+        # set default uid/gid to 0
+        MKFS_OPTS="-0 ${MKFS_OPTS}"
         ;;
     *)
-        ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
         ;;
     esac
+    if [ ${IMG_SIZE} -le 0 ]; then
+        # calc image size
+        IMG_SIZE=$(((`du -s -B64M ${ROOTFS_DIR} | cut -f1` + 3) * 1024 * 1024 * 64))
+        IMG_BLK=$((${IMG_SIZE} / 4096))
+        INODE_SIZE=$((`find ${ROOTFS_DIR} | wc -l` + 128))
+        # make fs
+        [ -f ${IMG_FILE} ] && rm -f ${IMG_FILE}
+        set +e
+        MKE2FS_CONFIG="${TOP}/tools/mke2fs.conf" ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${ROOTFS_DIR} ${IMG_FILE} ${IMG_BLK} &
+        MKFS_PID=$!
+        wait $MKFS_PID
+        RET=$?
+        set -e
+    else
+        IMG_BLK=$((${IMG_SIZE} / 4096))
+        INODE_SIZE=$((`find ${ROOTFS_DIR} | wc -l` + 128))
+        [ -f ${IMG_FILE} ] && rm -f ${IMG_FILE}
+        set +e
+        MKE2FS_CONFIG="${TOP}/tools/mke2fs.conf" ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${ROOTFS_DIR} ${IMG_FILE} ${IMG_BLK} &
+        MKFS_PID=$!
+        wait $MKFS_PID
+        RET=$?
+        set -e
+    fi
+    if [ $RET -ne 0 ]; then
+        oom_log=$(dmesg | tail -n 50 | grep -i 'killed process')
+        if echo "$oom_log" | grep -q "Killed process ${MKFS_PID}"; then
+            echo "Error: failed to generate rootfs.img, mke2fs was killed by oom-killer, please ensure that there is sufficient system memory to execute this program."
+        else
+            echo "Error: failed to generate rootfs.img, mke2fs failed with exit code ${RET}"
+        fi
+        exit $RET
+    fi
+}
+
+make_btrfs_img() {
+    local RET=0
+    local MKFS_PID=
+    if [ ${IMG_SIZE} -le 0 ]; then
+        IMG_SIZE=$(((`du -s -B64M ${ROOTFS_DIR} | cut -f1` + 3) * 1024 * 1024 * 64))
+        [ -f ${IMG_FILE} ] && rm -f ${IMG_FILE}
+    fi
+
+    truncate -s ${IMG_SIZE} ${IMG_FILE}
+    set +e
+    mkfs.btrfs -L rootfs ${IMG_FILE}
+    RET=$?
+    set -e
+    if [ $RET -ne 0 ]; then
+        echo "Error: failed to generate rootfs.img, mkfs.btrfs failed with exit code ${RET}"
+        exit $RET
+    fi
+
+    TMPDIR=$(mktemp -d)
+    mount -o loop ${IMG_FILE} ${TMPDIR}
+    (cd ${ROOTFS_DIR} && {
+        case ${TARGET_OS} in
+        friendlywrt* | buildroot*)
+            # set default uid/gid to 0
+            tar --numeric-owner -cvpf - * 2>/dev/null | tar --owner=0 --group=0 --numeric-owner --numeric-owner -xpf - -C ${TMPDIR}
+            RET=$?
+            ;;
+        *)
+            tar --same-owner --numeric-owner -cvpf - * 2>/dev/null | tar --same-owner --numeric-owner -xpf - -C ${TMPDIR}
+            RET=$?
+            ;;
+        esac
+    })
+    umount ${TMPDIR}
+    if [ $RET -ne 0 ]; then
+        echo "Error: failed to copy files to rootfs.img"
+        exit $RET
+    fi
+}
+
+if [ "${FS_TYPE}" = "ext4" ]; then
+    make_ext4_img
+    if [ ${TARGET_OS} != "eflasher" ]; then
+        case ${TARGET_OS} in
+        openmediavault-*)
+            # disable overlayfs for openmediavault
+            cp ${TOP}/prebuilt/parameter-plain.txt ${TOP}/${TARGET_OS}/parameter.txt
+            ;;
+        *)
+            ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
+            ;;
+        esac
+    fi
+elif [ "${FS_TYPE}" = "btrfs" ]; then
+	if ! command -v mkfs.btrfs &>/dev/null; then
+		apt-get install btrfs-progs
+	fi
+    make_btrfs_img
+    if [ ${TARGET_OS} != "eflasher" ]; then
+        # disable overlayfs for btrfs
+        cp ${TOP}/prebuilt/parameter-plain.txt ${TOP}/${TARGET_OS}/parameter.txt
+		# The difference between dtbo-plain.img and dtbo.img is that
+		# dtbo-plain.img does not use overlayfs
+		# and does not specify the data= parameter in the boot arguments.
+		# Additionally, the file system type is set to auto-detect instead of being fixed to ext4.
+		cp ${TOP}/prebuilt/dtbo-plain.img ${TOP}/${TARGET_OS}/dtbo.img
+    fi
+else
+    echo "unknow FS_TYPE: ${FS_TYPE}."
+    exit 1
 fi
 
 echo "generating ${IMG_FILE} done."

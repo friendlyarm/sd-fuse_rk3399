@@ -10,9 +10,9 @@ sd-fuse 提供一些工具和脚本, 用于制作SD卡固件, 具体用途如下
 *其他语言版本: [English](README.md)*  
   
 ## 运行环境
-* 支持 x86_64 和 aarch64 平台
+* 支持 x86_64 和 arm64 平台 (注：arm64需要是A53及以上)
 * 推荐的操作系统: Ubuntu 20.04及以上64位操作系统
-* 针对x86_64用户，推荐运行此脚本初始化开发环境: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
+* 脚本会提示安装必要的软件包
 * Docker容器: https://github.com/friendlyarm/docker-cross-compiler-novnc
 
 ## 支持的内核版本
@@ -78,7 +78,7 @@ out/rk3399-sd-openmediavault-6.1-arm64-YYYYMMDD.img
 #### 创建一个不使用OverlayFS的SD卡镜像
 产品量产需要从SD卡导出根文件系统时, 需要提前禁用OverlayFS, 下面的命令将制作一个已禁用OverlayFS的SD卡镜像:
 ```
-cp prebuilt/parameter-ext4.txt openmediavault-arm64/parameter.txt
+cp prebuilt/parameter-plain.txt openmediavault-arm64/parameter.txt
 ./mk-sd-image.sh openmediavault-arm64
 ```
 使用此SD卡镜像制作SD启动卡, 运行系统并进行量产所需的设置后, 将SD卡插入到Linux电脑并挂载, 使用cp或rsync命令拷贝最后一个分区的文件和目录, 即可得到完整的可用于量产的rootfs根文件系统, 最后[参考此处的内容](#从根文件系统制作一个可启动的SD卡)制作成可量产的SD卡镜像或eMMC镜像。
@@ -151,6 +151,7 @@ sudo ./build-rootfs-img.sh openmediavault-arm64/rootfs openmediavault-arm64
 RAW_SIZE_MB=16000 ./mk-sd-image.sh openmediavault-arm64
 RAW_SIZE_MB=16000 ./mk-emmc-image.sh openmediavault-arm64
 ```
+
 ### 编译内核
 *注: 这里以openmediavault系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
@@ -216,5 +217,9 @@ ls -1 /dev > ~/before.txt
 ls -1 /dev > ~/after.txt
 diff ~/before.txt ~/after.txt
 ```
+## 常见问题及解决办法
+* 制作rootfs后无法启动 (解决办法：可能是文件系统中的文件权限被破坏，要注意使用tools/extract-rootfs-tar.sh脚本来解压rootfs，tar命令指定-cpzf参数来打包)
+* 制作过程中有进程退出 (解决办法：机器内存不能过低)
+
 
 

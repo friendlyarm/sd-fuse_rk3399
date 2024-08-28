@@ -1,8 +1,8 @@
 #!/bin/bash
 set -eu
 
-# Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
-# (http://www.friendlyarm.com)
+# Copyright (C) Guangzhou FriendlyElec Computer Tech. Co., Ltd.
+# (http://www.friendlyelec.com)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,7 +19,7 @@ set -eu
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <friendlywrt23|friendlywrt23-docker|friendlywrt22|friendlywrt22-docker|friendlywrt21|friendlywrt21-docker|ubuntu-noble-core-arm64|openmediavault-arm64> [img filename] [options]"
+       echo "Usage: $0 <img dir> [img filename] [options]"
        echo "    examples:"
        echo "        ./mk-emmc-image.sh friendlywrt23 filename=myimg-emmc.img autostart=yes"
        echo "        ./mk-emmc-image.sh friendlywrt23 autostart=yes"
