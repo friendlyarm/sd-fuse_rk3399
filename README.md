@@ -10,9 +10,9 @@ This repository is a bunch of scripts to build bootable SD card images for Frien
 *Read this in other languages: [简体中文](README_cn.md)*  
   
 ## Requirements
-* Supports x86_64 and aarch64 platforms
-* Recommended Host OS: Ubuntu 20.04 LTS (Focal Fossa) 64-bit or Higher. Note: Build will fail on Ubuntu Bionic since package lz4 is required
-* For x86_64 user, it is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
+* Supports x86_64 and arm64 platforms (Note: requires A53 or higher on arm64)
+* Recommended Host OS: Ubuntu 20.04 LTS (Focal Fossa) 64-bit or Higher (Note: Build will fail on Ubuntu Bionic since package lz4 is required)
+* The script will prompt for the installation of necessary packages.
 * Docker container: https://github.com/friendlyarm/docker-cross-compiler-novnc
 
 ## Kernel Version Support
@@ -29,7 +29,7 @@ For other kernel versions, please switch to the related git branch.
 * debian-bullseye-desktop-arm64
 * debian-bullseye-minimal-arm64
 * ubuntu-focal-desktop-arm64
-* debian-bullseye-core-arm64
+* debian-bookworm-core-arm64
 * ubuntu-noble-core-arm64
 * android10
 
@@ -83,11 +83,12 @@ out/rk3399-sd-friendlycore-focal-4.19-arm64-YYYYMMDD.img
 #### Create an SD card image that does not use OverlayFS
 The following command will create an SD card image with OverlayFS disabled:
 ```
-cp prebuilt/parameter-ext4.txt friendlycore-focal-arm64/parameter.txt
+cp prebuilt/parameter-plain.txt friendlycore-focal-arm64/parameter.txt
 ./mk-sd-image.sh friendlycore-focal-arm64
 ```
-Disabling overlayfs is useful for exporting root filesystem.
-
+The benefits of disabling OverlayFS are as follows:  
+* Docker can choose a file system type with better performance
+* Enabling Swap becomes more convenient
 
 ### Build your own SD-to-eMMC Image
 *Note: Here we use friendlycore-focal system as an example*  
@@ -156,6 +157,14 @@ If the image path is too big to pack, you can use the RAW_SIZE_MB environment va
 RAW_SIZE_MB=16000 ./mk-sd-image.sh friendlycore-focal-arm64
 RAW_SIZE_MB=16000 ./mk-emmc-image.sh friendlycore-focal-arm64
 ```
+
+#### Using BTRFS as your root filesystem
+First, use the following command to check if your kernel supports the BTRFS file system:
+```
+cat /proc/filesystems | grep btrfs
+```
+If not, you can add BTRFS support by add the line CONFIG_BTRFS_FS=y to the .config file, you can refer to the script test/test-btrfs-rootfs.sh for more details.  
+
 ### Compiling the Kernel
 *Note: Here we use friendlycore-focal system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
@@ -198,7 +207,7 @@ MK_HEADERS_DEB=1 ./build-kernel.sh friendlycore-focal-arm64
 
 ### Compiling the u-boot
 *Note: Here we use friendlycore-focal system as an example* 
-Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher)::
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
@@ -210,4 +219,6 @@ Download the u-boot source code from github that matches the OS version, the env
 git clone https://github.com/friendlyarm/uboot-rockchip -b nanopi4-v2017.09 --depth 1 uboot
 UBOOT_SRC=uboot ./build-uboot.sh friendlycore-focal-arm64
 ```
-
+### Common Issues and Solutions
+* Unable to boot after creating rootfs (Solution: The file permissions in the file system might be corrupted. Make sure to use the tools/extract-rootfs-tar.sh script to extract rootfs, and use the -cpzf options with the tar command for packaging.)
+* Process exits during creation (Solution: Ensure the machine has sufficient memory.)
