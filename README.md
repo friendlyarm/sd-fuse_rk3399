@@ -154,6 +154,13 @@ RAW_SIZE_MB=16000 ./mk-sd-image.sh openmediavault-arm64
 RAW_SIZE_MB=16000 ./mk-emmc-image.sh openmediavault-arm64
 ```
 
+#### Using BTRFS as your root filesystem
+First, use the following command to check if your kernel supports the BTRFS file system:
+```
+cat /proc/filesystems | grep btrfs
+```
+If not, you can add BTRFS support by add the line CONFIG_BTRFS_FS=y to the .config file, you can refer to the script test/test-btrfs-rootfs.sh for more details.  
+
 ### Compiling the Kernel
 *Note: Here we use openmediavault system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):

@@ -152,6 +152,13 @@ RAW_SIZE_MB=16000 ./mk-sd-image.sh openmediavault-arm64
 RAW_SIZE_MB=16000 ./mk-emmc-image.sh openmediavault-arm64
 ```
 
+#### 使用BTRFS文件系统
+首先使用以下命令检查你所用的内核是否支持btrfs文件系统:
+```
+cat /proc/filesystems | grep btrfs
+```
+如不支持，可通过打开内核配置项"CONFIG_BTRFS_FS=y"增加支持，详情可参考示例脚本test/test-btrfs-rootfs.sh。  
+
 ### 编译内核
 *注: 这里以openmediavault系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
