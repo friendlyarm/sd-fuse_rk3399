@@ -42,15 +42,11 @@ RK_PARAMETER_TXT=$(dirname $0)/${TARGET_OS}/parameter.txt
 true ${RAW_SIZE_MB:=0}
 if [ $RAW_SIZE_MB -eq 0 ]; then
 	case ${TARGET_OS} in
+	friendlycore-*|debian-*|ubuntu-*|openmediavault-*)
+		RAW_SIZE_MB=7800 ;;
 	friendlywrt*)
 		RAW_SIZE_MB=1500 ;;
 	buildroot*)
-		RAW_SIZE_MB=7800 ;;
-	debian-*)
-		RAW_SIZE_MB=7800 ;;
-	ubuntu-*)
-		RAW_SIZE_MB=7800 ;;
-	friendlycore-*)
 		RAW_SIZE_MB=7800 ;;
 	android*)
 		RAW_SIZE_MB=7800 ;;
@@ -65,7 +61,7 @@ if [ $# -eq 2 ]; then
 	RAW_FILE=$2
 else
 	case ${TARGET_OS} in
-	buildroot*|debian-*|ubuntu-*|friendlycore-*)
+	buildroot*|friendlycore-*|debian-*|ubuntu-*|openmediavault-*)
 		RAW_FILE=${SOC}-sd-${TARGET_OS%-*}-4.19-arm64-$(date +%Y%m%d).img
 		;;
 	friendlywrt*)
@@ -78,7 +74,7 @@ else
 		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
 		;;
 	*)
-		RAW_FILE=${SOC}-sd-${TARGET_OS}-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-${TARGET_OS}-4.19-$(date +%Y%m%d).img
 		;;
 	esac
 fi

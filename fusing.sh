@@ -21,7 +21,7 @@ set -eu
 # Checking device for fusing
 
 if [ $# -lt 2 ]; then
-	echo "Usage: $0 <DEVICE|RAWFILE> <OS>"
+	echo "Usage: $0 <device|rawfile> <img dir>"
 	exit 0
 fi
 

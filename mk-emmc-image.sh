@@ -41,7 +41,7 @@ true ${SOC:=rk3399}
 true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
-android*|friendlycore-focal-arm64|debian-*|ubuntu-*|buildroot*|friendlycore-lite-focal-kernel4-arm64|friendlywrt* )
+android*|friendlycore-focal-arm64|debian-*|ubuntu-*|buildroot*|friendlycore-lite-focal-kernel4-arm64|openmediavault-*|friendlywrt*)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

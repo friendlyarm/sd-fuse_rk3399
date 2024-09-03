@@ -147,7 +147,7 @@ check_and_install_package
 
 
 case ${TARGET_OS} in
-buildroot* | debian-* | ubuntu-* | android10 | android11 | friendlycore-* | friendlywrt* )
+buildroot* | debian-* | ubuntu-* | android10 | android11 | friendlycore-* | openmediavault-* | friendlywrt* | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

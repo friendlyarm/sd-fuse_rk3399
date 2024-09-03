@@ -41,10 +41,10 @@ function usage() {
        echo "# or clone your local repo:"
        echo "    git clone git@192.168.1.2:/path/to/uboot.git --depth 1 -b ${UBOOT_BRANCH} ${UBOOT_SRC}"
        echo "# then"
-       echo "    ./build-uboot.sh debian-buster-desktop-arm64 "
-       echo "    ./mk-emmc-image.sh debian-buster-desktop-arm64 "
+       echo "    ./build-uboot.sh ubuntu-noble-core-arm64 "
+       echo "    ./mk-emmc-image.sh ubuntu-noble-core-arm64 "
        echo "# also can do:"
-       echo "	UBOOT_SRC=~/myuboot ./build-uboot.sh debian-buster-desktop-arm64"
+       echo "	UBOOT_SRC=~/myuboot ./build-uboot.sh ubuntu-noble-core-arm64"
        exit 0
 }
 
@@ -79,7 +79,7 @@ fi
 true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 case ${TARGET_OS} in
-friendlycore-* | debian-* | ubuntu-* | friendlywrt* | buildroot* )
+friendlycore* | ubuntu-*-core-arm64 | debian-*-core-arm64 | openmediavault-* | friendlywrt* | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

@@ -79,6 +79,9 @@ function check_and_install_package() {
 	if ! command -v resize2fs &>/dev/null; then
 		PACKAGES="e2fsprogs ${PACKAGES}"
 	fi
+	if ! command -v mkfs.btrfs &>/dev/null; then
+		PACKAGES="btrfs-progs ${PACKAGES}"
+	fi
 	if [ ! -z "${PACKAGES}" ]; then
 		sudo apt install ${PACKAGES}
 	fi
