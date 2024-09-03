@@ -15,9 +15,14 @@ OUT=${PWD}/out
 UBOOT_DIR=$1
 KERNEL_DIR=$2
 BOOT_DIR=$3
-ROOTFS_DIR=$4
+ROOTFS_DIR=$(readlink -f $4)
 PREBUILT=$5
 TARGET_OS=$(echo ${6,,}|sed 's/\///g')
+
+HOST_ARCH=
+if uname -mpi | grep aarch64 >/dev/null; then
+    HOST_ARCH="aarch64/"
+fi
 
 # kernel bin
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
@@ -32,6 +37,8 @@ rm -rf ${ROOTFS_DIR}/lib/modules/*
 })
 
 # firmware
-cp -avf ${PREBUILT}/firmware/* ${ROOTFS_DIR}/    
+(cd ${PREBUILT}/firmware && {
+	./install.sh ${ROOTFS_DIR}
+})
 
 exit 0
