@@ -31,10 +31,10 @@ true ${KCFG:=nanopi4_linux_defconfig}
 true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
 KERNEL_REPO=https://github.com/friendlyarm/kernel-rockchip
-KERNEL_BRANCH=nanopi-r2-v6.1.y
+KERNEL_BRANCH=nanopi-r2-v6.6.y
 case ${TARGET_OS} in
 friendlywrt*)
-	KERNEL_BRANCH=nanopi-r2-v6.1.y-opp1
+	KERNEL_BRANCH=nanopi-r2-v6.6.y-opp1
 	;;
 *)
 	;;
