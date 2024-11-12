@@ -66,6 +66,7 @@ clean_rootfs() {
         rm -f etc/friendlyelec-release
         rm -f root/running-state-file
         rm -f etc/firstuse
+        rm -f etc/.overlayfs.disabled
         rm -f var/lib/dpkg/lock
         rm -f var/lib/dpkg/lock-frontend
         rm -f var/cache/apt/archives/lock
