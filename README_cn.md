@@ -116,7 +116,7 @@ su root
 cd /
 tar --warning=no-file-changed -cvpzf /rootfs.tar.gz \
     --exclude=/rootfs.tar.gz --exclude=/var/lib/docker/runtimes \
-    --exclude=/etc/firstuser --exclude=/etc/friendlyelec-release \
+    --exclude=/etc/firstuse --exclude=/etc/friendlyelec-release \
     --exclude=/usr/local/first_boot_flag --one-file-system /
 ```
 #### 从根文件系统制作一个可启动的SD卡
