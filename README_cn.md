@@ -22,6 +22,8 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 其他内核版本, 请切换到相应的git分支
 ## 支持的目标板OS
 
+* friendlywrt24
+* friendlywrt24-docker
 * friendlywrt23
 * friendlywrt23-docker
 * friendlywrt21

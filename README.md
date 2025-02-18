@@ -23,6 +23,8 @@ For other kernel versions, please switch to the related git branch.
 ## Target board OS Supported
 *Notes: The OS name is the same as the directory name, it is written in the script so it cannot be renamed.*
 
+* friendlywrt24
+* friendlywrt24-docker
 * friendlywrt23
 * friendlywrt23-docker
 * friendlywrt21

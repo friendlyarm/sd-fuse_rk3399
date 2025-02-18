@@ -24,15 +24,29 @@ if [ ! -f ${MKE2FS_CONFIG} ]; then
 fi
 true ${MKFS:="${TOP}/tools/${HOST_ARCH}mke2fs"}
 
-RET=0
+generate_img() {
+    local img_name=$1
+    echo "Generating empty $img_name"
+    local tmpdir=$(mktemp -d)
+    local img_blk=$((209715200 / 4096))
+    ${MKFS} -E android_sparse -t ext4 -L userdata -M /userdata -b 4096 -d ${tmpdir} $img_name ${img_blk}
+    local ret=$?
+    rm -rf ${tmpdir}
+    return $ret
+}
+
 if [ ! -f $1/userdata.img ]; then
-	USERDATA_SIZE=209715200
-	echo "Generating empty userdata.img (size:${USERDATA_SIZE})"
-	TMPDIR=`mktemp -d`
-	IMG_BLK=$((${USERDATA_SIZE} / 4096))
-	${MKFS} -E android_sparse -t ext4 -L userdata -M /userdata -b 4096 -d ${TMPDIR} $1/userdata.img ${IMG_BLK}
-	RET=$?
-	rm -rf ${TMPDIR}
+    generate_img $1/userdata.img
+    RET=$?
+    [ $RET -ne 0 ] && exit $RET
 fi
 
-exit $RET
+if grep -q "(opt:grow)" $1/parameter.txt; then
+	if [ ! -f $1/opt.img ]; then
+		generate_img $1/opt.img
+		RET=$?
+		[ $RET -ne 0 ] && exit $RET
+	fi
+fi
+
+exit 0
