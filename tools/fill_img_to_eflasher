@@ -36,6 +36,10 @@ OS_IMAGES_DIR=${TOPPATH}/${TARGET_OS}
 case ${TARGET_OS} in
 friendlycore-*|debian-*|ubuntu-*|openmediavault-*)
         RAW_FILE=${SOC}-eflasher-${TARGET_OS%-*}-6.1-arm64-$(date +%Y%m%d).img ;;
+friendlywrt24)
+        RAW_FILE=${SOC}-eflasher-friendlywrt-24.10-$(date +%Y%m%d).img ;;
+friendlywrt24-docker)
+        RAW_FILE=${SOC}-eflasher-friendlywrt-24.10-docker-$(date +%Y%m%d).img ;;
 friendlywrt23)
         RAW_FILE=${SOC}-eflasher-friendlywrt-23.05-$(date +%Y%m%d).img ;;
 friendlywrt23-docker)

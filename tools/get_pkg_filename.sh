@@ -2,6 +2,10 @@
 
 TARGET_OS=$(echo ${1,,}|sed 's/\///g')
 case ${TARGET_OS} in
+friendlywrt24)
+        ROMFILE=friendlywrt24-images.tgz;;
+friendlywrt24-docker)
+        ROMFILE=friendlywrt24-docker-images.tgz;;
 friendlywrt23)
         ROMFILE=friendlywrt23-images.tgz;;
 friendlywrt23-docker)
