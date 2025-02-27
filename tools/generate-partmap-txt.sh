@@ -27,6 +27,7 @@ set -eu
 
 
 IMG_SIZE=$1
+true ${USERDATA_SIZE:=0}
 TARGET_OS=$(echo ${2,,}|sed 's/\///g')
 
 TOP=$PWD
@@ -84,7 +85,9 @@ if grep -q "<OPT_PARTITION_ADDR>" ${PARAMETER_TPL}; then
     sed -i "s|<USERDATA_PARTITION_ADDR>|${USERDATA_PARTITION_ADDR}|g" ${PARAMETER_TXT}
 
     # Size of the userdata partition
-    USERDATA_SIZE=1073741824
+    if [ ${USERDATA_SIZE} -eq 0 ]; then
+        USERDATA_SIZE=1073741824
+    fi
     USERDATA_PARTITION_SIZE=`printf "0x%08x" $((${USERDATA_SIZE}/512))`
     sed -i "s|<USERDATA_PARTITION_SIZE>|${USERDATA_PARTITION_SIZE}|g" ${PARAMETER_TXT}
 

@@ -13,12 +13,22 @@ TOP=$PWD
 ROOTFS_DIR=$1
 TARGET_OS=$(echo ${2,,}|sed 's/\///g')
 IMG_FILE=$TARGET_OS/rootfs.img
-if [ $# -eq 3 ]; then
+if [ $# -ge 3 ]; then
 	IMG_SIZE=$3
 else
 	IMG_SIZE=0
 fi
+if [ $# -ge 4 ]; then
+	USERDATA_SIZE=$4
+else
+	USERDATA_SIZE=0
+fi
 true ${FS_TYPE:=ext4}
+if grep -q "(opt:grow)" ${TARGET_OS}/parameter.txt; then
+    true ${ENABLE_OPT_PARTITION:=true}
+else
+    true ${ENABLE_OPT_PARTITION:=false}
+fi
 
 if [ ! -d ${ROOTFS_DIR} ]; then
     echo "path '${ROOTFS_DIR}' not found."
@@ -184,17 +194,22 @@ if [ "${FS_TYPE}" = "ext4" ]; then
             # disable overlayfs for openmediavault
             cp ${TOP}/prebuilt/parameter-plain.txt ${TOP}/${TARGET_OS}/parameter.txt
             ;;
-        friendlywrt*docker)
-            PARAMETER_TPL="${TOP}/prebuilt/parameter-opt.template" \
-                ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
-            ;;
         *)
-            PARAMETER_TPL="${TOP}/prebuilt/parameter.template" \
-                ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
+            if [ "$ENABLE_OPT_PARTITION" = "true" ]; then
+                USERDATA_SIZE=${USERDATA_SIZE} PARAMETER_TPL="${TOP}/prebuilt/parameter-opt.template" \
+                    ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
+            else
+                PARAMETER_TPL="${TOP}/prebuilt/parameter.template" \
+                    ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
+            fi
             ;;
         esac
     fi
 elif [ "${FS_TYPE}" = "btrfs" ]; then
+    if [ "$ENABLE_OPT_PARTITION" = "true" ]; then
+        echo "When using btrfs, the ENABLE_OPT_PARTITION variable is not supported temporarily."
+        exit 1
+    fi
 	if ! command -v mkfs.btrfs &>/dev/null; then
 		apt-get install btrfs-progs
 	fi
