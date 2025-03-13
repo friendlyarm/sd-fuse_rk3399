@@ -61,8 +61,8 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 *注: 这里以openmediavault系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压openmediavault系统的[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), 由于http服务器带宽的关系, wget命令可能会比较慢, 推荐从网盘上下载同名的文件:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.1.y --single-branch sd-fuse_rk3399-kernel6.1
-cd sd-fuse_rk3399-kernel6.1
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.6.y --single-branch sd-fuse_rk3399-kernel6.6
+cd sd-fuse_rk3399-kernel6.6
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/openmediavault-arm64-images.tgz
 tar xvzf openmediavault-arm64-images.tgz
 ```
@@ -92,8 +92,8 @@ cp prebuilt/parameter-plain.txt openmediavault-arm64/parameter.txt
 *注: 这里以openmediavault系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), 这里需要下载openmediavault和eflasher系统的文件:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.1.y --single-branch sd-fuse_rk3399-kernel6.1
-cd sd-fuse_rk3399-kernel6.1
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.6.y --single-branch sd-fuse_rk3399-kernel6.6
+cd sd-fuse_rk3399-kernel6.6
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/openmediavault-arm64-images.tgz
 tar xvzf openmediavault-arm64-images.tgz
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/emmc-flasher-images.tgz
@@ -123,8 +123,8 @@ tar --warning=no-file-changed -cvpzf /rootfs.tar.gz \
 *注: 这里以openmediavault系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.1.y --single-branch sd-fuse_rk3399-kernel6.1
-cd sd-fuse_rk3399-kernel6.1
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.6.y --single-branch sd-fuse_rk3399-kernel6.6
+cd sd-fuse_rk3399-kernel6.6
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/openmediavault-arm64-images.tgz
 tar xvzf openmediavault-arm64-images.tgz
 ```
@@ -167,8 +167,8 @@ cat /proc/filesystems | grep btrfs
 *注: 这里以openmediavault系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.1.y --single-branch sd-fuse_rk3399-kernel6.1
-cd sd-fuse_rk3399-kernel6.1
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.6.y --single-branch sd-fuse_rk3399-kernel6.6
+cd sd-fuse_rk3399-kernel6.6
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/openmediavault-arm64-images.tgz
 tar xvzf openmediavault-arm64-images.tgz
 ```
@@ -207,8 +207,8 @@ MK_HEADERS_DEB=1 ./build-kernel.sh openmediavault-arm64
 *注: 这里以openmediavault系统为例进行说明* 
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.1.y --single-branch sd-fuse_rk3399-kernel6.1
-cd sd-fuse_rk3399-kernel6.1
+git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-6.6.y --single-branch sd-fuse_rk3399-kernel6.6
+cd sd-fuse_rk3399-kernel6.6
 wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/openmediavault-arm64-images.tgz
 tar xvzf openmediavault-arm64-images.tgz
 ```
