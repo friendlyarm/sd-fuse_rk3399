@@ -30,6 +30,7 @@ For other kernel versions, please switch to the related git branch.
 * friendlywrt21
 * friendlywrt21-docker
 * openmediavault-arm64
+* alpine-linux-arm64
 
   
 To build an SD card image for openmediavault, for example like this:

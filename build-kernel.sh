@@ -153,7 +153,7 @@ check_and_install_package
 
 
 case ${TARGET_OS} in
-friendlycore* | ubuntu-*-core-arm64 | debian-*-core-arm64 | openmediavault-* | friendlywrt*)
+friendlycore* | ubuntu-*-core-arm64 | debian-*-core-arm64 | openmediavault-* | alpine-linux-* | friendlywrt*)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"

@@ -34,6 +34,7 @@ linux-kernel-*
 /android*
 /friendlycore*
 /openmediavault-*
+/alpine-linux-*
 /friendlydesktop*
 /eflasher
 /buildroot
