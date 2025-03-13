@@ -24,10 +24,14 @@ else
 	USERDATA_SIZE=0
 fi
 true ${FS_TYPE:=ext4}
-if grep -q "(opt:grow)" ${TARGET_OS}/parameter.txt; then
-    true ${ENABLE_OPT_PARTITION:=true}
+if [ -f ${TARGET_OS}/parameter.txt ]; then
+	if grep -q "(opt:grow)" ${TARGET_OS}/parameter.txt; then
+		true ${ENABLE_OPT_PARTITION:=true}
+	else
+		true ${ENABLE_OPT_PARTITION:=false}
+	fi
 else
-    true ${ENABLE_OPT_PARTITION:=false}
+	true ${ENABLE_OPT_PARTITION:=false}
 fi
 
 if [ ! -d ${ROOTFS_DIR} ]; then
