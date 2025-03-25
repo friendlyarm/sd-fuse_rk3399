@@ -83,6 +83,7 @@ out/rk3399-sd-openmediavault-6.1-arm64-YYYYMMDD.img
 The following command will create an SD card image with OverlayFS disabled:
 ```
 cp prebuilt/parameter-plain.txt openmediavault-arm64/parameter.txt
+cp prebuilt/dtbo-plain.img openmediavault-arm64/dtbo.img
 ./mk-sd-image.sh openmediavault-arm64
 ```
 The benefits of disabling OverlayFS are as follows:  
