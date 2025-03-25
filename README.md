@@ -29,6 +29,7 @@ For other kernel versions, please switch to the related git branch.
 * friendlywrt23-docker
 * friendlywrt21
 * friendlywrt21-docker
+* alpine-linux-arm64
 * openmediavault-arm64
 
   
