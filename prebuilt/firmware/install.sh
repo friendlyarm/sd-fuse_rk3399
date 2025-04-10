@@ -7,6 +7,9 @@ if [ -e "$ROOTFS_DIR/lib/firmware" ]; then
 	LIBFIRMWARE="$(readlink -f $ROOTFS_DIR/lib/firmware)"
 elif [ -e "$ROOTFS_DIR/usr/lib/firmware" ]; then
 	LIBFIRMWARE="$(readlink -f $ROOTFS_DIR/usr/lib/firmware)"
+else
+	LIBFIRMWARE="$ROOTFS_DIR/lib/firmware"
+	mkdir -p $LIBFIRMWARE
 fi
 
 (cd $ROOTFS_DIR && {
