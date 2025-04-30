@@ -11,7 +11,9 @@ TOP=$PWD
 SRC_DIR=$1
 IMG_FILE=$2
 TARGET_OS=$3
-true ${IMG_SIZE:=0}
+
+# 200M
+true ${IMG_SIZE:=209715200}
 
 if [ ! -d ${SRC_DIR} ]; then
     echo "error: path ${SRC_DIR} not found."
@@ -50,30 +52,16 @@ make_ext4_img() {
         ;;
     esac
 
-    if [ ${IMG_SIZE} -le 0 ]; then
-        # calc image size
-        IMG_SIZE=$(((`du -s -B64M ${SRC_DIR} | cut -f1` + 3) * 1024 * 1024 * 64))
-        IMG_BLK=$((${IMG_SIZE} / 4096))
-        INODE_SIZE=$((`find ${SRC_DIR} | wc -l` + 128))
-        # make fs
-        [ -f ${TARGET_OS}/${IMG_FILE} ] && rm -f ${TARGET_OS}/${IMG_FILE}
-        set +e
-        MKE2FS_CONFIG="${TOP}/tools/mke2fs.conf" ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${SRC_DIR} ${TARGET_OS}/${IMG_FILE} ${IMG_BLK} | tee ${TEMPFILE} &
-        MKFS_PID=$!
-        wait $MKFS_PID
-        RET=$?
-        set -e
-    else
-        IMG_BLK=$((${IMG_SIZE} / 4096))
-        INODE_SIZE=$((`find ${SRC_DIR} | wc -l` + 128))
-        [ -f ${TARGET_OS}/${IMG_FILE} ] && rm -f ${TARGET_OS}/${IMG_FILE}
-        set +e
-        MKE2FS_CONFIG="${TOP}/tools/mke2fs.conf" ${MKFS} -N ${INODE_SIZE} ${MKFS_OPTS} -d ${SRC_DIR} ${TARGET_OS}/${IMG_FILE} ${IMG_BLK} | tee ${TEMPFILE} &
-        MKFS_PID=$!
-        wait $MKFS_PID
-        RET=$?
-        set -e
-    fi
+    IMG_BLK=$((${IMG_SIZE} / 4096))
+    # make fs
+    [ -f ${TARGET_OS}/${IMG_FILE} ] && rm -f ${TARGET_OS}/${IMG_FILE}
+    set +e
+    MKE2FS_CONFIG="${TOP}/tools/mke2fs.conf" ${MKFS} ${MKFS_OPTS} -d ${SRC_DIR} ${TARGET_OS}/${IMG_FILE} ${IMG_BLK} | tee ${TEMPFILE} &
+    MKFS_PID=$!
+    wait $MKFS_PID
+    RET=$?
+    set -e
+
     if [ $RET -ne 0 ]; then
         oom_log=$(dmesg | tail -n 50 | grep -i 'killed process')
         if echo "$oom_log" | grep -q "Killed process ${MKFS_PID}"; then
