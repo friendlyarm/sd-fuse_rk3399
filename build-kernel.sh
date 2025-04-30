@@ -76,6 +76,10 @@ KERNEL_3RD_DRIVERS+=("https://github.com/friendlyarm/rtl8812au")
 KERNEL_3RD_DRIVER_BRANCHES+=("nanopi-r2")
 KERNEL_3RD_DRIVER_NAME+=("rtl8812au")
 
+KERNEL_3RD_DRIVERS+=("https://github.com/friendlyarm/rtl8851bu")
+KERNEL_3RD_DRIVER_BRANCHES+=("nanopi-r2")
+KERNEL_3RD_DRIVER_NAME+=("rtl8851bu")
+
 build_external_module() {
     DRIVER_REPO=$1
     DRIVER_BRANCHE=$2
