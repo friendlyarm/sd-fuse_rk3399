@@ -11,7 +11,9 @@ TOP=$PWD
 SRC_DIR=$1
 IMG_FILE=$2
 TARGET_OS=$3
-true ${IMG_SIZE:=0}
+
+# 200M
+true ${IMG_SIZE:=209715200}
 
 if [ ! -d ${SRC_DIR} ]; then
     echo "error: path ${SRC_DIR} not found."
@@ -50,7 +52,7 @@ make_ext4_img() {
         ;;
     esac
 
-    IMG_BLK=$((209715200 / 4096))
+    IMG_BLK=$((${IMG_SIZE} / 4096))
     # make fs
     [ -f ${TARGET_OS}/${IMG_FILE} ] && rm -f ${TARGET_OS}/${IMG_FILE}
     set +e
