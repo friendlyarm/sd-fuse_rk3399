@@ -46,6 +46,8 @@ if [ $RAW_SIZE_MB -eq 0 ]; then
 		RAW_SIZE_MB=7800 ;;
 	alpine-linux-*)
 		RAW_SIZE_MB=1000 ;;
+	arch-linux-*)
+		RAW_SIZE_MB=7800 ;;
 	friendlywrt*)
 		RAW_SIZE_MB=3000 ;;
 	eflasher)
@@ -59,7 +61,7 @@ if [ $# -eq 2 ]; then
 	RAW_FILE=$2
 else
 	case ${TARGET_OS} in
-	friendlycore-*|debian-*|ubuntu-*|openmediavault-*|alpine-linux-*)
+	friendlycore-*|debian-*|ubuntu-*|openmediavault-*|alpine-linux-*|arch-linux-*)
 		RAW_FILE=${SOC}-sd-${TARGET_OS%-*}-6.1-arm64-$(date +%Y%m%d).img
 		;;
 	friendlywrt24)

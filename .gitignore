@@ -39,6 +39,7 @@ linux-kernel-*
 /eflasher
 /buildroot
 /lubuntu*
+/arch-linux-*
 /*-images.tgz*
 /rootfs-*.tgz
 /*.raw*
