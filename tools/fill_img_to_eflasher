@@ -147,7 +147,13 @@ sleep 1
 partprobe ${DEV}
 sleep 1
 mkdir -p ${MNT}
-mount -t exfat ${DEV}p1 ${MNT}
+if command -v mount.exfat-fuse >/dev/null 2>&1; then
+    mount.exfat-fuse ${DEV}p1 ${MNT}
+elif command -v mount.exfat >/dev/null 2>&1; then
+    mount.exfat ${DEV}p1 ${MNT}
+else
+    mount -t exfat ${DEV}p1 ${MNT}
+fi
 gen_eflasher_conf ${MNT} ${TARGET_OS} ${AUTOSTART}
 mkdir -p ${MNT}/${TARGET_OS}
 rm -rf ${MNT}/${TARGET_OS}/*
