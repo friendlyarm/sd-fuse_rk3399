@@ -35,7 +35,7 @@ function check_and_install_package() {
 			. /etc/os-release
 			case "$VERSION_CODENAME" in
 			noble|jammy|bookworm|bullseye)
-					PACKAGES="exfatprogs ${PACKAGES}"
+					PACKAGES="exfatprogs exfat-fuse ${PACKAGES}"
 					;;
 			*)
 					PACKAGES="exfat-fuse exfat-utils ${PACKAGES}"
