@@ -163,7 +163,11 @@ Customize the kernel configuration:
 ```
 cd kernel
 touch .scmversion
+
 make ARCH=arm64 nanopi4_linux_defconfig
+# Optionally, load configuration for FriendlyWrt
+# make ARCH=arm64 nanopi4_linux_defconfig friendlywrt.config
+
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- menuconfig
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- savedefconfig
 cp defconfig ./arch/arm64/configs/my_defconfig                  # Save the configuration as my_defconfig

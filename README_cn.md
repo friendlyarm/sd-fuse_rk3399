@@ -163,7 +163,11 @@ git clone https://github.com/friendlyarm/kernel-rockchip -b nanopi4-linux-v4.4.y
 ```
 cd kernel
 touch .scmversion
+
 make ARCH=arm64 nanopi4_linux_defconfig
+# Optionally, load configuration for FriendlyWrt
+# make ARCH=arm64 nanopi4_linux_defconfig friendlywrt.config
+
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- menuconfig     # 根据需要改动配置
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- savedefconfig
 cp defconfig ./arch/arm64/configs/my_defconfig                  # 保存配置 my_defconfig
