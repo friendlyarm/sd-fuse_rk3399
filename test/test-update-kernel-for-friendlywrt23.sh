@@ -3,7 +3,7 @@ set -eu
 
 HTTP_SERVER=112.124.9.243
 KERNEL_URL=https://github.com/friendlyarm/kernel-rockchip
-KERNEL_BRANCH=nanopi-r2-v6.1.y
+KERNEL_BRANCH=nanopi-r2-v6.6.y
 
 # hack for me
 [ -f /etc/friendlyarm ] && source /etc/friendlyarm $(basename $(builtin cd ..; pwd))

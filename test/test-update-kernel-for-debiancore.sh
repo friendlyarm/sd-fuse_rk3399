@@ -3,7 +3,7 @@ set -eu
 
 HTTP_SERVER=112.124.9.243
 KERNEL_URL=https://github.com/friendlyarm/kernel-rockchip
-KERNEL_BRANCH=nanopi-r2-v6.1.y
+KERNEL_BRANCH=nanopi-r2-v6.6.y
 
 # clean
 mkdir -p tmp
@@ -23,13 +23,16 @@ else
     tar xvzf debian-trixie-core-arm64-images.tgz
 fi
 
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/emmc-flasher-images.tgz
+tar xzf emmc-flasher-images.tgz
+
 if [ -f ../../kernel-rk3399.tgz ]; then
 	tar xvzf ../../kernel-rk3399.tgz
 else
 	git clone ${KERNEL_URL} --depth 1 -b ${KERNEL_BRANCH} kernel-rk3399
 fi
 
-wget http://${HTTP_SERVER}/sd-fuse/kernel-3rd-drivers.tgz
+wget http://112.124.9.243/sd-fuse/kernel-3rd-drivers.tgz
 if [ -f kernel-3rd-drivers.tgz ]; then
     pushd out
     tar xzf ../kernel-3rd-drivers.tgz
@@ -37,4 +40,6 @@ if [ -f kernel-3rd-drivers.tgz ]; then
 fi
 
 KERNEL_SRC=$PWD/kernel-rk3399 ./build-kernel.sh debian-trixie-core-arm64
+cp prebuilt/dtbo.img debian-trixie-core-arm64
 sudo ./mk-sd-image.sh debian-trixie-core-arm64
+sudo ./mk-emmc-image.sh debian-trixie-core-arm64 autostart=yes

@@ -62,7 +62,7 @@ if [ $# -eq 2 ]; then
 else
 	case ${TARGET_OS} in
 	friendlycore-*|debian-*|ubuntu-*|openmediavault-*|alpine-linux-*|arch-linux-*)
-		RAW_FILE=${SOC}-sd-${TARGET_OS%-*}-6.1-arm64-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-${TARGET_OS%-*}-6.6-arm64-$(date +%Y%m%d).img
 		;;
 	friendlywrt24)
 		RAW_FILE=${SOC}-sd-friendlywrt-24.10-arm64-$(date +%Y%m%d).img
@@ -92,7 +92,7 @@ else
 		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
 		;;
 	*)
-		RAW_FILE=${SOC}-sd-${TARGET_OS%-*}-6.1-arm64-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-${TARGET_OS%-*}-6.6-arm64-$(date +%Y%m%d).img
 		;;
 	esac
 fi
