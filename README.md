@@ -25,10 +25,8 @@ For other kernel versions, please switch to the related git branch.
 
 * friendlywrt24
 * friendlywrt24-docker
-* friendlywrt23
-* friendlywrt23-docker
-* friendlywrt21
-* friendlywrt21-docker
+* friendlywrt25
+* friendlywrt25-docker
 * debian-trixie-core-arm64
 * ubuntu-noble-core-arm64
 * alpine-linux-arm64
