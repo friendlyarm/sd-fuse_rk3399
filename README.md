@@ -32,6 +32,7 @@ For other kernel versions, please switch to the related git branch.
 * debian-trixie-core-arm64
 * ubuntu-noble-core-arm64
 * android10
+* debian-bookworm-lxqt-x11-desktop-arm64
 
   
 To build an SD card image for friendlycore-focal, for example like this:
