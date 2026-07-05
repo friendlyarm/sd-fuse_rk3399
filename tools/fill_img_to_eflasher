@@ -124,29 +124,13 @@ FULLIMG=out/${RAW_FILE}
 
 # ----------------------------------------------------------
 cp ${EFLASHER_RAW_IMG} ${FULLIMG}
-DEV=`losetup -f`
-for i in `seq 3`; do
-    if [ -b ${DEV} ]; then
-        break
-    else
-        echo "Waitting ${DEV}"
-        sleep 1
-    fi
-done
-MNT=/tmp/media_exfat
-rm -rf ${MNT}
-if [ $? -eq 0 ]; then
-        echo ""
-else
-        umount ${MNT}
-        rm -rf ${MNT}
-fi
+DEV=$(losetup -f --show -P ${FULLIMG})
+MNT=$(mktemp -d /tmp/media_exfat.XXXXXX)
+trap 'umount "${MNT}" 2>/dev/null; losetup -d "${DEV}" 2>/dev/null; rmdir "${MNT}" 2>/dev/null; true' EXIT
 # ----------------------------------------------------------
-losetup ${DEV} ${FULLIMG}
 sleep 1
-partprobe ${DEV}
+partprobe ${DEV} 2>/dev/null || true
 sleep 1
-mkdir -p ${MNT}
 if command -v mount.exfat-fuse >/dev/null 2>&1; then
     mount.exfat-fuse ${DEV}p1 ${MNT}
 elif command -v mount.exfat >/dev/null 2>&1; then
@@ -160,7 +144,5 @@ rm -rf ${MNT}/${TARGET_OS}/*
 echo "copying ${OS_IMAGES_DIR}/* to ${MNT}/${TARGET_OS} ..."
 (cd ${OS_IMAGES_DIR} && find . -maxdepth 1 -type f -exec cp {} ${MNT}/${TARGET_OS} \;)
 
-umount ${MNT}
-losetup -d ${DEV}
 ls -l ${FULLIMG}
 exit 0
