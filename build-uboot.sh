@@ -81,7 +81,7 @@ fi
 # get include path for this python version
 INCLUDE_PY=$(python -c "import sysconfig as s; print(s.get_config_vars()['INCLUDEPY'])")
 if [ ! -f "${INCLUDE_PY}/Python.h" ]; then
-    sudo apt install python2-dev
+    apt_install python2-dev
 fi
 
 # ----------------------------------------------------------
