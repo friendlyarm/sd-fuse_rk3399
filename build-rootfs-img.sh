@@ -215,7 +215,10 @@ elif [ "${FS_TYPE}" = "btrfs" ]; then
         exit 1
     fi
 	if ! command -v mkfs.btrfs &>/dev/null; then
-		apt-get install btrfs-progs
+		case "${SDFUSE_NONINTERACTIVE:-}" in
+		y|Y|yes|YES|1|true|TRUE) sudo DEBIAN_FRONTEND=noninteractive apt-get install -y btrfs-progs ;;
+		*) apt-get install btrfs-progs ;;
+		esac
 	fi
     make_btrfs_img
     if [ ${TARGET_OS} != "eflasher" ]; then
