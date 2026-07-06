@@ -143,7 +143,10 @@ if [ $? -ne 0 ]; then
 fi
 
 if ! command -v partprobe &>/dev/null; then
-	sudo apt-get install parted
+	case "${SDFUSE_NONINTERACTIVE:-}" in
+	y|Y|yes|YES|1|true|TRUE) sudo DEBIAN_FRONTEND=noninteractive apt-get install -y parted ;;
+	*) sudo apt-get install parted ;;
+	esac
 fi
 
 partprobe /dev/${DEV_NAME} -s 2>/dev/null
