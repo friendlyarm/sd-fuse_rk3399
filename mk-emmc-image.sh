@@ -2,7 +2,7 @@
 set -eu
 
 # Copyright (C) Guangzhou FriendlyElec Computer Tech. Co., Ltd.
-# (http://www.friendlyelec.com)
+# (https://www.friendlyelec.com)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -55,15 +55,11 @@ download_img() {
     else
 	ROMFILE=`./tools/get_pkg_filename.sh ${1}`
         cat << EOF
-Warn: Image not found for ${1}
-----------------
-you may download it from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
-the image files are stored in a directory called "03_Partition image files", for example:
-    tar xvzf /path/to/NetDrive/03_Partition\ image\ files/${ROMFILE}
-----------------
-Do you want to download it now via http? (Y/N):
+Warn: Image directory not found: ${1}
+Do you want to download it now? (Y/N):
 EOF
-        while read -r -n 1 -t 3600 -s USER_REPLY; do
+        case "${SDFUSE_NONINTERACTIVE:-}" in y|Y|yes|YES|1|true|TRUE) USER_REPLY=y; echo "$USER_REPLY (auto: SDFUSE_NONINTERACTIVE=$SDFUSE_NONINTERACTIVE)";; esac
+        while [ -z "${USER_REPLY:-}" ] && read -r -n 1 -t 3600 -s USER_REPLY; do
             if [[ ${USER_REPLY} = [Nn] ]]; then
                 echo ${USER_REPLY}
                 exit 1

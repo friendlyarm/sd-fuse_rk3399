@@ -1,7 +1,11 @@
 #!/bin/bash
 set -eux
 
-HTTP_SERVER=112.124.9.243
+if [ -f "$(dirname "$(readlink -f "$0")")/../.use-local-r2" ]; then
+    CDN_URL=http://cdn.local/friendlyelec-cdn/os-images/rk3399/images
+else
+    CDN_URL=https://downloads.friendlyelec.com/os-images/rk3399/images
+fi
 UBOOT_URL=https://github.com/friendlyarm/uboot-rockchip
 UBOOT_BRANCH=nanopi4-v2017.09
 
@@ -18,7 +22,7 @@ cd sd-fuse_rk3399
 if [ -f ../../friendlycore-focal-arm64-images.tgz ]; then
 	tar xvzf ../../friendlycore-focal-arm64-images.tgz
 else
-	wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
+	wget ${CDN_URL}/friendlycore-focal-arm64-images.tgz
 	tar xvzf friendlycore-focal-arm64-images.tgz
 fi
 

@@ -81,7 +81,7 @@ gen_eflasher_conf()
     OSNamesMergeWithComma="friendlywr,debian-buster-desktop-arm64,debian-bullseye-desktop-arm64,friendlycore-focal-arm64,friendlycore-lite-focal-kernel4-arm64,android10,android11"
     cat > ${1}/eflasher.conf <<EOL
 ; This is the eFlasher configuration file.
-; See http://wiki.friendlyarm.com/wiki/index.php/EFlasher for detailed information.
+; See https://wiki.friendlyelec.com/wiki/index.php/EFlasher for detailed information.
 
 [General]
 ; Automate OS installation at system startup,

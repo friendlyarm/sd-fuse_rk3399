@@ -1,8 +1,11 @@
 #!/bin/bash
 set -eu
 
-HTTP_SERVER=112.124.9.243
-
+if [ -f "$(dirname "$(readlink -f "$0")")/../.use-local-r2" ]; then
+    CDN_URL=http://cdn.local/friendlyelec-cdn/os-images/rk3399/images
+else
+    CDN_URL=https://downloads.friendlyelec.com/os-images/rk3399/images
+fi
 # hack for me
 [ -f /etc/friendlyarm ] && source /etc/friendlyarm $(basename $(builtin cd ..; pwd))
 
@@ -14,25 +17,25 @@ cd tmp
 git clone ../../.git -b kernel-4.19 sd-fuse_rk3399
 cd sd-fuse_rk3399
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
+wget ${CDN_URL}/friendlycore-focal-arm64-images.tgz
 tar xzf friendlycore-focal-arm64-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/debian-bullseye-desktop-arm64-images.tgz
+wget ${CDN_URL}/debian-bullseye-desktop-arm64-images.tgz
 tar xzf debian-bullseye-desktop-arm64-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/ubuntu-noble-core-arm64-images.tgz
+wget ${CDN_URL}/ubuntu-noble-core-arm64-images.tgz
 tar xzf ubuntu-noble-core-arm64-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/openmediavault-arm64-images.tgz
+wget ${CDN_URL}/openmediavault-arm64-images.tgz
 tar xzf openmediavault-arm64-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/android-10-images.tgz
+wget ${CDN_URL}/android-10-images.tgz
 tar xzf android-10-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/buildroot-images.tgz
+wget ${CDN_URL}/buildroot-images.tgz
 tar xzf buildroot-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/emmc-flasher-images.tgz
+wget ${CDN_URL}/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
 
 ./mk-sd-image.sh friendlycore-focal-arm64

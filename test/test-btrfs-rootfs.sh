@@ -1,7 +1,13 @@
 #!/bin/bash
 set -eu
 
-HTTP_SERVER=112.124.9.243
+if [ -f "$(dirname "$(readlink -f "$0")")/../.use-local-r2" ]; then
+    CDN_URL=http://cdn.local/friendlyelec-cdn/os-images/rk3399/images
+    ROOTFS_URL=http://cdn.local/friendlyelec-cdn/rootfs/rk3399
+else
+    CDN_URL=https://downloads.friendlyelec.com/os-images/rk3399/images
+    ROOTFS_URL=https://downloads.friendlyelec.com/rootfs/rk3399
+fi
 KERNEL_URL=https://github.com/friendlyarm/kernel-rockchip
 KERNEL_BRANCH=nanopi4-v4.19.y
 KCFG=nanopi4_linux_defconfig
@@ -18,11 +24,13 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse
 cd sd-fuse
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/${SOC^^}/images-for-eflasher/debian-trixie-core-arm64-images.tgz
+wget ${CDN_URL}/debian-trixie-core-arm64-images.tgz
 tar xzf debian-trixie-core-arm64-images.tgz
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/${SOC^^}/images-for-eflasher/emmc-flasher-images.tgz
+wget ${CDN_URL}/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/${SOC^^}/rootfs/rootfs-debian-trixie-core-arm64.tgz
+wget ${ROOTFS_URL}/rootfs-debian-trixie-core-arm64.tgz
+wget ${ROOTFS_URL}/rootfs-debian-trixie-core-arm64.tgz.sha256
+sha256sum -c rootfs-debian-trixie-core-arm64.tgz.sha256
 
 # build kernel to add btrfs config 
 [ -d kernel ] || git clone ${KERNEL_URL} --depth 1 -b ${KERNEL_BRANCH} kernel

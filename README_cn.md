@@ -43,10 +43,10 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 制作固件所需要的素材有:
 * 内核源代码: 在[网盘](https://download.friendlyelec.com/rk3399)的 "07_源代码" 目录中, 或者从[此github链接](https://github.com/friendlyarm/kernel-rockchip)下载, 分支为nanopi4-v4.19.y
 * uboot源代码: 在[网盘](https://download.friendlyelec.com/rk3399)的 "07_源代码" 目录中, 或者从[此github链接](https://github.com/friendlyarm/uboot-rockchip)下载, 分支为nanopi4-v2017.09
-* 分区镜像文件: 在[网盘](https://download.friendlyelec.com/rk3399)的 "03_分区镜像文件" 目录中, 或者从[此http链接](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher)下载
-* 文件系统压缩包: 在[网盘](https://download.friendlyelec.com/rk3399)的 "06_文件系统" 目录中, 或者从[此http链接](http://112.124.9.243/dvdfiles/rk3399/rootfs)下载
+* 分区镜像文件: 在[网盘](https://download.friendlyelec.com/rk3399)的 "03_分区镜像文件" 目录中, 或者从[服务器](https://downloads.friendlyelec.com/os-images/rk3399/images)下载
+* 文件系统压缩包: 在[网盘](https://download.friendlyelec.com/rk3399)的 "06_文件系统" 目录中, 或者从[服务器](https://downloads.friendlyelec.com/rootfs/rk3399)下载
   
-如果没有提前准备好文件, 脚本亦会使用wget命令从http server去下载, 不过因为http服务器带宽不足的关系, 速度可能会比较慢。
+如果没有提前准备好文件, 脚本会从服务器下载最新版本。
 
 ## 脚本功能
 * fusing.sh: 将镜像烧写至SD卡
@@ -60,11 +60,11 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 ## 如何使用
 ### 重新打包SD卡运行固件
 *注: 这里以friendlycore-focal系统为例进行说明*  
-下载本仓库到本地, 然后下载并解压friendlycore-focal系统的[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), 由于http服务器带宽的关系, wget命令可能会比较慢, 推荐从网盘上下载同名的文件:
+克隆本仓库到本地, 然后下载并解压friendlycore-focal系统的[分区镜像文件压缩包](https://downloads.friendlyelec.com/os-images/rk3399/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
+wget https://downloads.friendlyelec.com/os-images/rk3399/images/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
 ```
 解压后, 会得到一个名为friendlycore-focal-arm64的目录, 可以根据项目需要, 对目录里的文件进行修改, 例如把rootfs.img替换成自已修改过的文件系统镜像, 或者自已编译的内核和uboot等, 准备就绪后, 输入如下命令将系统映像写入到SD卡  (其中/dev/sdX是你的SD卡设备名):
@@ -92,13 +92,13 @@ cp prebuilt/dtbo-plain.img friendlycore-focal-arm64/dtbo.img
 
 ### 重新打包 SD-to-eMMC 卡刷固件
 *注: 这里以friendlycore-focal系统为例进行说明*  
-下载本仓库到本地, 然后下载并解压[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), 这里需要下载friendlycore-focal和eflasher系统的文件:
+克隆本仓库到本地, 然后下载并解压[分区镜像文件压缩包](https://downloads.friendlyelec.com/os-images/rk3399/images), 这里需要下载friendlycore-focal和eflasher系统的文件:
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
+wget https://downloads.friendlyelec.com/os-images/rk3399/images/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/emmc-flasher-images.tgz
+wget https://downloads.friendlyelec.com/os-images/rk3399/images/emmc-flasher-images.tgz
 tar xvzf emmc-flasher-images.tgz
 ```
 再使用以下命令, 打包卡刷固件, autostart=yes参数表示使用此固件开机时,会自动进入烧写流程:
@@ -123,11 +123,11 @@ tar --warning=no-file-changed -cvpzf /rootfs.tar.gz \
 ```
 #### 从根文件系统制作一个可启动的SD卡
 *注: 这里以friendlycore-focal系统为例进行说明*  
-下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
+克隆本仓库到本地, 然后下载并解压[分区镜像压缩包](https://downloads.friendlyelec.com/os-images/rk3399/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
+wget https://downloads.friendlyelec.com/os-images/rk3399/images/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
 ```
 解压上一章节中从开发板上导出的rootfs.tar.gz, 需要使用root权限, 因此解压命令需要加上sudo:
@@ -137,7 +137,9 @@ mkdir friendlycore-focal-arm64/rootfs
 ```
 或者从以下网址下载文件系统压缩包并解压:
 ```
-wget http://112.124.9.243/dvdfiles/rk3399/rootfs/rootfs-friendlycore-focal-arm64.tgz
+wget https://downloads.friendlyelec.com/rootfs/rk3399/rootfs-friendlycore-focal-arm64.tgz
+wget https://downloads.friendlyelec.com/rootfs/rk3399/rootfs-friendlycore-focal-arm64.tgz.sha256
+sha256sum -c rootfs-friendlycore-focal-arm64.tgz.sha256
 ./tools/extract-rootfs-tar.sh rootfs-friendlycore-focal-arm64.tgz
 ```
 用以下命令将文件系统目录打包成 rootfs.img:
@@ -167,11 +169,11 @@ cat /proc/filesystems | grep btrfs
 
 ### 编译内核
 *注: 这里以friendlycore-focal系统为例进行说明*  
-下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
+克隆本仓库到本地, 然后下载并解压[分区镜像压缩包](https://downloads.friendlyelec.com/os-images/rk3399/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
+wget https://downloads.friendlyelec.com/os-images/rk3399/images/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
 ```
 从github克隆内核源代码到本地:
@@ -211,17 +213,24 @@ MK_HEADERS_DEB=1 ./build-kernel.sh friendlycore-focal-arm64
 
 ### 编译 u-boot
 *注: 这里以friendlycore-focal系统为例进行说明* 
-下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
+克隆本仓库到本地, 然后下载并解压[分区镜像压缩包](https://downloads.friendlyelec.com/os-images/rk3399/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b kernel-4.19 --single-branch sd-fuse_rk3399-kernel4.19
 cd sd-fuse_rk3399-kernel4.19
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlycore-focal-arm64-images.tgz
+wget https://downloads.friendlyelec.com/os-images/rk3399/images/friendlycore-focal-arm64-images.tgz
 tar xvzf friendlycore-focal-arm64-images.tgz
 ```
 从github克隆与OS版本相匹配的u-boot源代码到本地, 环境变量UBOOT_SRC用于指定本地源代码目录:
 ```
 git clone https://github.com/friendlyarm/uboot-rockchip -b nanopi4-v2017.09 --depth 1 uboot
 UBOOT_SRC=uboot ./build-uboot.sh friendlycore-focal-arm64
+```
+
+## 非交互模式 (SDFUSE_NONINTERACTIVE)
+设置 `SDFUSE_NONINTERACTIVE=y` 可以跳过安装软件和下载缺失镜像文件前的询问, 示例:
+```
+export SDFUSE_NONINTERACTIVE=y
+./mk-sd-image.sh friendlycore-focal-arm64
 ```
 
 ## Tips: 如何查询SD卡的设备文件名
