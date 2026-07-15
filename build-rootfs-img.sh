@@ -80,10 +80,10 @@ clean_rootfs() {
         if [ -d ./var/lib/apt/lists ]; then
             PERM=`grep "^_apt" ./etc/passwd | cut -d':' -f3`
             if [ -e ./var/lib/apt/lists ]; then
-                [ -z ${PERM} ] || chown -R ${PERM}.0 ./var/lib/apt/lists
+                [ -z ${PERM} ] || chown -R ${PERM}:0 ./var/lib/apt/lists
             fi
             if [ -e ./var/cache/apt/archives/partial ]; then
-                [ -z ${PERM} ] || chown -R ${PERM}.0 ./var/cache/apt/archives/partial
+                [ -z ${PERM} ] || chown -R ${PERM}:0 ./var/cache/apt/archives/partial
             fi
         fi
         [ -d var/log ] && find var/log -type f -delete
