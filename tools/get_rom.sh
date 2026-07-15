@@ -1,8 +1,8 @@
 #!/bin/bash
 set -eu
 
-# Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
-# (http://www.friendlyarm.com)
+# Copyright (C) Guangzhou FriendlyElec Computer Tech. Co., Ltd.
+# (https://www.friendlyelec.com)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,10 +21,14 @@ set -eu
 # ----------------------------------------------------------
 # base setup
 
-BASE_URL=http://112.124.9.243/dvdfiles
-OPT_URL=http://wiki.friendlyarm.com/download/
-BOARD=RK3399/images-for-eflasher
-
+SDFUSE_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if [ -f "${SDFUSE_ROOT}/.use-local-r2" ]; then
+    BASE_URL=http://cdn.local/friendlyelec-cdn/os-images
+else
+    BASE_URL=https://downloads.friendlyelec.com/os-images
+fi
+BOARD=rk3399/images
+OUT_DIR=out
 TARGET_OS=$(echo ${1,,}|sed 's/\///g')
 ROMFILE=`./tools/get_pkg_filename.sh ${TARGET_OS}`
 if [ -z ${ROMFILE} ]; then
@@ -49,17 +53,11 @@ function download_file()
 		exit 1
 	fi
 
-	if [ -f $1 ]; then
-		rm -fv $1
+	if [ -f ${OUT_DIR}/$1 ]; then
+		rm -fv ${OUT_DIR}/$1
 	fi
 
-	FA_DoExec wget --spider --tries=1 ${url}
-	if [[ "$?" != 0 ]]; then
-		url=${OPT_URL}/${BOARD}/$1
-	fi
-
-	FA_DoExec wget ${url}
-	if [[ "$?" != 0 ]]; then
+	if ! FA_DoExec wget -P ${OUT_DIR} ${url}; then
 		echo "Error downloading file: $1"
 		exit 1
 	fi
@@ -70,26 +68,27 @@ function download_file()
 #----------------------------------------------------------
 # download image and verify it
 
-download_file ${ROMFILE}.hash.md5
+mkdir -p ${OUT_DIR}
 
-if [ -f ${ROMFILE} ]; then
-	md5sum -c ${ROMFILE}.hash.md5 >/dev/null 2>&1
-	NEED_DL=$?
-else
-	NEED_DL=1
+download_file ${ROMFILE}.sha256
+
+NEED_DL=1
+if [ -f ${OUT_DIR}/${ROMFILE} ]; then
+	if (cd ${OUT_DIR} && sha256sum -c ${ROMFILE}.sha256) >/dev/null 2>&1; then
+		NEED_DL=0
+	fi
 fi
 
-# skip if main file exist and md5sum check OK
+# skip if main file exist and sha256sum check OK
 if [ ${NEED_DL} -ne 0 ]; then
 	download_file ${ROMFILE}
 fi
 
-md5sum -c ${ROMFILE}.hash.md5
-if [[ "$?" != 0 ]]; then
+if ! (cd ${OUT_DIR} && sha256sum -c ${ROMFILE}.sha256); then
 	echo "Error in downloaded file, please try again, or download it by"
 	echo "browser or other tools, URL is:"
 	echo "  ${BASE_URL}/${BOARD}/${ROMFILE}"
-	echo "  ${BASE_URL}/${BOARD}/${ROMFILE}.hash.md5"
+	echo "  ${BASE_URL}/${BOARD}/${ROMFILE}.sha256"
 	exit 1
 fi
 
@@ -98,7 +97,7 @@ fi
 
 mkdir -p ${TARGET_OS}
 
-if [ -f ${ROMFILE} ]; then
+if [ -f ${OUT_DIR}/${ROMFILE} ]; then
 	XOPTS="-C ${TARGET_OS} --strip-components=1"
-	FA_DoExec tar xzvf ${ROMFILE} ${XOPTS} || exit 1
+	FA_DoExec tar xzvf ${OUT_DIR}/${ROMFILE} ${XOPTS} || exit 1
 fi

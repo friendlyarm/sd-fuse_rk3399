@@ -41,10 +41,10 @@ To build an SD card image for friendlydesktop, for example like this:
 The following files may be required to build SD card image:
 * kernel source code: In the directory "07_Source codes" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [Github](https://github.com/friendlyarm/kernel-rockchip), the branch name is nanopi4-linux-v4.4.y
 * uboot source code: In the directory "07_Source codes" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [Github](https://github.com/friendlyarm/uboot-rockchip), the branch name is nanopi4-v2014.10_oreo
-* pre-built partition image: In the directory "03_Partition image files" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [HTTP server](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher)
-* compressed root file system tar ball: In the directory "06_File systems" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [HTTP server](http://112.124.9.243/dvdfiles/rk3399/rootfs)
+* pre-built partition image: In the directory "03_Partition image files" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [server](https://downloads.friendlyelec.com/os-images/rk3399/images)
+* compressed root file system tar ball: In the directory "06_File systems" of [NetDrive](https://download.friendlyelec.com/rk3399), or download from [server](https://downloads.friendlyelec.com/rootfs/rk3399)
   
-If the files are not prepared in advance, the script will automatically download the required files, but the speed may be slower due to the bandwidth of the http server.
+If the files are not prepared in advance, the script will download the latest version from the server.
 
 ## Script Functions
 * fusing.sh: Flash the image to SD card
@@ -58,11 +58,11 @@ If the files are not prepared in advance, the script will automatically download
 ## Usage
 ### Build your own SD card image
 *Note: Here we use friendlydesktop system as an example*  
-Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), due to the bandwidth of the http server, we recommend downloading the file from the [NetDrive](https://download.friendlyelec.com/rk3399):
+Clone this repository locally, then download and uncompress the [pre-built images](https://downloads.friendlyelec.com/os-images/rk3399/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b master --single-branch sd-fuse_rk3399-kernel4.4
 cd sd-fuse_rk3399-kernel4.4
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlydesktop-arm64-images.tgz
+wget https://downloads.friendlyelec.com/os-images/rk3399/images/friendlydesktop-arm64-images.tgz
 tar xvzf friendlydesktop-arm64-images.tgz
 ```
 After decompressing, you will get a directory named friendlydesktop-arm64, you can change the files in the directory as needed, for example, replace rootfs.img with your own modified version, or your own compiled kernel and uboot, finally, flash the image to the SD card by entering the following command (The below steps assume your SD card is device /dev/sdX):
@@ -80,13 +80,13 @@ out/rk3399-sd-friendlydesktop-4.4-arm64-YYYYMMDD.img
 
 ### Build your own SD-to-eMMC Image
 *Note: Here we use friendlydesktop system as an example*  
-Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher), here you need to download the friendlydesktop and eflasher [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
+Clone this repository locally, then download and uncompress the [pre-built images](https://downloads.friendlyelec.com/os-images/rk3399/images), here you need to download the friendlydesktop and eflasher [pre-built images](https://downloads.friendlyelec.com/os-images/rk3399/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b master --single-branch sd-fuse_rk3399-kernel4.4
 cd sd-fuse_rk3399-kernel4.4
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlydesktop-arm64-images.tgz
+wget https://downloads.friendlyelec.com/os-images/rk3399/images/friendlydesktop-arm64-images.tgz
 tar xvzf friendlydesktop-arm64-images.tgz
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/emmc-flasher-images.tgz
+wget https://downloads.friendlyelec.com/os-images/rk3399/images/emmc-flasher-images.tgz
 tar xvzf emmc-flasher-images.tgz
 ```
 Then use the following command to build the SD-to-eMMC image, the autostart=yes parameter means it will automatically enter the flash process when booting:
@@ -111,11 +111,11 @@ tar --warning=no-file-changed -cvpzf /rootfs.tar.gz \
 ```
 #### Making a bootable SD card from a root filesystem
 *Note: Here we use friendlydesktop system as an example*  
-Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
+Clone this repository locally, then download and uncompress the [pre-built images](https://downloads.friendlyelec.com/os-images/rk3399/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b master --single-branch sd-fuse_rk3399-kernel4.4
 cd sd-fuse_rk3399-kernel4.4
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlydesktop-arm64-images.tgz
+wget https://downloads.friendlyelec.com/os-images/rk3399/images/friendlydesktop-arm64-images.tgz
 tar xvzf friendlydesktop-arm64-images.tgz
 ```
 Extract the rootfs.tar.gz exported in the previous section, the tar command requires root privileges, so you need put sudo in front of the command:
@@ -125,7 +125,9 @@ mkdir friendlydesktop-arm64/rootfs
 ```
 or download the filesystem archive from the following URL and extract it:
 ```
-wget http://112.124.9.243/dvdfiles/rk3399/rootfs/rootfs-friendlydesktop-arm64.tgz
+wget https://downloads.friendlyelec.com/rootfs/rk3399/rootfs-friendlydesktop-arm64.tgz
+wget https://downloads.friendlyelec.com/rootfs/rk3399/rootfs-friendlydesktop-arm64.tgz.sha256
+sha256sum -c rootfs-friendlydesktop-arm64.tgz.sha256
 ./tools/extract-rootfs-tar.sh rootfs-friendlydesktop-arm64.tgz
 ```
 Make rootfs to img:
@@ -148,11 +150,11 @@ RAW_SIZE_MB=16000 ./mk-emmc-image.sh friendlydesktop-arm64
 
 ### Compiling the Kernel
 *Note: Here we use friendlydesktop system as an example*  
-Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
+Clone this repository locally, then download and uncompress the [pre-built images](https://downloads.friendlyelec.com/os-images/rk3399/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b master --single-branch sd-fuse_rk3399-kernel4.4
 cd sd-fuse_rk3399-kernel4.4
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlydesktop-arm64-images.tgz
+wget https://downloads.friendlyelec.com/os-images/rk3399/images/friendlydesktop-arm64-images.tgz
 tar xvzf friendlydesktop-arm64-images.tgz
 ```
 Download the kernel source code from github:
@@ -192,11 +194,11 @@ MK_HEADERS_DEB=1 ./build-kernel.sh friendlydesktop-arm64
 
 ### Compiling the u-boot
 *Note: Here we use friendlydesktop system as an example* 
-Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher):
+Clone this repository locally, then download and uncompress the [pre-built images](https://downloads.friendlyelec.com/os-images/rk3399/images):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_rk3399 -b master --single-branch sd-fuse_rk3399-kernel4.4
 cd sd-fuse_rk3399-kernel4.4
-wget http://112.124.9.243/dvdfiles/rk3399/images-for-eflasher/friendlydesktop-arm64-images.tgz
+wget https://downloads.friendlyelec.com/os-images/rk3399/images/friendlydesktop-arm64-images.tgz
 tar xvzf friendlydesktop-arm64-images.tgz
 ```
 Download the u-boot source code from github that matches the OS version, the environment variable UBOOT_SRC is used to specify the local source code directory:
@@ -204,6 +206,13 @@ Download the u-boot source code from github that matches the OS version, the env
 git clone https://github.com/friendlyarm/uboot-rockchip -b nanopi4-v2014.10_oreo --depth 1 uboot
 UBOOT_SRC=uboot ./build-uboot.sh friendlydesktop-arm64
 ```
+### Non-Interactive Mode (SDFUSE_NONINTERACTIVE)
+Set `SDFUSE_NONINTERACTIVE=y` to skip prompts before installing packages and downloading missing image files. Example:
+```
+export SDFUSE_NONINTERACTIVE=y
+./mk-sd-image.sh friendlydesktop-arm64
+```
+
 ### Common Issues and Solutions
 * Unable to boot after creating rootfs (Solution: The file permissions in the file system might be corrupted. Make sure to use the tools/extract-rootfs-tar.sh script to extract rootfs, and use the -cpzf options with the tar command for packaging.)
 * Process exits during creation (Solution: Ensure the machine has sufficient memory.)

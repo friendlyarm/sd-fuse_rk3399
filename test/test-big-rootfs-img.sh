@@ -1,8 +1,11 @@
 #!/bin/bash
 set -eux
 
-HTTP_SERVER=112.124.9.243
-
+if [ -f "$(dirname "$(readlink -f "$0")")/../.use-local-r2" ]; then
+    CDN_URL=http://cdn.local/friendlyelec-cdn/os-images/rk3399/images
+else
+    CDN_URL=https://downloads.friendlyelec.com/os-images/rk3399/images
+fi
 # hack for me
 [ -f /etc/friendlyarm ] && source /etc/friendlyarm $(basename $(builtin cd ..; pwd))
 
@@ -13,9 +16,9 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_rk3399
 cd sd-fuse_rk3399
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/friendlycore-arm64-images.tgz
+wget ${CDN_URL}/friendlycore-arm64-images.tgz
 tar xzf friendlycore-arm64-images.tgz
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/RK3399/images-for-eflasher/emmc-flasher-images.tgz
+wget ${CDN_URL}/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
 
 # make big file

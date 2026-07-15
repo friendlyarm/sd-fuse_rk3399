@@ -6,8 +6,8 @@ set -eu
 	exit 1
 }
 
-# Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
-# (http://www.friendlyarm.com)
+# Copyright (C) Guangzhou FriendlyElec Computer Tech. Co., Ltd.
+# (https://www.friendlyelec.com)
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
